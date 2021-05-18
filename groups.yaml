@@ -1,0 +1,13 @@
+bedsidelamps:
+ name: Bedside lamps
+ icon: hass:lightbulb-group
+ entities:
+  - switch.kens_bedside_lamp 
+  - switch.bedside_lamp 
+
+workcomputer:  
+  name: Work
+  entities:
+  - switch.tz3000_vmpbygs5_ts011f_on_off
+  - switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_3
+  - switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_2

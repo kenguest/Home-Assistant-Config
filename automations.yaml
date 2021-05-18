@@ -1,0 +1,1036 @@
+- id: '1608297533072'
+  alias: Study heater off if study light off
+  description: Turn off heater if study light is off
+  trigger:
+  - platform: state
+    entity_id: light.study_light_level_on_off
+    to: 'off'
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 5be0e5ccbdf92ad60895eb5792d7123b
+    entity_id: switch.heater_study
+    domain: switch
+  mode: single
+- id: '1608298251209'
+  alias: Study light on  at 14:00
+  description: ''
+  trigger:
+  - platform: time
+    at: '14:00'
+  condition:
+  - condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  action:
+  - type: turn_on
+    device_id: b714b30ac81dd9ba9a22d7177bc139e3
+    entity_id: light.study_light_level_on_off
+    domain: light
+    brightness_pct: 100
+  mode: single
+- id: '1608316073879'
+  alias: Study light on  at 08:00 Tu-Fr
+  description: ''
+  trigger:
+  - platform: time
+    at: 08:00
+  condition:
+  - condition: time
+    weekday:
+    - tue
+    - wed
+    - thu
+    - fri
+  action:
+  - type: turn_on
+    device_id: b714b30ac81dd9ba9a22d7177bc139e3
+    entity_id: light.study_light_level_on_off
+    domain: light
+    brightness_pct: 100
+  - scene: scene.get_ready_for_work
+  mode: single
+- id: '1608316207401'
+  alias: Study light off at 13:00
+  description: ''
+  trigger:
+  - platform: time
+    at: '13:00'
+  condition:
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: '''on'' '
+  action:
+  - type: turn_off
+    device_id: b714b30ac81dd9ba9a22d7177bc139e3
+    entity_id: light.study_light_level_on_off
+    domain: light
+  mode: single
+- id: '1608316269451'
+  alias: Study light off at 17:30 Tu-Fr
+  description: ''
+  trigger:
+  - platform: time
+    at: '17:30'
+  condition:
+  - condition: time
+    weekday:
+    - tue
+    - wed
+    - thu
+    - fri
+  action:
+  - type: turn_off
+    device_id: b714b30ac81dd9ba9a22d7177bc139e3
+    entity_id: light.study_light_level_on_off
+    domain: light
+  mode: single
+- id: '1608641520746'
+  alias: 'Dishwasher: Set active when power detected'
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.switchdishwasher_smartenergy_metering
+    above: '10'
+  condition:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: input_select.dishwasher_status
+      state: Dirty
+    - condition: state
+      entity_id: input_select.dishwasher_status
+      state: Clean
+    - condition: state
+      entity_id: input_select.dishwasher_status
+      state: Drying
+  action:
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.dishwasher_status
+      option: Running
+  mode: single
+- id: '1608641520747'
+  alias: 'Dishwasher: Set drying when power drops'
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.switchdishwasher_smartenergy_metering
+    below: '10'
+  condition:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: input_select.dishwasher_status
+      state: Running
+  action:
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.dishwasher_status
+      option: Drying
+  mode: single
+- id: '1608641520748'
+  alias: 'Dishwasher: Set clean'
+  trigger:
+  - platform: state
+    entity_id: input_select.dishwasher_status
+    to: Drying
+    for: 0:10:00
+  condition:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: input_select.dishwasher_status
+      state: Drying
+  action:
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.dishwasher_status
+      option: Clean
+  mode: single
+- id: '1608641520749'
+  alias: 'Dishwasher: Set clean when power off'
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.switchdishwasher_smartenergy_metering
+    below: '2'
+  condition:
+  - condition: and
+    conditions:
+    - condition: numeric_state
+      entity_id: sensor.switchdishwasher_smartenergy_metering
+      below: '1'
+    - condition: or
+      conditions:
+      - condition: state
+        entity_id: input_select.dishwasher_status
+        state: Clean
+      - condition: state
+        entity_id: input_select.dishwasher_status
+        state: Drying
+  action:
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.dishwasher_status
+      option: Clean
+  mode: single
+- id: '1608641520750'
+  alias: 'Tumble dryer: Send alert when finished'
+  trigger:
+  - platform: state
+    for: 0:01:00
+    entity_id: input_select.tumbledryer_status
+    to: Finished
+  condition:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: input_select.tumbledryer_status
+      for: 00:10
+      state: Finished
+  action:
+  - service: notify.notify_via_pushbullet
+    data:
+      target: email/ken.guest@gmail.com
+      message: The tumble dryer has finished and is ready to be emptied!
+      title: Tumble dryer update
+  mode: single
+- id: '1610534431581'
+  alias: 'When Ken comes home turn on lights '
+  description: ''
+  trigger:
+  - platform: zone
+    entity_id: person.ken_guest
+    zone: zone.home
+    event: enter
+  condition: []
+  action:
+  - domain: light
+    entity_id: light.hall_light
+    device_id: 7ab073c9430e868c28fcb943989e68d9
+    type: turn_on
+  - domain: light
+    entity_id: light.back_kitchen_light
+    device_id: 5cc2e0c9d816959426be82c9185a2ba8
+    type: turn_on
+  - domain: light
+    entity_id: light.front_kitchen_light
+    device_id: 8cf7d4c4d3cfaa116c0ca88b1f13632b
+    type: turn_on
+  - service: notify.notify_via_pushbullet
+    data:
+      message: Welcome home Ken!
+      target: email/ken.guest@gmail.com
+  - service: automation.turn_off
+    data: {}
+    entity_id: automation.turn_on_lights_when_i_come_home
+  mode: single
+- id: '1610534431583'
+  alias: When Aisling comes home turn on lights
+  description: ''
+  trigger:
+  - platform: zone
+    entity_id: person.aisling
+    zone: zone.home
+    event: enter
+  condition: []
+  action:
+  - domain: light
+    entity_id: light.hall_light
+    device_id: 7ab073c9430e868c28fcb943989e68d9
+    type: turn_on
+  - domain: light
+    entity_id: light.back_kitchen_light
+    device_id: 5cc2e0c9d816959426be82c9185a2ba8
+    type: turn_on
+  - domain: light
+    entity_id: light.front_kitchen_light
+    device_id: 8cf7d4c4d3cfaa116c0ca88b1f13632b
+    type: turn_on
+  - service: notify.notify_via_pushbullet
+    data:
+      message: Aisling's home!
+      target: email/ken.guest@gmail.com
+  mode: single
+- id: '1610630054171'
+  alias: Turn on Downstairs heating at 1:15
+  description: ''
+  trigger:
+  - platform: time
+    at: '13:00'
+  condition: []
+  action:
+  - device_id: df78501c47f8243ada2e2fb4e8c36b8d
+    domain: climate
+    entity_id: climate.downstairs
+    type: set_hvac_mode
+    hvac_mode: heat
+  mode: single
+- id: '1610648558807'
+  alias: When we are away turn off the heaters
+  description: ''
+  trigger:
+  - platform: zone
+    entity_id: person.aisling
+    zone: zone.home
+    event: leave
+  - platform: zone
+    entity_id: person.ken_guest
+    zone: zone.home
+    event: leave
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 9bd5db4e258fb399874a670f894fedfc
+    entity_id: switch.heater_master_bedroom
+    domain: switch
+  - type: turn_off
+    device_id: 5be0e5ccbdf92ad60895eb5792d7123b
+    entity_id: switch.heater_study
+    domain: switch
+  mode: single
+- id: '1610960359066'
+  alias: Study light on at 9am on  mondays
+  description: ''
+  trigger:
+  - platform: time
+    at: 09:00
+  condition:
+  - condition: time
+    weekday:
+    - mon
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: '''on'' '
+  action:
+  - type: turn_on
+    device_id: b714b30ac81dd9ba9a22d7177bc139e3
+    entity_id: light.study_light_level_on_off
+    domain: light
+    brightness_pct: 100
+  mode: single
+- id: '1611335214798'
+  alias: 'Bedroom heater: on  at 3:30pm mo-fr'
+  description: ''
+  trigger:
+  - platform: time
+    at: '15:30'
+  condition:
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: 'on'
+  action:
+  - type: turn_on
+    device_id: 9bd5db4e258fb399874a670f894fedfc
+    entity_id: switch.heater_master_bedroom
+    domain: switch
+  mode: single
+- id: '1611700754940'
+  alias: Hot water - turn off after 30 minutes
+  description: Turn off the Hive water heater after 30 mins use
+  trigger:
+  - platform: state
+    entity_id: water_heater.hotwater
+    attribute: operation_mode
+    from: 'off'
+    to: 'on'
+    for: 0:30:00
+  condition: []
+  action:
+  - service: water_heater.set_operation_mode
+    data:
+      entity_id: water_heater.hotwater
+      operation_mode: 'off'
+    entity_id: water_heater.hotwater
+  - service: notify.notify_via_pushbullet
+    data:
+      message: The hot water has been on for 30 minutes. Switching off
+      target: email/ken.guest@gmail.com
+      title: Home Assistant
+  - service: notify.notify_via_pushbullet
+    data:
+      message: The hot water has been on for 30 minutes. Switching off
+      target: email/angelsunbeam@gmail.com
+  - service: notify.mobile_app_ken_s_phone
+    data:
+      message: TTS
+      title: The hot water has been on for 30 minutes. Switching off
+  mode: single
+- id: '1612019694641'
+  alias: 'Dishwasher: On at 08:00'
+  description: ''
+  trigger:
+  - platform: time
+    at: 08:00
+  condition: []
+  action:
+  - type: turn_on
+    device_id: 8f9eb20202baf76e6cbdbdcf86cae4b8
+    entity_id: switch.switchdishwasher_on_off
+    domain: switch
+  mode: single
+- id: '1612019785353'
+  alias: 'Dishwasher: Off at 00:00'
+  description: ''
+  trigger:
+  - platform: time
+    at: 00:00
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 8f9eb20202baf76e6cbdbdcf86cae4b8
+    entity_id: switch.switchdishwasher_on_off
+    domain: switch
+  mode: single
+- id: '1612046712949'
+  alias: 'Dishwasher: Consume tablet if running'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: input_select.dishwasher_status
+    to: Running
+  condition: []
+  action:
+  - service: shell_command.grocy_consume_item
+    data:
+      server_ip: 127.0.0.1
+      grocy_key: psTNW1jpsaF3MIU7cIXzVumAtmdXSEzViQagpXLnonVdgnQ44f
+      product_id: 18
+      amount: 1
+  - service: automation.turn_off
+    data: {}
+    entity_id: automation.dishwasher_consume_tablet_if_running
+  mode: single
+- id: '1612697537130'
+  alias: 'Kettle - on for hot water bottle '
+  description: ''
+  trigger:
+  - platform: device
+    type: turned_on
+    device_id: b846ad89f41bd9f920420f54ebbb49c6
+    entity_id: switch.tz3000_00mk2xzy_ts011f_on_off
+    domain: switch
+    for:
+      hours: 0
+      minutes: 3
+      seconds: 25
+      milliseconds: 0
+  condition: []
+  action:
+  - type: turn_off
+    device_id: b846ad89f41bd9f920420f54ebbb49c6
+    entity_id: switch.tz3000_00mk2xzy_ts011f_on_off
+    domain: switch
+  - service: automation.turn_off
+    data: {}
+    entity_id: automation.kettle_turn_off_after_4_minutes
+  mode: single
+- id: '1612879720405'
+  alias: Hall light on  at 16:10
+  description: ''
+  trigger:
+  - platform: time
+    at: '16:10'
+  condition:
+  - condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  action:
+  - type: turn_on
+    device_id: 7ab073c9430e868c28fcb943989e68d9
+    entity_id: light.hall_light
+    domain: light
+    brightness_pct: 100
+  mode: single
+- id: '1613215949927'
+  alias: 'System: Reconnect Fritzbox'
+  description: ''
+  trigger:
+  - platform: time
+    at: 04:00:00
+  condition: []
+  action:
+  - service: fritzbox_tools.reconnect
+    data:
+      host: 192.168.178.1
+  mode: single
+- id: '1613470132446'
+  alias: Study door opens
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: 722b620d26bd7ce8a669d56d9f43ba0a
+    entity_id: binary_sensor.lumi_lumi_sensor_magnet_aq2_on_off
+    domain: binary_sensor
+  condition: []
+  action:
+  - type: toggle
+    device_id: b714b30ac81dd9ba9a22d7177bc139e3
+    entity_id: light.study_light_level_on_off
+    domain: light
+  mode: single
+- id: '1613563604387'
+  alias: Living room door opens
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: daac5fc4ff17348df26ff34fbd47b9f9
+    entity_id: binary_sensor.lumi_lumi_sensor_magnet_aq2_e1b7e401_on_off
+    domain: binary_sensor
+  condition: []
+  action:
+  - type: toggle
+    device_id: 059a6332697d8410b28702ada3261960
+    entity_id: light.living_room_light
+    domain: light
+  mode: single
+- id: '1613602457585'
+  alias: Master bedroom door opens
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.lumi_lumi_sensor_magnet_aq2_4bd3e401_on_off
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - type: toggle
+    device_id: 7ab073c9430e868c28fcb943989e68d9
+    entity_id: light.hall_light
+    domain: light
+  mode: single
+- id: '1613692470498'
+  alias: 'Washing machine: active when power detected'
+  trigger:
+  - platform: numeric_state
+    above: '10'
+    entity_id: sensor.plugwashing_machine_smartenergy_metering
+  condition:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: sensor.washing_machine_status
+      state: Idle
+    - condition: state
+      entity_id: sensor.washing_machine_status
+      state: Clean
+    - condition: state
+      entity_id: sensor.washing_machine_status
+      state: Finishing
+  action:
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.washing_machine_status
+      option: Running
+  mode: single
+- id: '1613692470499'
+  alias: 'Washing machine: finished when power drops'
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.plugwashing_machine_smartenergy_metering
+    below: '6'
+  condition:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: input_select.washing_machine_status
+      state: Running
+  action:
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.washing_machine_status
+      option: Finishing
+  mode: single
+- id: '1614692470499'
+  alias: 'Washing machine: clean after timeout'
+  trigger:
+  - platform: state
+    entity_id: input_select.washing_machine_status
+    to: Finishing
+    for: 0:08:00
+  condition:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: input_select.washing_machine_status
+      state: Finishing
+  action:
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.washing_machine_status
+      option: Clean
+  mode: single
+- id: '1613692470491'
+  alias: 'Washing machine: Send alert when finished'
+  trigger:
+  - platform: state
+    entity_id: sensor.washing_machine_status
+    to: Clean
+    for: 0:01:00
+  condition: []
+  action:
+  - service: notify.notify_via_pushbullet
+    data:
+      message: Hey, the washing machine has finished and is ready to be emptied
+      title: Washing Machine
+      target: email/ken.guest@gmail.com
+  mode: single
+- id: '1614848795158'
+  alias: 'Car kit: when connected, turn off study lights, enable automation re coming
+    home'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.kens_phone_bluetooth_connection
+    attribute: connected_paired_devices
+    to: '[DC:9B:EB:E6:A9:49]'
+  condition: []
+  action:
+  - service: automation.turn_on
+    target:
+      entity_id: automation.turn_on_lights_when_i_come_home
+  mode: single
+- id: '1615244774648'
+  alias: Egg cooker
+  description: ''
+  trigger:
+  - platform: device
+    type: turned_on
+    device_id: b846ad89f41bd9f920420f54ebbb49c6
+    entity_id: switch.tz3000_00mk2xzy_ts011f_on_off
+    domain: switch
+    for:
+      hours: 0
+      minutes: 13
+      seconds: 0
+      milliseconds: 0
+  condition: []
+  action:
+  - type: turn_off
+    device_id: b846ad89f41bd9f920420f54ebbb49c6
+    entity_id: switch.tz3000_00mk2xzy_ts011f_on_off
+    domain: switch
+  - service: automation.turn_off
+    data: {}
+    target:
+      entity_id: automation.egg_boiler
+  mode: single
+- id: '1616093952307'
+  alias: Cloak room door opens
+  description: ''
+  trigger:
+  - platform: state
+    from: 'off'
+    to: 'on'
+    entity_id: binary_sensor.lumi_lumi_sensor_magnet_aq2_a9c35302_on_off
+  condition: []
+  action:
+  - type: toggle
+    device_id: 56c4719e543e20c7f933d79e3a1a3b87
+    entity_id: light.cloak_room
+    domain: light
+  mode: single
+- id: '1616094003846'
+  alias: 'Laundry room door closes '
+  description: ''
+  trigger:
+  - platform: state
+    from: 'on'
+    to: 'off'
+    entity_id: binary_sensor.lumi_lumi_sensor_magnet_aq2_a9c35302_on_off
+  condition: []
+  action:
+  - type: toggle
+    device_id: 56c4719e543e20c7f933d79e3a1a3b87
+    entity_id: light.cloak_room
+    domain: light
+  mode: single
+- id: '1616502001922'
+  alias: Hall light on from 7-8am mo-fr
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:00
+  condition:
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: '''on'' '
+  action:
+  - type: turn_on
+    device_id: 7ab073c9430e868c28fcb943989e68d9
+    entity_id: light.hall_light
+    domain: light
+    brightness_pct: 100
+  - service: automation.turn_off
+    target:
+      entity_id: automation.master_bedroom_door_opens
+  mode: single
+- id: '1616502002853'
+  alias: Leave hall light on from 7-8am mo-fr
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:00
+  condition:
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: '''on'' '
+  action:
+  - type: turn_on
+    device_id: 7ab073c9430e868c28fcb943989e68d9
+    entity_id: light.hall_light
+    domain: light
+    brightness_pct: 100
+  - service: automation.turn_off
+    target:
+      entity_id: automation.master_bedroom_door_opens
+  mode: single
+- id: '1617219746837'
+  alias: Hall light on when sensor detects motion
+  description: ''
+  trigger:
+  - platform: device
+    domain: binary_sensor
+    entity_id: binary_sensor.lumi_lumi_sensor_motion_aq2_ias_zone
+    device_id: 8824d46f7a512a00d5fdd409de007530
+    type: motion
+  condition:
+  - type: is_illuminance
+    condition: device
+    device_id: 8824d46f7a512a00d5fdd409de007530
+    entity_id: sensor.lumi_lumi_sensor_motion_aq2_illuminance
+    domain: sensor
+    below: 30
+  action:
+  - domain: light
+    entity_id: light.hall_light
+    device_id: 7ab073c9430e868c28fcb943989e68d9
+    type: turn_on
+    brightness_pct: 100
+  mode: single
+- id: '1617221340992'
+  alias: 'Hall light: Off when no motion'
+  description: ''
+  trigger:
+  - type: no_motion
+    platform: device
+    device_id: 8824d46f7a512a00d5fdd409de007530
+    entity_id: binary_sensor.lumi_lumi_sensor_motion_aq2_ias_zone
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 7ab073c9430e868c28fcb943989e68d9
+    entity_id: light.hall_light
+    domain: light
+  mode: single
+- id: '1617479629941'
+  alias: 'Kitchen lights off when not occupied '
+  description: ''
+  trigger:
+  - type: not_occupied
+    platform: device
+    device_id: 29007fde37da4738c0b1e1fa0c8261ec
+    entity_id: binary_sensor.kitchen_sensor_occupancy
+    domain: binary_sensor
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 5cc2e0c9d816959426be82c9185a2ba8
+    entity_id: light.back_kitchen_light
+    domain: light
+  - type: turn_off
+    device_id: 8cf7d4c4d3cfaa116c0ca88b1f13632b
+    entity_id: light.front_kitchen_light
+    domain: light
+  mode: single
+- id: '1617479630774'
+  alias: 'Kitchen lights: turn on when motion detected'
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: 29007fde37da4738c0b1e1fa0c8261ec
+    entity_id: binary_sensor.kitchen_sensor_motion_ias_zone
+    domain: binary_sensor
+  condition:
+  - type: is_illuminance
+    condition: device
+    device_id: 29007fde37da4738c0b1e1fa0c8261ec
+    entity_id: sensor.kitchen_sensor_illuminance
+    domain: sensor
+    below: 30
+  action:
+  - type: turn_on
+    device_id: 8cf7d4c4d3cfaa116c0ca88b1f13632b
+    entity_id: light.front_kitchen_light
+    domain: light
+    brightness_pct: 100
+  - type: turn_on
+    device_id: 5cc2e0c9d816959426be82c9185a2ba8
+    entity_id: light.back_kitchen_light
+    domain: light
+    brightness_pct: 100
+  mode: single
+- id: '1617661102611'
+  alias: 'Top Platform Sensor: motion turns on'
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: f8835a0621ca201abdb9634e8d71c0a7
+    entity_id: binary_sensor.top_platform_ias_zone
+    domain: binary_sensor
+  condition:
+  - type: is_illuminance
+    condition: device
+    device_id: f8835a0621ca201abdb9634e8d71c0a7
+    entity_id: sensor.top_platform_illuminance
+    domain: sensor
+    below: 30
+  action:
+  - type: turn_on
+    device_id: 4cde3872053b4b4e470b84c28985d8f0
+    entity_id: light.top_landing_light
+    domain: light
+    brightness_pct: 100
+  mode: single
+- id: '1617661278552'
+  alias: 'Top platforn sensor: no motion turns off'
+  description: When motion is no longer detected, turn off the top landing light
+  trigger:
+  - type: no_motion
+    platform: device
+    device_id: f8835a0621ca201abdb9634e8d71c0a7
+    entity_id: binary_sensor.top_platform_ias_zone
+    domain: binary_sensor
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 4cde3872053b4b4e470b84c28985d8f0
+    entity_id: light.top_landing_light
+    domain: light
+  mode: single
+- id: '1617661279405'
+  alias: 'Top landing sensor: no motion turns off'
+  description: ''
+  trigger:
+  - type: not_occupied
+    platform: device
+    device_id: fa7bb20084ebf7eae9153e94a69c9fc7
+    entity_id: binary_sensor.top_landing_occupancy
+    domain: binary_sensor
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 4cde3872053b4b4e470b84c28985d8f0
+    entity_id: light.top_landing_light
+    domain: light
+  mode: single
+- id: '1617711109258'
+  alias: Laundry room light on if door open
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: 3f4c112fa93769c42d251fa0dea7d90b
+    entity_id: binary_sensor.door_laundry_room_on_off
+    domain: binary_sensor
+  condition: []
+  action:
+  - type: turn_on
+    device_id: 8a1b10ca703ccf23f5477e8c44a20c37
+    entity_id: light.laundry_room_light
+    domain: light
+    brightness_pct: 100
+  mode: single
+- id: '1617711288932'
+  alias: Laundry room door opens
+  description: ''
+  trigger:
+  - type: not_opened
+    platform: device
+    device_id: 3f4c112fa93769c42d251fa0dea7d90b
+    entity_id: binary_sensor.door_laundry_room_on_off
+    domain: binary_sensor
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 8a1b10ca703ccf23f5477e8c44a20c37
+    entity_id: light.laundry_room_light
+    domain: light
+  mode: single
+- id: '1617742795078'
+  alias: 'Top landing sensor: Motion turns on'
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: fa7bb20084ebf7eae9153e94a69c9fc7
+    entity_id: binary_sensor.top_landing_ias_zone
+    domain: binary_sensor
+  condition:
+  - type: is_illuminance
+    condition: device
+    device_id: fa7bb20084ebf7eae9153e94a69c9fc7
+    entity_id: sensor.top_landing_illuminance
+    domain: sensor
+    below: 30
+  action:
+  - type: turn_on
+    device_id: 4cde3872053b4b4e470b84c28985d8f0
+    entity_id: light.top_landing_light
+    domain: light
+    brightness_pct: 100
+  mode: single
+- id: '1618179500569'
+  alias: 'Study: Get ready for work'
+  description: Turn on everything at desk
+  trigger:
+  - platform: time
+    at: 07:55
+  condition:
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: 'on'
+  action:
+  - type: turn_on
+    device_id: e9453ffdcd0ebf1d4f8d3207d4244866
+    entity_id: switch.tz3000_vmpbygs5_ts011f_on_off
+    domain: switch
+  - type: turn_on
+    device_id: e9453ffdcd0ebf1d4f8d3207d4244866
+    entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_3
+    domain: switch
+  - type: turn_on
+    device_id: e9453ffdcd0ebf1d4f8d3207d4244866
+    entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_2
+    domain: switch
+  mode: single
+- id: '1618232556073'
+  alias: Guest bedroom door opens
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: e6b24c1897da6a8079cfea21cb45fd8b
+    entity_id: binary_sensor.door_guest_bedroom
+    domain: binary_sensor
+  condition: []
+  action:
+  - type: toggle
+    device_id: ecbde38e64860acade4ad8dae9c5e6a0
+    entity_id: light.guest_room
+    domain: light
+  mode: single
+- id: '1618779495911'
+  alias: 'Tumble dryer : Set to drying '
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.plugtumble_dryer_smartenergy_metering
+    above: '1000'
+  condition: []
+  action:
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.tumbledryer_status
+    data:
+      option: Drying
+  mode: single
+- id: '1618780327802'
+  alias: 'Tumble dryer : finished'
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.plugtumble_dryer_smartenergy_metering
+    below: '10'
+  condition:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: input_select.tumbledryer_status
+      state: Drying
+  action:
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.tumbledryer_status
+    data:
+      option: Finished
+  mode: single
+- id: '1618781323787'
+  alias: 'Tumble dryer : tumbling'
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.plugtumble_dryer_smartenergy_metering
+    above: '15'
+    below: '500'
+  condition: []
+  action:
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.tumbledryer_status
+    data:
+      option: Tumbling
+  mode: single
+- id: '1618907757073'
+  alias: 'Dishwasher: Send alert when finished'
+  description: ''
+  trigger:
+  - platform: state
+    for: 0:10:00
+    entity_id: input_select.dishwasher_status
+    to: Clean
+  condition:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: input_select.dishwasher_status
+      state: Clean
+  action:
+  - service: notify.notify_via_pushbullet
+    data:
+      target: email/ken.guest@gmail.com
+      message: The dishwasher has finished and is ready to be emptied!
+      title: Dishwasher update
+  - service: automation.turn_on
+    data: {}
+    entity_id: automation.dishwasher_consume_tablet_if_running
+  - service: notify.notify_via_pushbullet
+    data:
+      target: email/angelsunbeam@gmail.com
+      message: Dishwasher has finished
+      title: Dishwasher
+  mode: single
+- id: '1620768476628'
+  alias: 'Top landing sensor: Send alert if offline '
+  description: ''
+  trigger:
+  - device_id: fa7bb20084ebf7eae9153e94a69c9fc7
+    domain: zha
+    platform: device
+    type: device_offline
+    subtype: device_offline
+  condition: []
+  action:
+  - service: notify.notify_via_pushbullet
+    data:
+      data:
+        target: email/ken.guest@gmail.com
+        message: top landing sensor is offline
+        title: Home Assistant
+  mode: single

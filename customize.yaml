@@ -1,0 +1,41 @@
+person.ken_guest:
+  friendly_name: Ken
+zone.home:
+  radius: 10
+sensor.washing_machine_status:
+  id: 746454654564
+  icon: mdi:washing-machine
+binary_sensor.lumi_lumi_sensor_magnet_aq2_4bd3e401_on_off:
+  device_class: door
+binary_sensor.lumi_lumi_sensor_magnet_aq2_on_off:
+  device_class: door
+binary_sensor.lumi_lumi_sensor_magnet_aq2_e1b7e401_on_off:
+  device_class: door
+binary_sensor.lumi_lumi_sensor_magnet_aq2_a9c35302_on_off:
+  device_class: door
+binary_sensor.radagast:
+  icon: hass:laptop
+binary_sensor.lumi_lumi_sensor_magnet_aq2_40eadc01_on_off:
+  device_class: door
+binary_sensor.ocuco_laptop:
+  device_class: connectivity
+  icon: hass:laptop
+binary_sensor.aisling_s_chromebook:
+  icon: hass:laptop
+binary_sensor.printer:
+  icon: hass:printer
+binary_sensor.door_laundry_room_on_off:
+  device_class: door
+binary_sensor.chromecast:
+  icon: hass:television
+binary_sensor.top_platform_occupancy:
+  device_class: occupancy
+  occupancy_timeout: '5'
+binary_sensor.door_guest_bedroom:
+  device_class: door
+input_select.tumbledryer_status:
+  icon: mdi:tumble-dryer
+sensor.tumbledryer_status:
+  icon: mdi:tumble-dryer
+input_select.dishwasher_status:
+  icon: mdi:dishwasher

@@ -1,0 +1,145 @@
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+#recorder:
+#  purge_keep_days: 14
+#  purge_interval: 1
+#  db_url: !secret recorder_db_url
+
+# Text to speech
+tts:
+  - platform: google_translate
+  
+http:
+    ssl_certificate: /ssl/fullchain.pem
+    ssl_key: /ssl/privkey.pem
+    ip_ban_enabled: true
+    login_attempts_threshold: 5
+    
+hive:
+  username: !secret hive_username
+  password: !secret hive_password 
+
+device_tracker:
+  - platform: fritz     
+    host: 192.168.178.1
+  - platform: bluetooth_tracker
+
+input_select:
+  dishwasher_status:
+    name: Dishwasher Status
+    options:
+      - Dirty
+      - Running
+      - Drying
+      - Clean
+    initial: Dirty
+  washing_machine_status:
+    name: Washing Machine Status
+    options:
+      - Idle
+      - Running
+      - Finishing
+      - Clean
+    initial: Idle    
+  tumbledryer_status:
+    name: Tumbledryer Status
+    options:
+      - Idle
+      - Tumbling
+      - Drying
+      - Finished
+
+# Example configuration.yaml entry
+sensor:
+  - platform: dublin_bus_transport
+    stopid: 7505
+    route: 40E
+    name: 'Next bus to luas stop'
+  - platform: pushbullet
+    api_key: !secret pushbullet_api_key
+    monitored_conditions:
+      - body
+  - platform: template
+    sensors:
+      washing_machine_status:
+        value_template: '{{states.input_select.washing_machine_status.state}}'
+        friendly_name: 'Washing Machine Status'
+      tumbledryer_status:
+        value_template: '{{states.input_select.tumbledryer_status.state}}'
+        friendly_name: 'Tumbledryer Status'
+        
+  - platform: systemmonitor
+    resources:
+      - type: disk_use_percent
+      - type: disk_use
+      - type: disk_free
+      - type: memory_use_percent
+      - type: processor_use
+      - type: processor_temperature
+      - type: last_boot
+      - type: load_1m
+      - type: load_5m
+  - platform: time_date
+    display_options:
+      - "time"
+      - "date"
+  - platform: command_line
+    name: CPU Temperature
+    command: "cat /sys/class/thermal/thermal_zone0/temp"
+    unit_of_measurement: "°C"
+    value_template: '{{ value | multiply(0.001) }}'
+
+notify:
+  - name: notify_via_pushbullet
+    platform: pushbullet
+    api_key: !secret pushbullet_api_key
+
+# Example configuration.yaml entry
+binary_sensor:
+  - platform: uptimerobot
+    api_key: !secret uptimerobot_api_key
+  - platform: workday
+    country: IE
+  - platform: ping
+    name: Chromecast
+    host: 192.168.178.20
+  - platform: ping
+    name: Radagast
+    host: 192.168.178.23
+  - platform: ping
+    name: Aisling's Chromebook
+    host: 192.168.178.24
+  - platform: ping
+    name: Ocuco Laptop
+    host: 192.168.178.25
+  - platform: ping
+    name: TP-Link Repeater
+    host: 192.168.178.26
+  - platform: ping
+    name: Printer
+    host: 192.168.178.28
+
+# Create a group for referring to the kitchen lights at once
+light:
+  - platform: group
+    name: Kitchen Lights
+    entities:
+    - light.front_kitchen_light
+    - light.back_kitchen_light
+      
+shell_command:
+  grocy_consume_item: "curl -X POST http://{{server_ip}}:9192/api/stock/products/{{product_id}}/consume -H 'Accept: application/json' -H 'Content-Type: application/json' -H 'GROCY-API-KEY: {{grocy_key}}' -H 'cache-control: no-cache' -d '{ \"amount\": {{amount}},  \"transaction_type\": \"consume\",  \"spoiled\": false }'"
+
+frontend:
+  themes: !include_dir_merge_named themes
+
+group: !include groups.yaml
+  
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+homeassistant:
+  customize: !include customize.yaml
+
