@@ -40,6 +40,6 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 
 | Model                             | Image                                                                                        | Quantity | Notes                                                            |
 | ----------------------------------|--------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------- |
-| eWeLight, RGBW B22 Buld                          |                                                                                              | 2        | Study and guest room lights.                                     |
+| eWeLight, RGBW B22 Bulb                          |                                                                                              | 2        | Study and guest room lights.                                     |
 | Hive Dimmable B22 Bulb        [HALIGHTDIMWWB22](https://zigbee.blakadder.com/Hive_HALIGHTDIMWWB22.html) | <img src="https://zigbee.blakadder.com/assets/images/devices/Hive_HALIGHTDIMWWB22.jpg">      | 7        | Lights in hall, kitchen, landing, laundry room  and cloakroom.   |
 
