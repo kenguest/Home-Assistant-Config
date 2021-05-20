@@ -3,7 +3,7 @@ I'm maintaining this more as a way of reminding myself what hardware I'm using, 
 (And also for reminding me what I'm planning to use other hardware for)
 
 This all started off when we bought our new home and had a Hive system installed for controlling our heating.
-I bought bought a light bulb, and power socket that could also be controlled with it, then I just kept adding to it.
+I bought a light bulb, and power socket that could also be controlled with it, then I just kept adding to it.
 
 The problem with Hive was/is that latency sucks - even with the plug and bulbs being locally controlled via the Hive Hub over a radio based protocol called
 zigbee - communicating with the Hub via the Hive app on my phone required internet based comms to an AWS hosted server. Gotta hate it when servers go down...
