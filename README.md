@@ -49,12 +49,12 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 ### Integrations ###
 These are some of the integrations that I have set up for either day-to-day or occasional use.
 
-#### Hive ####
+#### [Hive](https://www.home-assistant.io/integrations/hive/) ####
 Used for controlling the Hive thermostats.
 
 #### HP Printer ####
 Ink levels, and also number of pages printed and scanned.
 
-#### Met Eireann ####
+#### [Met Eireann](https://www.home-assistant.io/integrations/met_eireann/) ####
 Uses the Irish Meteorological Service weather forecast API to display weather
 information in Home Assistant.
