@@ -38,12 +38,10 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 
 #### Lighting ####
 
-| Model                             | Zigbee Device Compatibility Reference      | Buy     | Image                                                                                        | Quantity | Notes                                                            |
-| ----------------------------------|------|------|--------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------- |
-|  RGBW B22 Bulb                 |      | [eWeLight, RGBW B22 Bulb](https://www.aliexpress.com/item/1005002483909414.html)      |                                                                                              | 2        | Study and guest room lights.                                     |
-| Hive Dimmable B22 Bulb         | [HALIGHTDIMWWB22](https://zigbee.blakadder.com/Hive_HALIGHTDIMWWB22.html)     | [Amazon.co.uk](https://www.amazon.co.uk/Hive-Lights-Dimmable-Bayonet-Smart/dp/B01I3T67EC/)     | <img src="https://zigbee.blakadder.com/assets/images/devices/Hive_HALIGHTDIMWWB22.jpg">      | 7        | Lights in hall, kitchen, landing, laundry room  and cloakroom.   |
-[eWeLight, RGBW B22 Bulb](https://www.aliexpress.com/item/1005002483909414.html) |
-
+| Model                   | Zigbee Device Compatibility Reference      | Buy     | Image                                                                                        | Quantity | Notes                                                            |
+| ------------------------|------|------|--------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------- |
+|  RGBW B22 Bulb          |      | [eWeLight, RGBW B22 Bulb](https://www.aliexpress.com/item/1005002483909414.html)      |           | 2        | Study and guest room lights.                                     |
+| Hive Dimmable B22 Bulb  | [HALIGHTDIMWWB22](https://zigbee.blakadder.com/Hive_HALIGHTDIMWWB22.html)     | [Amazon.co.uk](https://www.amazon.co.uk/Hive-Lights-Dimmable-Bayonet-Smart/dp/B01I3T67EC/)     | <img src="https://zigbee.blakadder.com/assets/images/devices/Hive_HALIGHTDIMWWB22.jpg">      | 7        | Lights in hall, kitchen, landing, laundry room  and cloakroom.   |
 
 
 ## Software ##
