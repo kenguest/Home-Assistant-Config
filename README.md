@@ -19,7 +19,7 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 ### 🐝 Zigbee ###
 
 #### Sensors ####
-| Model                                                        | Zigbee Device Compatibility Reference  |      | Image                                                                              | Quantity | Notes                                                        |
+| Model                                                        | Zigbee Device Compatibility Reference  | Buy  | Image                                                                              | Quantity | Notes                                                        |
 |--------------------------------------------------------------|------|------|------------------------------------------------------------------------------------|----------|--------------------------------------------------------------|
 | Aqara human body movement and illuminance sensor  |  [RTCGQ11LM](https://zigbee.blakadder.com/Aqara_RTCGQ11LM.html)    | [AliExpress](https://www.aliexpress.com/item/Aqara-Human-Body-Sensor-Smart-Body-Movement-PIR-Motion-Sensor-ZigBee-Wireless-Connection-Aqara-Sensor-For/4001230659983.html)     | ![Aqara Motion](https://www.zigbee2mqtt.io/images/devices/RTCGQ11LM.jpg)           | 6        | Used to detect motion, and occupancy - lights turn on/off accordingly. |
 | Aqara door & window contact sensor                | [MCCGQ11LM](https://zigbee.blakadder.com/Aqara_MCCGQ11LM.html)     | [AliExpress](https://www.aliexpress.com/item/1005001694843048.html)      | ![Aqara Door/Window](https://www.zigbee2mqtt.io/images/devices/MCCGQ11LM.jpg)      | 6        | Turn lights on/off when doors are opened, closed etc. |
@@ -49,6 +49,7 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 ## Software ##
 
 ### Integrations ###
+These are some of the integrations that I have set up for either day-to-day or occasional use.
 
 #### Hive ####
 Used for controlling the Hive thermostats.
