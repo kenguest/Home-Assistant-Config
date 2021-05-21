@@ -19,27 +19,43 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 ### 🐝 Zigbee ###
 
 #### Sensors ####
-| Model                                                        | Image                                                                              | Quantity | Notes                                                        |
-| ------------------------------------------------------------ | ---------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------ |
-| Aqara human body movement and illuminance sensor [RTCGQ11LM](https://zigbee.blakadder.com/Aqara_RTCGQ11LM.html) | ![Aqara Motion](https://www.zigbee2mqtt.io/images/devices/RTCGQ11LM.jpg)           | 6        | Used to detect motion, and occupancy - lights turn on/off accordingly. |
-| Aqara door & window contact sensor [MCCGQ11LM](https://zigbee.blakadder.com/Aqara_MCCGQ11LM.html)               | ![Aqara Door/Window](https://www.zigbee2mqtt.io/images/devices/MCCGQ11LM.jpg)      | 6        | Turn lights on/off when doors are opened, closed etc. |
-| Aqara light sensors              [GZCGQ11LM](https://zigbee.blakadder.com/Aqara_GZCGQ11LM.html)                 | <img src="https://zigbee.blakadder.com/assets/images/devices/Aqara_GZCGQ11LM.jpg"> | 4        | The PIR sensors only take illuminance readings when motion or occupancy is detected. These give continuous readings, so non-PIR based automations can factor in these readings |
+| Model                                                        | Zigbee Device Compatibility Reference  |      | Image                                                                              | Quantity | Notes                                                        |
+|--------------------------------------------------------------|------|------|------------------------------------------------------------------------------------|----------|--------------------------------------------------------------|
+| Aqara human body movement and illuminance sensor  |  [RTCGQ11LM](https://zigbee.blakadder.com/Aqara_RTCGQ11LM.html)    | [AliExpress](https://www.aliexpress.com/item/Aqara-Human-Body-Sensor-Smart-Body-Movement-PIR-Motion-Sensor-ZigBee-Wireless-Connection-Aqara-Sensor-For/4001230659983.html)     | ![Aqara Motion](https://www.zigbee2mqtt.io/images/devices/RTCGQ11LM.jpg)           | 6        | Used to detect motion, and occupancy - lights turn on/off accordingly. |
+| Aqara door & window contact sensor                | [MCCGQ11LM](https://zigbee.blakadder.com/Aqara_MCCGQ11LM.html)     | [AliExpress](https://www.aliexpress.com/item/1005001694843048.html)      | ![Aqara Door/Window](https://www.zigbee2mqtt.io/images/devices/MCCGQ11LM.jpg)      | 6        | Turn lights on/off when doors are opened, closed etc. |
+| Aqara light sensors                               | [GZCGQ11LM](https://zigbee.blakadder.com/Aqara_GZCGQ11LM.html)     | [AliExpress](https://www.aliexpress.com/item/1-10pcs-Xiaomi-Mijia-Smart-Light-Sensor-Zigbee-3-0-Light-Detection-Intelligent-Linkage-Waterproof-Used/1005001627142486.html)     | <img src="https://zigbee.blakadder.com/assets/images/devices/Aqara_GZCGQ11LM.jpg"> | 4        | The PIR sensors only take illuminance readings when motion or occupancy is detected. These give continuous readings, so non-PIR based automations can factor in these readings |
 
 
 
 #### Power plugs/monitoring ####
-| Model                                                        | Image                                                                              | Quantity | Notes                                                        |
-| ------------------------------------------------------------ | ---------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------ |
-| Heiman Power Monitoring Plug     [HS2SK](https://zigbee.blakadder.com/Heiman_HS2SK.html)                        | <img src="https://zigbee.blakadder.com/assets/images/devices/Heiman_HS2SK.jpg">    | 2        | Monitor washing machine and tumbledryer, notify me when finished |
-| Hive Plug                        [1613V](https://zigbee.blakadder.com/Hive_1613V.html)                          | <img src="https://zigbee.blakadder.com/assets/images/devices/Hive_1613V.jpg">      | 1        | Monitor dishwasher, notify me when finished. Way more expensive than Heiman. Power monitoring is a hidden feature. |
-| Lidl/SilverCrest Plug             [HG06337-SB](https://zigbee.blakadder.com/Lidl_HG06337-BS.html)               | <img src="https://zigbee.blakadder.com/assets/images/devices/Lidl_HG06337-BS.jpg"> | 6        | Bedside lamps, heaters, kettle |
-| Lidl/SilverCrest power strip   3 plugs [HG06338](https://zigbee.blakadder.com/Lidl_HG06338.html)                | <img src="https://zigbee.blakadder.com/assets/images/devices/Lidl_HG06338.jpg">    | 1        | Used in my study for external monitors, laptop charger, and USB hub. |
+| Model                                                        | Zigbee Device Compatibility Reference      | Buy      | Image                                                                              | Quantity | Notes                                                        |
+| ------------------------------------------------------------ |----- |----- | ---------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------ |
+| Heiman Power Monitoring Plug                             | [HS2SK](https://zigbee.blakadder.com/Heiman_HS2SK.html)     | [aliexpress](https://www.aliexpress.com/item/Heiman-Zigbee-Power-Metering-Plug-EU-UK-US-Wall-socket-Control-Power-On-off-For-Smart/32839165490.html)     | <img src="https://zigbee.blakadder.com/assets/images/devices/Heiman_HS2SK.jpg">    | 2        | Monitor washing machine and tumbledryer, notify me when finished |
+| Hive Plug                                                  | [1613V](https://zigbee.blakadder.com/Hive_1613V.html)     | [Amazon.co.uk](https://www.amazon.co.uk/Hive-ICESMRTPLUG-Active-Smart-Plug/dp/B01N7L53TB/)     | <img src="https://zigbee.blakadder.com/assets/images/devices/Hive_1613V.jpg">      | 1        | Monitor dishwasher, notify me when finished. Way more expensive than Heiman. Power monitoring is a hidden feature. |
+| Lidl/SilverCrest Plug                            | [HG06337-SB](https://zigbee.blakadder.com/Lidl_HG06337-BS.html)     |      | <img src="https://zigbee.blakadder.com/assets/images/devices/Lidl_HG06337-BS.jpg"> | 6        | Bedside lamps, heaters, kettle |
+| Lidl/SilverCrest power strip   3 plugs                 | [HG06338](https://zigbee.blakadder.com/Lidl_HG06338.html)     |      | <img src="https://zigbee.blakadder.com/assets/images/devices/Lidl_HG06338.jpg">    | 1        | Used in my study for external monitors, laptop charger, and USB hub. |
 
 
 #### Lighting ####
 
-| Model                             | Image                                                                                        | Quantity | Notes                                                            |
-| ----------------------------------|--------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------- |
-|  [eWeLight, RGBW B22 Bulb](https://www.aliexpress.com/item/1005002483909414.html)                        |                                                                                              | 2        | Study and guest room lights.                                     |
-| Hive Dimmable B22 Bulb        [HALIGHTDIMWWB22](https://zigbee.blakadder.com/Hive_HALIGHTDIMWWB22.html) | <img src="https://zigbee.blakadder.com/assets/images/devices/Hive_HALIGHTDIMWWB22.jpg">      | 7        | Lights in hall, kitchen, landing, laundry room  and cloakroom.   |
+| Model                             | Zigbee Device Compatibility Reference      | Buy     | Image                                                                                        | Quantity | Notes                                                            |
+| ----------------------------------|------|------|--------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------- |
+|  RGBW B22 Bulb                 |      | [eWeLight, RGBW B22 Bulb](https://www.aliexpress.com/item/1005002483909414.html)      |                                                                                              | 2        | Study and guest room lights.                                     |
+| Hive Dimmable B22 Bulb         | [HALIGHTDIMWWB22](https://zigbee.blakadder.com/Hive_HALIGHTDIMWWB22.html)     | [Amazon.co.uk](https://www.amazon.co.uk/Hive-Lights-Dimmable-Bayonet-Smart/dp/B01I3T67EC/)     | <img src="https://zigbee.blakadder.com/assets/images/devices/Hive_HALIGHTDIMWWB22.jpg">      | 7        | Lights in hall, kitchen, landing, laundry room  and cloakroom.   |
+[eWeLight, RGBW B22 Bulb](https://www.aliexpress.com/item/1005002483909414.html) |
 
+
+
+## Software ##
+
+### Integrations ###
+
+#### Hive ####
+Used for controlling the Hive thermostats.
+
+#### HP Printer ####
+Ink levels, and also number of pages printed and scanned.
+
+#### Met Eireann ####
+Uses the Irish Meteorological Service weather forecast API to display weather
+information in Home Assistant.
