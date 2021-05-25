@@ -1034,3 +1034,76 @@
         message: top landing sensor is offline
         title: Home Assistant
   mode: single
+- id: '1621811372182'
+  alias: Bed time
+  description: 'Turn off everything apart from lights in master bedroom '
+  trigger:
+  - platform: state
+    entity_id: input_select.home_mode_status
+    to: Bed time
+    for: 00:00:05
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 5cc2e0c9d816959426be82c9185a2ba8
+    entity_id: light.back_kitchen_light
+    domain: light
+  - type: turn_off
+    device_id: 8cf7d4c4d3cfaa116c0ca88b1f13632b
+    entity_id: light.front_kitchen_light
+    domain: light
+  - type: turn_off
+    device_id: 7ab073c9430e868c28fcb943989e68d9
+    entity_id: light.hall_light
+    domain: light
+  - type: turn_off
+    device_id: ecbde38e64860acade4ad8dae9c5e6a0
+    entity_id: light.guest_room
+    domain: light
+  - type: turn_off
+    device_id: 4cde3872053b4b4e470b84c28985d8f0
+    entity_id: light.top_landing_light
+    domain: light
+  - type: turn_off
+    device_id: b714b30ac81dd9ba9a22d7177bc139e3
+    entity_id: light.study_light_level_on_off
+    domain: light
+  - type: turn_off
+    device_id: 7905e40094c3ea0f6db679b26ad4791e
+    entity_id: switch.tz3000_00mk2xzy_ts011f_d04c09fe_on_off
+    domain: switch
+  - type: turn_off
+    device_id: 059a6332697d8410b28702ada3261960
+    entity_id: light.living_room_light
+    domain: light
+  - type: turn_on
+    device_id: bd07dedaabba965fc86b376e3773d12c
+    entity_id: switch.bedside_lamp
+    domain: switch
+  - type: turn_on
+    device_id: a2b068d7c8b3b92f14d754daaeb291ba
+    entity_id: switch.kens_bedside_lamp
+    domain: switch
+  - type: turn_off
+    device_id: e9453ffdcd0ebf1d4f8d3207d4244866
+    entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_3
+    domain: switch
+  - type: turn_off
+    device_id: e9453ffdcd0ebf1d4f8d3207d4244866
+    entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_2
+    domain: switch
+  mode: single
+- id: '1621811784863'
+  alias: Reset home mode
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunrise
+  condition: []
+  action:
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.home_mode_status
+    data:
+      option: Normal
+  mode: single

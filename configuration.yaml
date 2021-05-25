@@ -50,13 +50,14 @@ input_select:
       - Tumbling
       - Drying
       - Finished
+  home_mode_status:
+    name: Home Mode
+    options:
+      - Normal
+      - Bed time
 
 # Example configuration.yaml entry
 sensor:
-  - platform: dublin_bus_transport
-    stopid: 7505
-    route: 40E
-    name: 'Next bus to luas stop'
   - platform: pushbullet
     api_key: !secret pushbullet_api_key
     monitored_conditions:
@@ -112,7 +113,7 @@ binary_sensor:
     name: Aisling's Chromebook
     host: 192.168.178.24
   - platform: ping
-    name: Ocuco Laptop
+    name: Work Laptop
     host: 192.168.178.25
   - platform: ping
     name: TP-Link Repeater
@@ -120,6 +121,9 @@ binary_sensor:
   - platform: ping
     name: Printer
     host: 192.168.178.28
+  - platform: ping
+    name: Doorbell
+    host: 192.168.178.29
 
 # Create a group for referring to the kitchen lights at once
 light:
