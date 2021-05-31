@@ -1056,6 +1056,14 @@
     device_id: 7ab073c9430e868c28fcb943989e68d9
     entity_id: light.hall_light
     domain: light
+  - type: turn_on
+    device_id: bd07dedaabba965fc86b376e3773d12c
+    entity_id: switch.bedside_lamp
+    domain: switch
+  - type: turn_on
+    device_id: a2b068d7c8b3b92f14d754daaeb291ba
+    entity_id: switch.kens_bedside_lamp
+    domain: switch
   - type: turn_off
     device_id: ecbde38e64860acade4ad8dae9c5e6a0
     entity_id: light.guest_room
@@ -1076,14 +1084,6 @@
     device_id: 059a6332697d8410b28702ada3261960
     entity_id: light.living_room_light
     domain: light
-  - type: turn_on
-    device_id: bd07dedaabba965fc86b376e3773d12c
-    entity_id: switch.bedside_lamp
-    domain: switch
-  - type: turn_on
-    device_id: a2b068d7c8b3b92f14d754daaeb291ba
-    entity_id: switch.kens_bedside_lamp
-    domain: switch
   - type: turn_off
     device_id: e9453ffdcd0ebf1d4f8d3207d4244866
     entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_3
@@ -1106,4 +1106,59 @@
       entity_id: input_select.home_mode_status
     data:
       option: Normal
+  mode: single
+- id: '1622200616279'
+  alias: Landing light on when sensor detects motion
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: 5cb929bb135e3cedf31510218bba30d4
+    entity_id: binary_sensor.landing_sensor_motion
+    domain: binary_sensor
+  condition:
+  - type: is_illuminance
+    condition: device
+    device_id: 5cb929bb135e3cedf31510218bba30d4
+    entity_id: sensor.landing_sensor_illuminance
+    domain: sensor
+    below: 52
+  action:
+  - type: turn_on
+    device_id: 083aed3289ddc98c0dcefb09ff891d3d
+    entity_id: light.landing
+    domain: light
+    brightness_pct: 100
+  mode: single
+- id: '1622204734627'
+  alias: 'Landing light: Off when no motion'
+  description: ''
+  trigger:
+  - type: no_motion
+    platform: device
+    device_id: 5cb929bb135e3cedf31510218bba30d4
+    entity_id: binary_sensor.landing_sensor_motion
+    domain: binary_sensor
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 083aed3289ddc98c0dcefb09ff891d3d
+    entity_id: light.landing
+    domain: light
+  mode: single
+- id: '1622204735635'
+  alias: 'Landing light: Off when no motion'
+  description: ''
+  trigger:
+  - type: no_motion
+    platform: device
+    device_id: 5cb929bb135e3cedf31510218bba30d4
+    entity_id: binary_sensor.landing_sensor_motion
+    domain: binary_sensor
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 083aed3289ddc98c0dcefb09ff891d3d
+    entity_id: light.landing
+    domain: light
   mode: single
