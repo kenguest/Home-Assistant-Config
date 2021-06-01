@@ -16,6 +16,12 @@ I'm running Home Assistant on a 4GB Raspberry PI 4 model B, with a 32 GB SD card
 Some of the plugs have power monitoring, and I've automations set up to send me messages when the dishwasher, washing machine and tumble dryer have finished. These are mostly gleaned from
 Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines Smart: Alerts When the Dishes and Clothes Are Cleaned](https://philhawthorne.com/making-dumb-dishwashers-and-washing-machines-smart-alerts-when-the-dishes-and-clothes-are-cleaned/) article. He also wrote a great article on [managing your shopping list with Grocy and Home Assistant](https://philhawthorne.com/automating-your-shopping-list-with-home-assistant-and-grocy/).
 
+### Wifi ###
+| Model | Buy | Image | Notes |
+|------|----| ------ |-------- |
+| Video Doorbell 2K HD with Intercom | [AliExpress](https://www.aliexpress.com/item/4001286888185.html) | | Doorbell, no subscription required. Configure Onvif access through it's own app, and then access on port 8000 through Home Assistant|
+
+
 ### 🐝 Zigbee ###
 
 #### Sensors ####
