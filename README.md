@@ -32,9 +32,9 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 | Aqara light sensors                               | [GZCGQ11LM](https://zigbee.blakadder.com/Aqara_GZCGQ11LM.html)     | [AliExpress](https://www.aliexpress.com/item/1-10pcs-Xiaomi-Mijia-Smart-Light-Sensor-Zigbee-3-0-Light-Detection-Intelligent-Linkage-Waterproof-Used/1005001627142486.html)     | <img src="https://zigbee.blakadder.com/assets/images/devices/Aqara_GZCGQ11LM.jpg"> | 4        | The PIR sensors only take illuminance readings when motion or occupancy is detected. These give continuous readings, so non-PIR based automations can factor in these readings. | CR2450 |
 
 #### Switches ####
-| Model                                                        | Zigbee Device Compatibility Reference  | Buy  | Image                                                                              | Quantity | Notes                                                        |
-|--------------------------------------------------------------|------|------|------------------------------------------------------------------------------------|----------|--------------------------------------------------------------|
-| Sonoff Wireless Switch    | [SNZB-01](https://zigbee.blakadder.com/Sonoff_SNZB-01.html) | [AliExpress](https://www.aliexpress.com/item/1005001726907261.html) | <img src="https://zigbee.blakadder.com/assets/images/devices/Sonoff_SNZB-01.jpg">| 1 | Switch for guest room light, independent of door sensor. Waiting for this to arrive. |
+| Model                                                        | Zigbee Device Compatibility Reference  | Buy  | Image                                                                              | Quantity | Notes                                                        | Battery Type |
+|--------------------------------------------------------------|------|------|------------------------------------------------------------------------------------|----------|--------------------------------------------------------------|----|
+| Sonoff Wireless Switch    | [SNZB-01](https://zigbee.blakadder.com/Sonoff_SNZB-01.html) | [AliExpress](https://www.aliexpress.com/item/1005001726907261.html) | <img src="https://zigbee.blakadder.com/assets/images/devices/Sonoff_SNZB-01.jpg">| 1 | Switch for guest room light, independent of door sensor. Waiting for this to arrive. | CR2450 |
 
 #### Power plugs/monitoring ####
 | Model                                                        | Zigbee Device Compatibility Reference      | Buy      | Image                                                                              | Quantity | Notes                                                        |
@@ -58,10 +58,13 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 ### Integrations ###
 These are some of the integrations that I have set up for either day-to-day or occasional use.
 
+#### [AVM Fritz!Box Tools](https://www.home-assistant.io/integrations/fritz/) ####
+Used for presence detection, and for remotely rebooting/reconnecting the Internet connection.
+
 #### [Hive](https://www.home-assistant.io/integrations/hive/) ####
 Used for controlling the Hive thermostats.
 
-#### HP Printer ####
+#### [HP Printer](https://github.com/elad-bar/ha-hpprinter) ####
 Ink levels, and also number of pages printed and scanned.
 
 #### [Met Eireann](https://www.home-assistant.io/integrations/met_eireann/) ####
