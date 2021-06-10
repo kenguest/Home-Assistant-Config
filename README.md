@@ -19,7 +19,7 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 ### Wifi ###
 | Model | Buy | Image | Notes |
 |------|----| ------ |-------- |
-| Video Doorbell 2K HD with Intercom | [AliExpress](https://www.aliexpress.com/item/4001286888185.html) | <img src="https://ae01.alicdn.com/kf/H5bc2d5a0f50b48e89d3b0d5d72604a97e/WiFi-Video-Doorbell-2K-HD-Video-Wireless-Camera-Angle-Mount-Motion-Detection-Smart-Door-Intercom-Support.jpg_Q90.jpg_.webp"> | Doorbell, no subscription required. Configure Onvif access through it's own app, and then access on port 8000 through Home Assistant|
+| Video Doorbell 2K HD with Intercom | [AliExpress](https://www.aliexpress.com/item/4001286888185.html) | <img src="https://ae01.alicdn.com/kf/H5bc2d5a0f50b48e89d3b0d5d72604a97e/WiFi-Video-Doorbell-2K-HD-Video-Wireless-Camera-Angle-Mount-Motion-Detection-Smart-Door-Intercom-Support.jpg_Q90.jpg_.webp"> | Doorbell, powered via existing doorbell wiring (12/24v), no subscription required. Configure Onvif access through it's own app, and then access on port 8000 through Home Assistant|
 
 
 ### 🐝 Zigbee ###
@@ -34,7 +34,7 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 #### Switches ####
 | Model                                                        | Zigbee Device Compatibility Reference  | Buy  | Image                                                                              | Quantity | Notes                                                        | Battery Type |
 |--------------------------------------------------------------|------|------|------------------------------------------------------------------------------------|----------|--------------------------------------------------------------|----|
-| Sonoff Wireless Switch    | [SNZB-01](https://zigbee.blakadder.com/Sonoff_SNZB-01.html) | [AliExpress](https://www.aliexpress.com/item/1005001726907261.html) | <img src="https://zigbee.blakadder.com/assets/images/devices/Sonoff_SNZB-01.jpg">| 1 | Switch for guest room light, independent of door sensor. Waiting for this to arrive. | CR2450 |
+| Sonoff Wireless Switch    | [SNZB-01](https://zigbee.blakadder.com/Sonoff_SNZB-01.html) | [AliExpress](https://www.aliexpress.com/item/1005001726907261.html) | <img src="https://zigbee.blakadder.com/assets/images/devices/Sonoff_SNZB-01.jpg">| 1 | Switch for guest room light, independent of door sensor.  [EventSensor](https://github.com/azogue/eventsensor) integration in HACS required to make this work under ZHA | CR2450 |
 
 #### Power plugs/monitoring ####
 | Model                                                        | Zigbee Device Compatibility Reference      | Buy      | Image                                                                              | Quantity | Notes                                                        |
