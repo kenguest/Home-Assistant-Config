@@ -39,3 +39,5 @@ sensor.tumbledryer_status:
   icon: mdi:tumble-dryer
 input_select.dishwasher_status:
   icon: mdi:dishwasher
+automation.egg_boiler:
+  icon: mdi:egg
