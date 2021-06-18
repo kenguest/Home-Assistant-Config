@@ -34,7 +34,7 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 #### Switches ####
 | Model                                                        | Zigbee Device Compatibility Reference  | Buy  | Image                                                                              | Quantity | Notes                                                        | Battery Type |
 |--------------------------------------------------------------|------|------|------------------------------------------------------------------------------------|----------|--------------------------------------------------------------|----|
-| Sonoff Wireless Switch    | [SNZB-01](https://zigbee.blakadder.com/Sonoff_SNZB-01.html) | [AliExpress](https://www.aliexpress.com/item/1005001726907261.html) | <img src="https://zigbee.blakadder.com/assets/images/devices/Sonoff_SNZB-01.jpg">| 1 | Switch for guest room light, independent of door sensor.  [EventSensor](https://github.com/azogue/eventsensor) integration in HACS required to make this work under ZHA | CR2450 |
+| Sonoff Wireless Switch    | [SNZB-01](https://zigbee.blakadder.com/Sonoff_SNZB-01.html) | [AliExpress](https://www.aliexpress.com/item/1005001726907261.html) | <img src="https://zigbee.blakadder.com/assets/images/devices/Sonoff_SNZB-01.jpg">| 1 | Switch for guest room light, independent of door sensor. There are three separate types of events: single click, double click, and long click - I have these mapped to on, toggle and off respectively.  [EventSensor](https://github.com/azogue/eventsensor) integration in HACS can be used to make this work under ZHA -  [additional notes on using EventSensor here](https://community.home-assistant.io/t/unable-to-pair-sonoff-zigbee-snzb-01-wb-01-buttons/218324/19), along with some on how to integrate natively. | CR2450 |
 
 #### Power plugs/monitoring ####
 | Model                                                        | Zigbee Device Compatibility Reference      | Buy      | Image                                                                              | Quantity | Notes                                                        |
@@ -61,11 +61,24 @@ These are some of the integrations that I have set up for either day-to-day or o
 #### [AVM Fritz!Box Tools](https://www.home-assistant.io/integrations/fritz/) ####
 Used for presence detection, and for remotely rebooting/reconnecting the Internet connection.
 
+#### [EventSensor](https://github.com/azogue/eventsensor) ####
+Installed via HACS and used to make the Sonoff wireless switch events show as distinct/eaiser debugged in the Logbook -
+[additional notes on using EventSensor here](https://community.home-assistant.io/t/unable-to-pair-sonoff-zigbee-snzb-01-wb-01-buttons/218324/19), along with some on how to integrate natively. 
+
+
 #### [Hive](https://www.home-assistant.io/integrations/hive/) ####
 Used for controlling the Hive thermostats.
 
 #### [HP Printer](https://github.com/elad-bar/ha-hpprinter) ####
 Ink levels, and also number of pages printed and scanned.
+
+#### [Garbage Collection](https://github.com/bruxy70/Garbage-Collection) ####
+Sensor for notifications of scheduled collections, extremely configurable and
+very hard to notice which is just what I need.
+
+Just set up one entity for each separate type of collection (e.g. one for
+compost day, and another for recycling if they're not collected on the same
+day)  and set the recurrence rules and icon/display accordingly.
 
 #### [Met Eireann](https://www.home-assistant.io/integrations/met_eireann/) ####
 Uses the Irish Meteorological Service weather forecast API to display weather
