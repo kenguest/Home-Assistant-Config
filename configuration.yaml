@@ -54,6 +54,7 @@ input_select:
   home_mode_status:
     name: Home Mode
     options:
+      - Away
       - Normal
       - Bed time
 
@@ -134,6 +135,21 @@ light:
     entities:
     - light.front_kitchen_light
     - light.back_kitchen_light
+  - platform: group
+    name: All lights
+    entities:
+    - light.back_kitchen_light
+    - light.cats_room
+    - light.cloak_room
+    - light.front_kitchen_light
+    - light.guest_room
+    - light.hall_light
+    - light.landing
+    - light.laundry_room_light
+    - light.living_room_light
+    - light.study_light_level_on_off
+    - light.top_landing_light
+
       
 shell_command:
   grocy_consume_item: "curl -X POST http://{{server_ip}}:9192/api/stock/products/{{product_id}}/consume -H 'Accept: application/json' -H 'Content-Type: application/json' -H 'GROCY-API-KEY: {{grocy_key}}' -H 'cache-control: no-cache' -d '{ \"amount\": {{amount}},  \"transaction_type\": \"consume\",  \"spoiled\": false }'"
