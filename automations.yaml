@@ -183,13 +183,7 @@
     for: 0:01:00
     entity_id: input_select.tumbledryer_status
     to: Finished
-  condition:
-  - condition: and
-    conditions:
-    - condition: state
-      entity_id: input_select.tumbledryer_status
-      for: 00:10
-      state: Finished
+  condition: []
   action:
   - service: notify.notify_via_pushbullet
     data:
@@ -361,7 +355,7 @@
         chanel: alarm_stream
   mode: single
 - id: '1612019694641'
-  alias: 'Dishwasher: On at 08:00'
+  alias: 'Dishwasher: On at 06:00'
   description: ''
   trigger:
   - platform: time
@@ -417,7 +411,7 @@
     for:
       hours: 0
       minutes: 3
-      seconds: 25
+      seconds: 15
       milliseconds: 0
   condition: []
   action:
@@ -1002,7 +996,7 @@
     conditions:
     - condition: state
       entity_id: input_select.tumbledryer_status
-      state: Drying
+      state: Tumbling
   action:
   - service: input_select.select_option
     target:
@@ -1089,7 +1083,7 @@
   - platform: state
     entity_id: input_select.home_mode_status
     to: Bed time
-    for: 00:00:05
+    for: 00:00:03
   condition: []
   action:
   - service: light.turn_off
@@ -1191,7 +1185,7 @@
     domain: light
   mode: single
 - id: '1623357443554'
-  alias: 'Guestroom Button: Off'
+  alias: 'Guest Bedroom Button: Off'
   description: ''
   trigger:
   - platform: state
