@@ -78,8 +78,13 @@ very hard to notice which is just what I need.
 
 Just set up one entity for each separate type of collection (e.g. one for
 compost day, and another for recycling if they're not collected on the same
-day)  and set the recurrence rules and icon/display accordingly.
+day) and set the recurrence rules and icon/display accordingly.
 
 #### [Met Eireann](https://www.home-assistant.io/integrations/met_eireann/) ####
 Uses the Irish Meteorological Service weather forecast API to display weather
 information in Home Assistant.
+
+#### [Workday](https://www.home-assistant.io/integrations/workday/) ####
+I'm using the Workday binary sensor integration so that work related
+automations only get triggered on days that I'm supposed to be working on -
+e.g. standard work week with Bank Holidays taken into consideration.
