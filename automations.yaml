@@ -180,7 +180,7 @@
   alias: 'Tumble dryer: Send alert when finished'
   trigger:
   - platform: state
-    for: 0:01:00
+    for: 0:05:00
     entity_id: input_select.tumbledryer_status
     to: Finished
   condition: []
