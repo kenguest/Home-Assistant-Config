@@ -34,7 +34,9 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 #### Switches ####
 | Model                                                        | Zigbee Device Compatibility Reference  | Buy  | Image                                                                              | Quantity | Notes                                                        | Battery Type |
 |--------------------------------------------------------------|------|------|------------------------------------------------------------------------------------|----------|--------------------------------------------------------------|----|
-| Sonoff Wireless Switch    | [SNZB-01](https://zigbee.blakadder.com/Sonoff_SNZB-01.html) | [AliExpress](https://www.aliexpress.com/item/1005001726907261.html) | <img src="https://zigbee.blakadder.com/assets/images/devices/Sonoff_SNZB-01.jpg">| 1 | Switch for guest room light, independent of door sensor. There are three separate types of events: single click, double click, and long click - I have these mapped to on, toggle and off respectively.  [EventSensor](https://github.com/azogue/eventsensor) integration in HACS can be used to make this work under ZHA -  [additional notes on using EventSensor here](https://community.home-assistant.io/t/unable-to-pair-sonoff-zigbee-snzb-01-wb-01-buttons/218324/19), along with some on how to integrate natively. | CR2450 |
+| Sonoff Wireless Switch    | [SNZB-01](https://zigbee.blakadder.com/Sonoff_SNZB-01.html) | [AliExpress](https://www.aliexpress.com/item/1005001726907261.html) | <img src="https://zigbee.blakadder.com/assets/images/devices/Sonoff_SNZB-01.jpg">| 1 | Switch for bedside lamp. There are three separate types of events: single click, double click, and long click - I have these mapped to on, toggle and off respectively.  [EventSensor](https://github.com/azogue/eventsensor) integration in HACS can be used to make this work under ZHA -  [additional notes on using EventSensor here](https://community.home-assistant.io/t/unable-to-pair-sonoff-zigbee-snzb-01-wb-01-buttons/218324/19), along with some on how to integrate natively. | CR2450 |
+| IKEA Tradfri Remote Control | [E1810](https://zigbee.blakadder.com/Ikea_E1810.html)| [Ikea](https://www.ikea.com/ie/en/p/tradfri-remote-control-30443124/)| <img src="https://zigbee.blakadder.com/assets/images/devices/Ikea_E1810.jpg">| 2 | Living Room and Guest room lights, configured using [this Blueprint](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fcommunity.home-assistant.io%2Ft%2Fzha-ikea-five-button-remote-for-lights%2F253804)| CR2032 |
+
 
 #### Power plugs/monitoring ####
 | Model                                                        | Zigbee Device Compatibility Reference      | Buy      | Image                                                                              | Quantity | Notes                                                        |
@@ -88,3 +90,5 @@ information in Home Assistant.
 I'm using the Workday binary sensor integration so that work related
 automations only get triggered on days that I'm supposed to be working on -
 e.g. standard work week with Bank Holidays taken into consideration.
+This means that monitors don't get turned on automatically on weekends or any
+other day when I shouldn't need them.
