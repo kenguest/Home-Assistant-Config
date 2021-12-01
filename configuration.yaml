@@ -2,11 +2,6 @@
 # Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
 
-#recorder:
-#  purge_keep_days: 14
-#  purge_interval: 1
-#  db_url: !secret recorder_db_url
-
 # Text to speech
 tts:
   - platform: google_translate
@@ -26,6 +21,19 @@ device_tracker:
     host: 192.168.178.1
     consider_home: 2400
   - platform: bluetooth_tracker
+
+eufy_vacuum:
+  devices:
+  - name: Robovac
+    address: 192.168.178.32
+    access_token: !secret robovac_token
+    id: !secret robovac_id
+    type: T2118
+
+counter:
+  robovac_usage:
+    initial: 0
+    step: 1
 
 input_select:
   dishwasher_status:
@@ -57,9 +65,32 @@ input_select:
       - Away
       - Normal
       - Bed time
+      - Alarmed
+  voice_announcements_status:
+    name: Voice Status
+    options:
+      - Disabled
+      - Enabled
 
 # Example configuration.yaml entry
 sensor:
+  - platform: dnsip
+    name: external_ip
+  - platform: integration
+    name: dishwasher_energy_spent
+    source: sensor.switchdishwasher_smartenergy_metering
+    unit_prefix: k
+    round: 2
+  - platform: integration
+    name: tumble_dryer_energy_spent
+    source: sensor.plugtumble_dryer_smartenergy_metering
+    unit_prefix: k
+    round: 2
+  - platform: integration
+    name: washing_machine_energy_spent
+    source: sensor.plugwashing_machine_smartenergy_metering
+    unit_prefix: k
+    round: 2
   - platform: pushbullet
     api_key: !secret pushbullet_api_key
     monitored_conditions:
@@ -72,7 +103,6 @@ sensor:
       tumbledryer_status:
         value_template: '{{states.input_select.tumbledryer_status.state}}'
         friendly_name: 'Tumbledryer Status'
-        
   - platform: systemmonitor
     resources:
       - type: disk_use_percent
@@ -133,6 +163,12 @@ binary_sensor:
   - platform: ping
     name: Doorbell
     host: 192.168.178.29
+  - platform: ping
+    name: robovac
+    host: 192.168.178.32
+  - platform: ping
+    name: Aisling's work laptop
+    host: 192.168.178.33
 
 # Create a group for referring to the kitchen lights at once
 light:
