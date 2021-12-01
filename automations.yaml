@@ -5,6 +5,11 @@
   - platform: state
     entity_id: light.study_light_level_on_off
     to: 'off'
+    for:
+      hours: 0
+      minutes: 20
+      seconds: 0
+      milliseconds: 0
   condition: []
   action:
   - type: turn_off
@@ -63,12 +68,18 @@
   condition:
   - condition: state
     entity_id: binary_sensor.workday_sensor
-    state: '''on'' '
+    state: 'on'
   action:
   - type: turn_off
     device_id: b714b30ac81dd9ba9a22d7177bc139e3
     entity_id: light.study_light_level_on_off
     domain: light
+  - type: turn_on
+    device_id: b714b30ac81dd9ba9a22d7177bc139e3
+    entity_id: light.study_light_level_on_off
+    domain: light
+    brightness_pct: 100
+    flash: long
   mode: single
 - id: '1608316269451'
   alias: Study light off at 17:30 Tu-Fr
@@ -419,12 +430,9 @@
     device_id: b846ad89f41bd9f920420f54ebbb49c6
     entity_id: switch.tz3000_00mk2xzy_ts011f_on_off
     domain: switch
-  - service: notify.mobile_app_ken_s_phone
-    data:
-      message: TTS
-      title: Listen up - water is done for the hot water bottle
-      data:
-        chanel: alarm_stream
+  - service: automation.trigger
+    target:
+      entity_id: automation.announce_hot_water_bottle_ready
   - service: automation.turn_off
     data: {}
     entity_id: automation.kettle_turn_off_after_4_minutes
@@ -458,9 +466,9 @@
     at: 04:00:00
   condition: []
   action:
-  - service: fritzbox_tools.reconnect
+  - service: fritz.reconnect
     data:
-      host: 192.168.178.1
+      device_id: 1cca47285a044462f70e54d933d50ce2
   mode: single
 - id: '1613470132446'
   alias: Study door opens
@@ -487,7 +495,9 @@
     device_id: daac5fc4ff17348df26ff34fbd47b9f9
     entity_id: binary_sensor.lumi_lumi_sensor_magnet_aq2_e1b7e401_on_off
     domain: binary_sensor
-  condition: []
+  condition:
+  - condition: sun
+    after: sunset
   action:
   - type: toggle
     device_id: 059a6332697d8410b28702ada3261960
@@ -586,8 +596,7 @@
       target: email/ken.guest@gmail.com
   mode: single
 - id: '1614848795158'
-  alias: 'Car kit: when connected, turn off study lights, enable automation re coming
-    home'
+  alias: 'Car kit: when connected enable automation re coming home'
   description: ''
   trigger:
   - platform: state
@@ -962,7 +971,9 @@
     device_id: e6b24c1897da6a8079cfea21cb45fd8b
     entity_id: binary_sensor.door_guest_bedroom
     domain: binary_sensor
-  condition: []
+  condition:
+  - condition: sun
+    after: sunset
   action:
   - type: toggle
     device_id: ecbde38e64860acade4ad8dae9c5e6a0
@@ -1048,12 +1059,9 @@
       target: email/angelsunbeam@gmail.com
       message: Dishwasher has finished
       title: Dishwasher
-  - service: notify.mobile_app_ken_s_phone
-    data:
-      message: TTS
-      title: The dishwasher has finished and is ready to be emptied.
-      data:
-        chanel: alarm_stream
+  - service: automation.turn_on
+    target:
+      entity_id: automation.announce_dishwasher_finished
   - type: turn_off
     device_id: 8f9eb20202baf76e6cbdbdcf86cae4b8
     entity_id: switch.switchdishwasher_on_off
@@ -1083,7 +1091,7 @@
   - platform: state
     entity_id: input_select.home_mode_status
     to: Bed time
-    for: 00:00:03
+    for: 00:00:02
   condition: []
   action:
   - service: light.turn_off
@@ -1109,6 +1117,11 @@
     device_id: e9453ffdcd0ebf1d4f8d3207d4244866
     entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_2
     domain: switch
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.voice_announcements_status
+    data:
+      option: Disabled
   mode: single
 - id: '1621811784863'
   alias: Reset home mode
@@ -1185,7 +1198,35 @@
     domain: light
   mode: single
 - id: '1623357443554'
-  alias: 'Guest Bedroom Button: Off'
+  alias: 'Aisling''s Bedside lamp Button: Off'
+  description: ''
+  trigger:
+  - platform: state
+    to: 'on'
+    entity_id: sensor.aisling_bedside_light_button
+  condition: []
+  action:
+  - type: toggle
+    device_id: bd07dedaabba965fc86b376e3773d12c
+    entity_id: switch.bedside_lamp
+    domain: switch
+  mode: single
+- id: '1623357664672'
+  alias: 'Aisling''s bedside lamp Button: toggle '
+  description: Toggle light
+  trigger:
+  - platform: state
+    to: toggle
+    entity_id: sensor.aisling_bedside_light_button
+  condition: []
+  action:
+  - type: toggle
+    device_id: bd07dedaabba965fc86b376e3773d12c
+    entity_id: switch.bedside_lamp
+    domain: switch
+  mode: single
+- id: '1623679962628'
+  alias: 'Aisling Button: Toggle '
   description: ''
   trigger:
   - platform: state
@@ -1193,37 +1234,388 @@
     entity_id: sensor.guest_room_button
   condition: []
   action:
-  - type: turn_off
-    device_id: ecbde38e64860acade4ad8dae9c5e6a0
-    entity_id: light.guest_room
-    domain: light
+  - type: toggle
+    device_id: bd07dedaabba965fc86b376e3773d12c
+    entity_id: switch.bedside_lamp
+    domain: switch
   mode: single
-- id: '1623357664672'
-  alias: 'Guest Bedroom Button: toggle '
-  description: Toggle light
+- id: '1626564873518'
+  alias: 'Fan for 30 minutes '
+  description: ''
   trigger:
-  - platform: state
-    entity_id: sensor.guest_room_button
-    to: toggle
+  - platform: device
+    type: turned_on
+    device_id: 7905e40094c3ea0f6db679b26ad4791e
+    entity_id: switch.tz3000_00mk2xzy_ts011f_d04c09fe_on_off
+    domain: switch
+    for:
+      hours: 0
+      minutes: 30
+      seconds: 30
+      milliseconds: 0
   condition: []
   action:
-  - type: toggle
-    device_id: ecbde38e64860acade4ad8dae9c5e6a0
-    entity_id: light.guest_room
-    domain: light
+  - type: turn_off
+    device_id: 7905e40094c3ea0f6db679b26ad4791e
+    entity_id: switch.tz3000_00mk2xzy_ts011f_d04c09fe_on_off
+    domain: switch
   mode: single
-- id: '1623679962628'
-  alias: 'Guestroom Button: On'
+- id: '1628586228870'
+  alias: 'Livingroom IKEA Controller '
+  description: ''
+  use_blueprint:
+    path: frenck/zha-ikea-five-button-remote-for-lights.yaml
+    input:
+      remote: fb4fd0ba43df19d99940ab88c37d11eb
+      light:
+        area_id: living_room
+        entity_id: light.living_room_light
+- id: '1628630296330'
+  alias: Guest Bedroom remote
+  description: ''
+  use_blueprint:
+    path: frenck/zha-ikea-five-button-remote-for-lights.yaml
+    input:
+      remote: ab80ad1ec8d9b0d8a949c4ef5ff87fbb
+      light:
+        device_id: ecbde38e64860acade4ad8dae9c5e6a0
+      brightness: 100
+      force_brightness: false
+      button_left_long:
+      - type: turn_off
+        device_id: ecbde38e64860acade4ad8dae9c5e6a0
+        entity_id: light.guest_room
+        domain: light
+      button_left_short:
+      - type: turn_off
+        device_id: ecbde38e64860acade4ad8dae9c5e6a0
+        entity_id: light.guest_room
+        domain: light
+      button_right_short:
+      - type: turn_off
+        device_id: ecbde38e64860acade4ad8dae9c5e6a0
+        entity_id: light.guest_room
+        domain: light
+      button_right_long:
+      - type: turn_off
+        device_id: ecbde38e64860acade4ad8dae9c5e6a0
+        entity_id: light.guest_room
+        domain: light
+- id: '1630275244096'
+  alias: 'Announce: Dishwasher finished'
+  description: ''
+  trigger: []
+  condition:
+  - condition: state
+    entity_id: input_select.voice_announcements_status
+    state: Enabled
+  action:
+  - service: notify.mobile_app_ken_s_phone
+    data:
+      message: TTS
+      title: 'The dishwasher has finished and is ready to be emptied '
+      data: chanel:alarm_stream
+  mode: single
+- id: '1630277358628'
+  alias: Reset voice mode
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunrise
+  condition: []
+  action:
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.voice_announcements_status
+    data:
+      option: Enabled
+  mode: single
+- id: '1630277729074'
+  alias: 'Announce: hot water bottle ready'
+  description: ''
+  trigger: []
+  condition:
+  - condition: state
+    entity_id: input_select.voice_announcements_status
+    state: Enabled
+  action:
+  - service: notify.mobile_app_ken_s_phone
+    data:
+      message: TTS
+      title: Water is done for the hot water bottle
+      data:
+        chanel: alarm_stream
+  mode: single
+- id: '1630361668922'
+  alias: 'Bluetooth: no headphones connected'
   description: ''
   trigger:
   - platform: state
-    to: 'on'
-    entity_id: sensor.guest_room_button
+    entity_id: sensor.kens_phone_bluetooth_connection
+    attribute: connected_paired_devices
+    to: '[]'
   condition: []
   action:
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.voice_announcements_status
+    data:
+      option: Enabled
+  mode: single
+- id: '1630362255152'
+  alias: 'Bluetooth: Ken''s old headphones connect'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.kens_phone_bluetooth_connection
+    attribute: connected_paired_devices
+    to: '[20:16:01:08:04:CB]'
+  condition: []
+  action:
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.voice_announcements_status
+    data:
+      option: Disabled
+  mode: single
+- id: '1630363079359'
+  alias: 'Bluetooth: Ken''s New headphones connect'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.kens_phone_bluetooth_connection
+    attribute: connected_paired_devices
+    to: '[17:70:12:10:05:B1]'
+  condition: []
+  action:
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.voice_announcements_status
+    data:
+      option: Disabled
+  mode: single
+- id: '1631479475288'
+  alias: Increment robovac usage counter
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: vacuum.robovac
+    attribute: status
+    to: cleaning
+    from: docked
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 0
+  condition: []
+  action:
+  - service: counter.increment
+    target:
+      entity_id: counter.robovac_usage
+  - service: automation.trigger
+    target:
+      entity_id: automation.announce_robovac_has_started
+  mode: single
+- id: '1631994672786'
+  alias: Turn off downstairs heating at night
+  description: ''
+  trigger:
+  - platform: time
+    at: '23:55'
+  condition: []
+  action:
+  - service: climate.set_temperature
+    data:
+      temperature: 7
+      hvac_mode: 'off'
+    target:
+      entity_id: climate.downstairs
+  mode: single
+- id: '1631995584070'
+  alias: Turn off upstairs heating at night
+  description: ''
+  trigger:
+  - platform: time
+    at: '23:55'
+  condition: []
+  action:
+  - service: climate.turn_off
+    target:
+      entity_id: climate.upstairs
+  mode: single
+- id: '1632774922435'
+  alias: 'Announce: Robovac has started'
+  description: ''
+  trigger: []
+  condition:
+  - condition: state
+    entity_id: input_select.voice_announcements_status
+    state: Enabled
+  action:
+  - service: notify.mobile_app_ken_s_phone
+    data:
+      message: TTS
+      title: The robovac has started
+      data:
+        chanel: alarm_stream
+  - service: notify.mobile_app_aisling_s_phone
+    data:
+      message: TTS
+      title: The robovac has started
+      data:
+        chanel: alarm_stream
+  mode: single
+- id: '1633443631366'
+  alias: 'Announce: Robovac has finished'
+  description: ''
+  trigger: []
+  condition:
+  - condition: state
+    entity_id: input_select.voice_announcements_status
+    state: Enabled
+  action:
+  - service: notify.mobile_app_ken_s_phone
+    data:
+      message: TTS
+      title: The robovac has finished
+      data:
+        chanel: alarm_stream
+  - service: notify.mobile_app_aisling_s_phone
+    data:
+      message: TTS
+      title: 'The robovac has finished '
+      data:
+        chanel: alarm_stream
+  mode: single
+- id: '1633443767502'
+  alias: Detect returned to dock
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: vacuum.robovac
+    attribute: status
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 0
+    to: docked
+    from: returning
+  condition: []
+  action:
+  - service: automation.trigger
+    target:
+      entity_id: automation.announce_robovac_has_finished
+  mode: single
+- id: '1633443769746'
+  alias: Detect returned to dock
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: vacuum.robovac
+    attribute: status
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 0
+    to: docked
+    from: returning
+  condition: []
+  action:
+  - service: automation.trigger
+    target:
+      entity_id: automation.announce_robovac_has_finished
+  mode: single
+- id: '1633443773347'
+  alias: Detect returned to dock
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: vacuum.robovac
+    attribute: status
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 0
+    to: docked
+    from: returning
+  condition: []
+  action:
+  - service: automation.trigger
+    target:
+      entity_id: automation.announce_robovac_has_finished
+  mode: single
+- id: '1634844322650'
+  alias: Cats light on when sensor detects motion
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: 1ed2e45bc1ad583d351491e91fc204ad
+    entity_id: binary_sensor.cats_sensor_motion
+    domain: binary_sensor
+  condition:
+  - type: is_illuminance
+    condition: device
+    device_id: 1ed2e45bc1ad583d351491e91fc204ad
+    entity_id: sensor.cats_sensor_illuminance
+    domain: sensor
+    below: 45
+  action:
   - type: turn_on
-    device_id: ecbde38e64860acade4ad8dae9c5e6a0
-    entity_id: light.guest_room
+    device_id: 986119009de8da67299f042134dd9567
+    entity_id: light.cats_room
     domain: light
     brightness_pct: 100
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.home_mode_status
+    data:
+      option: Normal
+  mode: single
+- id: '1634849756725'
+  alias: 'Cat sensor: no motion turns off'
+  description: ''
+  trigger:
+  - type: no_motion
+    platform: device
+    device_id: 1ed2e45bc1ad583d351491e91fc204ad
+    entity_id: binary_sensor.cats_sensor_motion
+    domain: binary_sensor
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 986119009de8da67299f042134dd9567
+    entity_id: light.cats_room
+    domain: light
+  mode: single
+- id: '1637143602410'
+  alias: Disable study door automation if phone is charging wirelessly
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.kens_phone_charger_type
+    to: wireless
+  condition: []
+  action:
+  - service: automation.turn_off
+    target:
+      entity_id: automation.new_automation_3
+  mode: single
+- id: '1637143885464'
+  alias: Disable study door automation if phone is  not charging wirelessly
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.kens_phone_charger_type
+    to: none
+    from: wireless
+  condition: []
+  action:
+  - service: automation.turn_on
+    target:
+      entity_id: automation.new_automation_3
   mode: single
