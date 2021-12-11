@@ -295,6 +295,10 @@
     device_id: 5be0e5ccbdf92ad60895eb5792d7123b
     entity_id: switch.heater_study
     domain: switch
+  - type: turn_off
+    device_id: 7905e40094c3ea0f6db679b26ad4791e
+    entity_id: switch.tz3000_00mk2xzy_ts011f_d04c09fe_on_off
+    domain: switch
   mode: single
 - id: '1610960359066'
   alias: Study light on at 9am on  mondays
