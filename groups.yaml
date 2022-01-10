@@ -2,8 +2,8 @@ bedsidelamps:
  name: Bedside lamps
  icon: hass:lightbulb-group
  entities:
-  - switch.kens_bedside_lamp 
-  - switch.bedside_lamp 
+  - light.lightken_level_light_color_on_off
+  - light.lightaisling_level_light_color_on_off
 
 workcomputer:  
   name: Work
