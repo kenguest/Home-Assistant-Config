@@ -66,6 +66,7 @@ input_select:
       - Normal
       - Bed time
       - Alarmed
+      - Alone
   voice_announcements_status:
     name: Voice Status
     options:
@@ -137,11 +138,15 @@ binary_sensor:
   - platform: workday
     country: IE
     add_holidays:
-      - '2021-06-28'
-      - '2021-06-29'
-      - '2021-06-30'
-      - '2021-07-01'
-      - '2021-07-02'
+      - '2022-01-03'
+      - '2022-01-04'
+      - '2022-01-05'
+      - '2022-01-06'
+      - '2022-02-07'
+      - '2022-02-08'
+      - '2022-02-09'
+      - '2022-02-10'
+      - '2022-02-11'
   - platform: ping
     name: Chromecast
     host: 192.168.178.20
@@ -169,6 +174,9 @@ binary_sensor:
   - platform: ping
     name: Aisling's work laptop
     host: 192.168.178.33
+  - platform: ping
+    name: Aiwendil
+    host: 192.168.178.35
 
 # Create a group for referring to the kitchen lights at once
 light:
@@ -177,6 +185,11 @@ light:
     entities:
     - light.front_kitchen_light
     - light.back_kitchen_light
+  - platform: group
+    name: Bedside Lamps
+    entities:
+    - light.lightaisling_level_light_color_on_off
+    - light.lightken_level_light_color_on_off
   - platform: group
     name: All lights
     entities:
