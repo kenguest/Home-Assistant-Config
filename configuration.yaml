@@ -220,3 +220,7 @@ scene: !include scenes.yaml
 homeassistant:
   customize: !include customize.yaml
 
+zha:
+  zigpy_config:
+    ota:
+      ikea_provider: true
