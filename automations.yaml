@@ -203,7 +203,7 @@
       title: Tumble dryer update
   mode: single
 - id: '1610534431581'
-  alias: 'When Ken comes home turn on lights '
+  alias: 'When Ken comes home turn on lights'
   description: ''
   trigger:
   - platform: zone
@@ -312,7 +312,7 @@
     - mon
   - condition: state
     entity_id: binary_sensor.workday_sensor
-    state: '''on'' '
+    state: '''on'''
   action:
   - type: turn_on
     device_id: b714b30ac81dd9ba9a22d7177bc139e3
@@ -321,15 +321,19 @@
     brightness_pct: 100
   mode: single
 - id: '1611335214798'
-  alias: 'Bedroom heater: on  at 3:30pm mo-fr'
+  alias: 'Bedroom heater: on  for lunch time if too cold'
   description: ''
   trigger:
   - platform: time
-    at: '15:30'
+    at: '12:30:00'
   condition:
   - condition: state
     entity_id: binary_sensor.workday_sensor
     state: 'on'
+  - condition: numeric_state
+    below: '9'
+    entity_id: weather.home_2
+    attribute: temperature
   action:
   - type: turn_on
     device_id: 9bd5db4e258fb399874a670f894fedfc
@@ -415,7 +419,7 @@
     entity_id: automation.dishwasher_consume_tablet_if_running
   mode: single
 - id: '1612697537130'
-  alias: 'Kettle - on for hot water bottle '
+  alias: 'Kettle - on for hot water bottle'
   description: ''
   trigger:
   - platform: device
@@ -499,9 +503,7 @@
     device_id: daac5fc4ff17348df26ff34fbd47b9f9
     entity_id: binary_sensor.lumi_lumi_sensor_magnet_aq2_e1b7e401_on_off
     domain: binary_sensor
-  condition:
-  - condition: sun
-    after: sunset
+  condition: []
   action:
   - type: toggle
     device_id: 059a6332697d8410b28702ada3261960
@@ -512,16 +514,20 @@
   alias: Master bedroom door opens
   description: ''
   trigger:
-  - platform: state
+  - type: opened
+    platform: device
+    device_id: 3a16a30d024926e21f850edf9dfa7daf
     entity_id: binary_sensor.lumi_lumi_sensor_magnet_aq2_4bd3e401_on_off
-    from: 'off'
-    to: 'on'
-  condition: []
+    domain: binary_sensor
+  condition:
+  - condition: state
+    entity_id: input_select.home_mode_status
+    state: Alone
   action:
   - type: toggle
-    device_id: 7ab073c9430e868c28fcb943989e68d9
-    entity_id: light.hall_light
-    domain: light
+    device_id: bd07dedaabba965fc86b376e3773d12c
+    entity_id: switch.bedside_lamp
+    domain: switch
   mode: single
 - id: '1613692470498'
   alias: 'Washing machine: active when power detected'
@@ -640,7 +646,7 @@
   - service: notify.notify_via_pushbullet
     data:
       message: The egg cooker has finished
-      title: 'Home Assistant '
+      title: 'Home Assistant'
       target: email/ken.guest@gmail.com
   - service: notify.mobile_app_ken_s_phone
     data:
@@ -665,7 +671,7 @@
     domain: light
   mode: single
 - id: '1616094003846'
-  alias: 'Laundry room door closes '
+  alias: 'Laundry room door closes'
   description: ''
   trigger:
   - platform: state
@@ -688,7 +694,7 @@
   condition:
   - condition: state
     entity_id: binary_sensor.workday_sensor
-    state: '''on'' '
+    state: '''on'''
   action:
   - type: turn_on
     device_id: 7ab073c9430e868c28fcb943989e68d9
@@ -708,7 +714,7 @@
   condition:
   - condition: state
     entity_id: binary_sensor.workday_sensor
-    state: '''on'' '
+    state: '''on'''
   action:
   - type: turn_on
     device_id: 7ab073c9430e868c28fcb943989e68d9
@@ -769,7 +775,7 @@
     domain: light
   mode: single
 - id: '1617479629941'
-  alias: 'Kitchen lights off when not occupied '
+  alias: 'Kitchen lights off when not occupied'
   description: ''
   trigger:
   - type: not_occupied
@@ -929,7 +935,7 @@
     device_id: fa7bb20084ebf7eae9153e94a69c9fc7
     entity_id: sensor.top_landing_illuminance
     domain: sensor
-    below: 30
+    below: 25
   action:
   - type: turn_on
     device_id: 4cde3872053b4b4e470b84c28985d8f0
@@ -975,17 +981,15 @@
     device_id: e6b24c1897da6a8079cfea21cb45fd8b
     entity_id: binary_sensor.door_guest_bedroom
     domain: binary_sensor
-  condition:
-  - condition: sun
-    after: sunset
+  condition: []
   action:
   - type: toggle
-    device_id: ecbde38e64860acade4ad8dae9c5e6a0
+    device_id: 1488e909e7ade45f02d81f77eebb5721
     entity_id: light.guest_room
     domain: light
   mode: single
 - id: '1618779495911'
-  alias: 'Tumble dryer : Set to drying '
+  alias: 'Tumble dryer : Set to drying'
   description: ''
   trigger:
   - platform: numeric_state
@@ -1072,7 +1076,7 @@
     domain: switch
   mode: single
 - id: '1620768476628'
-  alias: 'Top landing sensor: Send alert if offline '
+  alias: 'Top landing sensor: Send alert if offline'
   description: ''
   trigger:
   - device_id: fa7bb20084ebf7eae9153e94a69c9fc7
@@ -1090,7 +1094,7 @@
   mode: single
 - id: '1621811372182'
   alias: Bed time
-  description: 'Turn off everything apart from lights in master bedroom '
+  description: 'Turn off everything apart from lights in master bedroom'
   trigger:
   - platform: state
     entity_id: input_select.home_mode_status
@@ -1102,16 +1106,16 @@
     target:
       entity_id: light.all_lights
   - type: turn_on
-    device_id: bd07dedaabba965fc86b376e3773d12c
-    entity_id: switch.bedside_lamp
-    domain: switch
+    device_id: f709209ee1cb644d2574203005b6d40b
+    entity_id: light.lightaisling_level_light_color_on_off
+    domain: light
   - type: turn_on
-    device_id: a2b068d7c8b3b92f14d754daaeb291ba
-    entity_id: switch.kens_bedside_lamp
-    domain: switch
+    device_id: 93d832766c70e08420d68b48a10bb53b
+    entity_id: light.lightken_level_light_color_on_off
+    domain: light
   - type: turn_off
     device_id: 7905e40094c3ea0f6db679b26ad4791e
-    entity_id: switch.tz3000_00mk2xzy_ts011f_d04c09fe_on_off
+    entity_id: switch.heater_guest_bedroom
     domain: switch
   - type: turn_off
     device_id: e9453ffdcd0ebf1d4f8d3207d4244866
@@ -1202,7 +1206,7 @@
     domain: light
   mode: single
 - id: '1623357443554'
-  alias: 'Aisling''s Bedside lamp Button: Off'
+  alias: 'Ensuite Button: On to Toggle light'
   description: ''
   trigger:
   - platform: state
@@ -1211,12 +1215,12 @@
   condition: []
   action:
   - type: toggle
-    device_id: bd07dedaabba965fc86b376e3773d12c
-    entity_id: switch.bedside_lamp
-    domain: switch
+    device_id: 92e78b44c574b679af19bfd6f9709f43
+    entity_id: light.ensuite
+    domain: light
   mode: single
 - id: '1623357664672'
-  alias: 'Aisling''s bedside lamp Button: toggle '
+  alias: 'Ensuite Button: toggle'
   description: Toggle light
   trigger:
   - platform: state
@@ -1225,12 +1229,12 @@
   condition: []
   action:
   - type: toggle
-    device_id: bd07dedaabba965fc86b376e3773d12c
-    entity_id: switch.bedside_lamp
-    domain: switch
+    device_id: 92e78b44c574b679af19bfd6f9709f43
+    entity_id: light.ensuite
+    domain: light
   mode: single
 - id: '1623679962628'
-  alias: 'Aisling Button: Toggle '
+  alias: 'Ensuite Button: off to Toggle light'
   description: ''
   trigger:
   - platform: state
@@ -1239,12 +1243,12 @@
   condition: []
   action:
   - type: toggle
-    device_id: bd07dedaabba965fc86b376e3773d12c
-    entity_id: switch.bedside_lamp
-    domain: switch
+    device_id: 92e78b44c574b679af19bfd6f9709f43
+    entity_id: light.ensuite
+    domain: light
   mode: single
 - id: '1626564873518'
-  alias: 'Fan for 30 minutes '
+  alias: 'Fan for 30 minutes'
   description: ''
   trigger:
   - platform: device
@@ -1265,7 +1269,7 @@
     domain: switch
   mode: single
 - id: '1628586228870'
-  alias: 'Livingroom IKEA Controller '
+  alias: 'Livingroom IKEA Controller'
   description: ''
   use_blueprint:
     path: frenck/zha-ikea-five-button-remote-for-lights.yaml
@@ -1281,8 +1285,6 @@
     path: frenck/zha-ikea-five-button-remote-for-lights.yaml
     input:
       remote: ab80ad1ec8d9b0d8a949c4ef5ff87fbb
-      light:
-        device_id: ecbde38e64860acade4ad8dae9c5e6a0
       brightness: 100
       force_brightness: false
       button_left_long:
@@ -1305,6 +1307,8 @@
         device_id: ecbde38e64860acade4ad8dae9c5e6a0
         entity_id: light.guest_room
         domain: light
+      light:
+        device_id: 1488e909e7ade45f02d81f77eebb5721
 - id: '1630275244096'
   alias: 'Announce: Dishwasher finished'
   description: ''
@@ -1317,7 +1321,7 @@
   - service: notify.mobile_app_ken_s_phone
     data:
       message: TTS
-      title: 'The dishwasher has finished and is ready to be emptied '
+      title: 'The dishwasher has finished and is ready to be emptied'
       data: chanel:alarm_stream
   mode: single
 - id: '1630277358628'
@@ -1426,7 +1430,7 @@
   description: ''
   trigger:
   - platform: time
-    at: '23:55'
+    at: '22:05'
   condition: []
   action:
   - service: climate.set_temperature
@@ -1488,7 +1492,7 @@
   - service: notify.mobile_app_aisling_s_phone
     data:
       message: TTS
-      title: 'The robovac has finished '
+      title: 'The robovac has finished'
       data:
         chanel: alarm_stream
   mode: single
