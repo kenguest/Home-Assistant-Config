@@ -1,6 +1,7 @@
 
 # Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
+usb:
 
 # Text to speech
 tts:
@@ -14,13 +15,13 @@ http:
     
 hive:
   username: !secret hive_username
-  password: !secret hive_password 
+  password: !secret hive_password
 
 device_tracker:
+  - platform: bluetooth_tracker
+    consider_home: 2400
   - platform: fritz     
     host: 192.168.178.1
-    consider_home: 2400
-  - platform: bluetooth_tracker
 
 eufy_vacuum:
   devices:
@@ -72,8 +73,11 @@ input_select:
     options:
       - Disabled
       - Enabled
-
-# Example configuration.yaml entry
+input_text:
+  ensuite_button_helper:
+    name: 'Ensuite Button Helper'
+recorder:
+  commit_interval: 5
 sensor:
   - platform: dnsip
     name: external_ip
@@ -133,10 +137,10 @@ notify:
 
 # Example configuration.yaml entry
 binary_sensor:
-  - platform: uptimerobot
-    api_key: !secret uptimerobot_api_key
+#  - platform: uptimerobot
+#    api_key: !secret uptimerobot_api_key
   - platform: workday
-    country: IE
+    country: GB
     add_holidays:
       - '2022-01-03'
       - '2022-01-04'
@@ -147,6 +151,11 @@ binary_sensor:
       - '2022-02-09'
       - '2022-02-10'
       - '2022-02-11'
+      - '2022-03-17'
+      - '2022-06-06'
+    remove_holidays:
+      - '2022-06-03'
+
   - platform: ping
     name: Chromecast
     host: 192.168.178.20
@@ -175,8 +184,14 @@ binary_sensor:
     name: Aisling's work laptop
     host: 192.168.178.33
   - platform: ping
+    name: AJAXHub
+    host: 192.168.178.34
+  - platform: ping
     name: Aiwendil
     host: 192.168.178.35
+  - platform: ping
+    name: KitchenCam
+    host: 192.168.178.40
 
 # Create a group for referring to the kitchen lights at once
 light:

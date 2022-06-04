@@ -203,7 +203,7 @@
       title: Tumble dryer update
   mode: single
 - id: '1610534431581'
-  alias: 'When Ken comes home turn on lights'
+  alias: When Ken comes home turn on lights
   description: ''
   trigger:
   - platform: zone
@@ -331,9 +331,9 @@
     entity_id: binary_sensor.workday_sensor
     state: 'on'
   - condition: numeric_state
-    below: '9'
-    entity_id: weather.home_2
+    entity_id: sensor.masterbedroom_temperature
     attribute: temperature
+    below: '15'
   action:
   - type: turn_on
     device_id: 9bd5db4e258fb399874a670f894fedfc
@@ -374,11 +374,11 @@
         chanel: alarm_stream
   mode: single
 - id: '1612019694641'
-  alias: 'Dishwasher: On at 06:00'
+  alias: 'Dishwasher: On at 07:00'
   description: ''
   trigger:
   - platform: time
-    at: 08:00
+    at: 07:00
   condition: []
   action:
   - type: turn_on
@@ -419,7 +419,7 @@
     entity_id: automation.dishwasher_consume_tablet_if_running
   mode: single
 - id: '1612697537130'
-  alias: 'Kettle - on for hot water bottle'
+  alias: Kettle - on for hot water bottle
   description: ''
   trigger:
   - platform: device
@@ -646,7 +646,7 @@
   - service: notify.notify_via_pushbullet
     data:
       message: The egg cooker has finished
-      title: 'Home Assistant'
+      title: Home Assistant
       target: email/ken.guest@gmail.com
   - service: notify.mobile_app_ken_s_phone
     data:
@@ -671,7 +671,7 @@
     domain: light
   mode: single
 - id: '1616094003846'
-  alias: 'Laundry room door closes'
+  alias: Laundry room door closes
   description: ''
   trigger:
   - platform: state
@@ -775,7 +775,7 @@
     domain: light
   mode: single
 - id: '1617479629941'
-  alias: 'Kitchen lights off when not occupied'
+  alias: Kitchen lights off when not occupied
   description: ''
   trigger:
   - type: not_occupied
@@ -1094,7 +1094,7 @@
   mode: single
 - id: '1621811372182'
   alias: Bed time
-  description: 'Turn off everything apart from lights in master bedroom'
+  description: Turn off everything apart from lights in master bedroom
   trigger:
   - platform: state
     entity_id: input_select.home_mode_status
@@ -1205,50 +1205,8 @@
     entity_id: light.landing
     domain: light
   mode: single
-- id: '1623357443554'
-  alias: 'Ensuite Button: On to Toggle light'
-  description: ''
-  trigger:
-  - platform: state
-    to: 'on'
-    entity_id: sensor.aisling_bedside_light_button
-  condition: []
-  action:
-  - type: toggle
-    device_id: 92e78b44c574b679af19bfd6f9709f43
-    entity_id: light.ensuite
-    domain: light
-  mode: single
-- id: '1623357664672'
-  alias: 'Ensuite Button: toggle'
-  description: Toggle light
-  trigger:
-  - platform: state
-    to: toggle
-    entity_id: sensor.aisling_bedside_light_button
-  condition: []
-  action:
-  - type: toggle
-    device_id: 92e78b44c574b679af19bfd6f9709f43
-    entity_id: light.ensuite
-    domain: light
-  mode: single
-- id: '1623679962628'
-  alias: 'Ensuite Button: off to Toggle light'
-  description: ''
-  trigger:
-  - platform: state
-    to: 'off'
-    entity_id: sensor.guest_room_button
-  condition: []
-  action:
-  - type: toggle
-    device_id: 92e78b44c574b679af19bfd6f9709f43
-    entity_id: light.ensuite
-    domain: light
-  mode: single
 - id: '1626564873518'
-  alias: 'Fan for 30 minutes'
+  alias: Fan for 30 minutes
   description: ''
   trigger:
   - platform: device
@@ -1269,7 +1227,7 @@
     domain: switch
   mode: single
 - id: '1628586228870'
-  alias: 'Livingroom IKEA Controller'
+  alias: Livingroom IKEA Controller
   description: ''
   use_blueprint:
     path: frenck/zha-ikea-five-button-remote-for-lights.yaml
@@ -1321,7 +1279,7 @@
   - service: notify.mobile_app_ken_s_phone
     data:
       message: TTS
-      title: 'The dishwasher has finished and is ready to be emptied'
+      title: The dishwasher has finished and is ready to be emptied
       data: chanel:alarm_stream
   mode: single
 - id: '1630277358628'
@@ -1492,7 +1450,7 @@
   - service: notify.mobile_app_aisling_s_phone
     data:
       message: TTS
-      title: 'The robovac has finished'
+      title: The robovac has finished
       data:
         chanel: alarm_stream
   mode: single
@@ -1627,3 +1585,67 @@
     target:
       entity_id: automation.new_automation_3
   mode: single
+- id: '1645296094909'
+  alias: Ensuite Button
+  description: ''
+  use_blueprint:
+    path: EPMatt/ikea_e2001_e2002.yaml
+    input:
+      integration: ZHA
+      controller_device: 855489492798e201311ababc334a3b84
+      action_button_up_short:
+      - type: turn_on
+        device_id: 92e78b44c574b679af19bfd6f9709f43
+        entity_id: light.ensuite
+        domain: light
+      action_button_down_short:
+      - type: turn_off
+        device_id: 92e78b44c574b679af19bfd6f9709f43
+        entity_id: light.ensuite
+        domain: light
+      helper_last_controller_event: input_text.ensuite_button_helper
+      action_button_up_long:
+      - type: turn_on
+        device_id: 92e78b44c574b679af19bfd6f9709f43
+        entity_id: light.ensuite
+        domain: light
+      action_button_up_release:
+      - type: turn_on
+        device_id: 92e78b44c574b679af19bfd6f9709f43
+        entity_id: light.ensuite
+        domain: light
+      action_button_down_long:
+      - type: turn_off
+        device_id: 92e78b44c574b679af19bfd6f9709f43
+        entity_id: light.ensuite
+        domain: light
+      action_button_down_release:
+      - type: turn_off
+        device_id: 92e78b44c574b679af19bfd6f9709f43
+        entity_id: light.ensuite
+        domain: light
+      action_button_down_double:
+      - type: turn_off
+        device_id: 92e78b44c574b679af19bfd6f9709f43
+        entity_id: light.ensuite
+        domain: light
+      action_button_left_short:
+      - device_id: 92e78b44c574b679af19bfd6f9709f43
+        domain: light
+        entity_id: light.ensuite
+        type: brightness_decrease
+      action_button_left_long:
+      - device_id: 92e78b44c574b679af19bfd6f9709f43
+        domain: light
+        entity_id: light.ensuite
+        type: brightness_decrease
+      action_button_right_short:
+      - device_id: 92e78b44c574b679af19bfd6f9709f43
+        domain: light
+        entity_id: light.ensuite
+        type: brightness_increase
+      action_button_right_long:
+      - device_id: 92e78b44c574b679af19bfd6f9709f43
+        domain: light
+        entity_id: light.ensuite
+        type: brightness_increase
