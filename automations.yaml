@@ -534,7 +534,7 @@
   trigger:
   - platform: numeric_state
     above: '10'
-    entity_id: sensor.plugwashing_machine_smartenergy_metering
+    entity_id: sensor.plugwashing_machine_electrical_measurement
   condition:
   - condition: or
     conditions:
@@ -557,7 +557,7 @@
   alias: 'Washing machine: finished when power drops'
   trigger:
   - platform: numeric_state
-    entity_id: sensor.plugwashing_machine_smartenergy_metering
+    entity_id: sensor.plugwashing_machine_electrical_measurement
     below: '6'
   condition:
   - condition: and
