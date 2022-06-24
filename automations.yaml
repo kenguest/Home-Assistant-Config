@@ -837,18 +837,15 @@
     entity_id: binary_sensor.top_platform_ias_zone
     domain: binary_sensor
   condition:
-  - type: is_illuminance
-    condition: device
-    device_id: f8835a0621ca201abdb9634e8d71c0a7
-    entity_id: sensor.top_platform_illuminance
-    domain: sensor
-    below: 30
+  - condition: state
+    entity_id: sun.sun
+    state: 'below_horizon'
   action:
   - type: turn_on
     device_id: 083aed3289ddc98c0dcefb09ff891d3d
     entity_id: light.landing
     domain: light
-    brightness_pct: 100
+    brightness_pct: 75
   - service: input_select.select_option
     target:
       entity_id: input_select.home_mode_status
@@ -1155,18 +1152,15 @@
     entity_id: binary_sensor.landing_sensor_ias_zone
     domain: binary_sensor
   condition:
-  - type: is_illuminance
-    condition: device
-    device_id: 5cb929bb135e3cedf31510218bba30d4
-    entity_id: sensor.landing_sensor_illuminance
-    domain: sensor
-    below: 45
+  - condition: state
+    entity_id: sun.sun
+    state: 'below_horizon'
   action:
   - type: turn_on
     device_id: 083aed3289ddc98c0dcefb09ff891d3d
     entity_id: light.landing
     domain: light
-    brightness_pct: 100
+    brightness_pct: 75
   - service: input_select.select_option
     target:
       entity_id: input_select.home_mode_status
