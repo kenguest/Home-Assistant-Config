@@ -17,12 +17,6 @@ hive:
   username: !secret hive_username
   password: !secret hive_password
 
-device_tracker:
-  - platform: bluetooth_tracker
-    consider_home: 2400
-  - platform: fritz     
-    host: 192.168.178.1
-
 eufy_vacuum:
   devices:
   - name: Robovac
