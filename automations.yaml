@@ -430,8 +430,7 @@
     for:
       hours: 0
       minutes: 3
-      seconds: 15
-      milliseconds: 0
+      seconds: 0
   condition: []
   action:
   - type: turn_off
@@ -441,6 +440,7 @@
   - service: automation.trigger
     target:
       entity_id: automation.announce_hot_water_bottle_ready
+    data: {}
   - service: automation.turn_off
     data: {}
     entity_id: automation.kettle_turn_off_after_4_minutes
@@ -487,7 +487,10 @@
     device_id: 722b620d26bd7ce8a669d56d9f43ba0a
     entity_id: binary_sensor.lumi_lumi_sensor_magnet_aq2_on_off
     domain: binary_sensor
-  condition: []
+  condition:
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
   action:
   - type: toggle
     device_id: b714b30ac81dd9ba9a22d7177bc139e3
@@ -839,7 +842,7 @@
   condition:
   - condition: state
     entity_id: sun.sun
-    state: 'below_horizon'
+    state: below_horizon
   action:
   - type: turn_on
     device_id: 083aed3289ddc98c0dcefb09ff891d3d
@@ -1102,6 +1105,7 @@
   - service: light.turn_off
     target:
       entity_id: light.all_lights
+    data: {}
   - type: turn_on
     device_id: f709209ee1cb644d2574203005b6d40b
     entity_id: light.lightaisling_level_light_color_on_off
@@ -1127,6 +1131,10 @@
       entity_id: input_select.voice_announcements_status
     data:
       option: Disabled
+  - service: automation.turn_off
+    data: {}
+    target:
+      entity_id: automation.kitchen_turn_on_hall_light_when_hall_sekitnsor_detects_motion_duplicate_2
   mode: single
 - id: '1621811784863'
   alias: Reset home mode
@@ -1154,7 +1162,7 @@
   condition:
   - condition: state
     entity_id: sun.sun
-    state: 'below_horizon'
+    state: below_horizon
   action:
   - type: turn_on
     device_id: 083aed3289ddc98c0dcefb09ff891d3d
@@ -1643,3 +1651,27 @@
         domain: light
         entity_id: light.ensuite
         type: brightness_increase
+- id: '1657061102274'
+  alias: Home Mode changes to Normal
+  description: Reenable kitchen motion automation etc
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.home_mode_status
+    to: Normal
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 2
+  condition: []
+  action:
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.voice_announcements_status
+    data:
+      option: Enabled
+  - service: automation.turn_on
+    data: {}
+    target:
+      entity_id: automation.kitchen_turn_on_hall_light_when_hall_sekitnsor_detects_motion_duplicate_2
+  mode: single
