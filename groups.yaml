@@ -11,3 +11,30 @@ workcomputer:
   - switch.tz3000_vmpbygs5_ts011f_on_off
   - switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_3
   - switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_2
+
+downstairs:
+  name: Downstairs lights
+  entities:
+  - light.hall_light
+  - light.front_kitchen_light
+  - light.back_kitchen_light
+
+alllights:
+  name: All Lights
+  entities:
+  - light.hall_light
+  - light.top_landing_light
+  - light.guest_room
+  - light.study_light_level_on_off
+  - light.kitchen_lights
+  - light.front_kitchen_light
+  - light.back_kitchen_light
+  - light.living_room_light
+  - light.lightaisling_level_light_color_on_off
+  - light.lightken_level_light_color_on_off
+  - light.ensuite
+  - light.landing
+  - light.laundry_room_light
+  - light.cloak_room
+  - light.cats_room
+  - light.main_bathroom
