@@ -12,10 +12,22 @@ http:
     ssl_key: /ssl/privkey.pem
     ip_ban_enabled: true
     login_attempts_threshold: 5
-    
-hive:
-  username: !secret hive_username
-  password: !secret hive_password
+
+logger:
+  default: info
+  logs:
+    homeassistant.core: debug
+    homeassistant.components.zha: debug
+    bellows.zigbee.application: debug
+    bellows.ezsp: debug
+    zigpy: debug
+    zigpy_deconz.zigbee.application: debug
+    zigpy_deconz.api: debug
+    zigpy_xbee.zigbee.application: debug
+    zigpy_xbee.api: debug
+    zigpy_zigate: debug
+    zigpy_znp: debug
+    zhaquirks: debug
 
 eufy_vacuum:
   devices:
@@ -147,6 +159,8 @@ binary_sensor:
       - '2022-02-11'
       - '2022-03-17'
       - '2022-06-06'
+      - '2022-07-04'
+      - '2022-07-05'
     remove_holidays:
       - '2022-06-03'
 
