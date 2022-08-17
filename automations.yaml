@@ -74,12 +74,10 @@
     device_id: b714b30ac81dd9ba9a22d7177bc139e3
     entity_id: light.study_light_level_on_off
     domain: light
-  - type: turn_on
+  - type: turn_off
     device_id: b714b30ac81dd9ba9a22d7177bc139e3
     entity_id: light.study_light_level_on_off
     domain: light
-    brightness_pct: 100
-    flash: long
   mode: single
 - id: '1608316269451'
   alias: Study light off at 17:30 Tu-Fr
@@ -366,12 +364,12 @@
     data:
       message: The hot water has been on for 30 minutes. Switching off
       target: email/angelsunbeam@gmail.com
-  - service: notify.mobile_app_ken_s_phone
+      title: Home Assistant
+  - service: input_datetime.set_datetime
     data:
-      message: TTS
-      title: The hot water has been on for 30 minutes. Switching off
-      data:
-        chanel: alarm_stream
+      datetime: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }}'
+    target:
+      entity_id: input_datetime.hot_water_datetime
   mode: single
 - id: '1612019694641'
   alias: 'Dishwasher: On at 07:00'
@@ -1674,4 +1672,72 @@
     data: {}
     target:
       entity_id: automation.kitchen_turn_on_hall_light_when_hall_sekitnsor_detects_motion_duplicate_2
+  mode: single
+- id: '1657313957003'
+  alias: 'Washing machine: Turn off when clean for 30 minutes'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.washing_machine_status
+    to: Clean
+    for:
+      hours: 0
+      minutes: 30
+      seconds: 0
+  condition: []
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      device_id: eeb1d23bad9cdff3f32437d85f585b3e
+  mode: single
+- id: '1658342133585'
+  alias: Hot water - notify when on
+  description: Notify when hot water is switched on
+  trigger:
+  - platform: state
+    entity_id: water_heater.hotwater
+    attribute: operation_mode
+    from: 'off'
+    to: 'on'
+    for: 0:01:00
+  condition: []
+  action:
+  - service: notify.notify_via_pushbullet
+    data:
+      message: 'The hot water has been on for a minute. Did you mean to do this? '
+      target: email/ken.guest@gmail.com
+      title: Home Assistant
+  - service: notify.notify_via_pushbullet
+    data:
+      message: 'The hot water has been on for a minute. Did you mean to do this? '
+      target: email/angelsunbeam@gmail.com
+  - service: notify.mobile_app_ken_s_phone
+    data:
+      message: TTS
+      title: The hot water has been on for a minute. Did you mean to do this?
+      data:
+        chanel: alarm_stream
+  - service: notify.mobile_app_kens_phone
+    data:
+      message: 'Test one minute '
+  mode: single
+- id: '1658405017694'
+  alias: Study light flashed at 13:04
+  description: ''
+  trigger:
+  - platform: time
+    at: '13:02:00'
+  condition: []
+  action:
+  - device_id: b714b30ac81dd9ba9a22d7177bc139e3
+    domain: light
+    entity_id: light.study_light_level_on_off
+    type: flash
+  - type: turn_off
+    device_id: b714b30ac81dd9ba9a22d7177bc139e3
+    entity_id: light.study_light_level_on_off
+    domain: light
+    enabled: true
   mode: single
