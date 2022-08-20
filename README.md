@@ -11,7 +11,7 @@ zigbee - communicating with the Hub via the Hive app on my phone required intern
 Home Assistant is a much more local solution that doesn't require IoT comms, unless you want it to - and so I got hooked :-)
 
 ## Hardware ##
-I'm running Home Assistant on a 4GB Raspberry PI 4 model B, with a 32 GB SD card, using a [Conbee II usb stick](https://phoscon.de/en/conbee2) for integrating/controlling Zigbee lights, plugs, and sensors.
+I'm running Home Assistant on a 4GB Raspberry PI 4 model B, with a 64 GB SD card, using a [Conbee II usb stick](https://phoscon.de/en/conbee2) for integrating/controlling Zigbee lights, plugs, and sensors.
 
 Some of the plugs have power monitoring, and I've automations set up to send me messages when the dishwasher, washing machine and tumble dryer have finished. These are mostly gleaned from
 Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines Smart: Alerts When the Dishes and Clothes Are Cleaned](https://philhawthorne.com/making-dumb-dishwashers-and-washing-machines-smart-alerts-when-the-dishes-and-clothes-are-cleaned/) article. He also wrote a great article on [managing your shopping list with Grocy and Home Assistant](https://philhawthorne.com/automating-your-shopping-list-with-home-assistant-and-grocy/).
@@ -72,7 +72,7 @@ Installed via HACS and used to make the Sonoff wireless switch events show as di
 
 
 #### [Hive](https://www.home-assistant.io/integrations/hive/) ####
-Used for controlling the Hive thermostats.
+Used for controlling the Hive thermostats/heating. I can display when the water/heating was last on in Home Assistant, which is not possible in the native Hive app on my phone.
 
 #### [HP Printer](https://github.com/elad-bar/ha-hpprinter) ####
 Ink levels, and also number of pages printed and scanned.
