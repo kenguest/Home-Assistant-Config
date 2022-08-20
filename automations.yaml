@@ -410,7 +410,7 @@
     data:
       server_ip: 127.0.0.1
       grocy_key: psTNW1jpsaF3MIU7cIXzVumAtmdXSEzViQagpXLnonVdgnQ44f
-      product_id: 18
+      product_id: 23
       amount: 1
   - service: automation.turn_off
     data: {}
