@@ -11,7 +11,7 @@ zigbee - communicating with the Hub via the Hive app on my phone required intern
 Home Assistant is a much more local solution that doesn't require IoT comms, unless you want it to - and so I got hooked :-)
 
 ## Hardware ##
-I'm running Home Assistant on a 4GB Raspberry PI 4 model B, with a 32 GB SD card, using a [Conbee II usb stick](https://phoscon.de/en/conbee2) for integrating/controlling Zigbee lights, plugs, and sensors.
+I'm running Home Assistant on a 4GB Raspberry PI 4 model B, with a 64 GB SD card, using a [Conbee II usb stick](https://phoscon.de/en/conbee2) for integrating/controlling Zigbee lights, plugs, and sensors.
 
 Some of the plugs have power monitoring, and I've automations set up to send me messages when the dishwasher, washing machine and tumble dryer have finished. These are mostly gleaned from
 Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines Smart: Alerts When the Dishes and Clothes Are Cleaned](https://philhawthorne.com/making-dumb-dishwashers-and-washing-machines-smart-alerts-when-the-dishes-and-clothes-are-cleaned/) article. He also wrote a great article on [managing your shopping list with Grocy and Home Assistant](https://philhawthorne.com/automating-your-shopping-list-with-home-assistant-and-grocy/).
@@ -34,8 +34,9 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 #### Switches ####
 | Model                                                        | Zigbee Device Compatibility Reference  | Buy  | Image                                                                              | Quantity | Notes                                                        | Battery Type |
 |--------------------------------------------------------------|------|------|------------------------------------------------------------------------------------|----------|--------------------------------------------------------------|----|
-| Sonoff Wireless Switch    | [SNZB-01](https://zigbee.blakadder.com/Sonoff_SNZB-01.html) | [AliExpress](https://www.aliexpress.com/item/1005001726907261.html) | <img src="https://zigbee.blakadder.com/assets/images/devices/Sonoff_SNZB-01.jpg">| 1 | Switch for bedside lamp. There are three separate types of events: single click, double click, and long click - I have these mapped to on, toggle and off respectively.  [EventSensor](https://github.com/azogue/eventsensor) integration in HACS can be used to make this work under ZHA -  [additional notes on using EventSensor here](https://community.home-assistant.io/t/unable-to-pair-sonoff-zigbee-snzb-01-wb-01-buttons/218324/19), along with some on how to integrate natively. | CR2450 |
+| Sonoff Wireless Switch    | [SNZB-01](https://zigbee.blakadder.com/Sonoff_SNZB-01.html) | [AliExpress](https://www.aliexpress.com/item/1005001726907261.html) | <img src="https://zigbee.blakadder.com/assets/images/devices/Sonoff_SNZB-01.jpg">| 1 | Switch for bedside lamp.  There are three separate types of events: single click, double click, and long click - I have these mapped to on, toggle and off respectively.  [EventSensor](https://github.com/azogue/eventsensor) integration in HACS can be used to make this work under ZHA -  [additional notes on using EventSensor here](https://community.home-assistant.io/t/unable-to-pair-sonoff-zigbee-snzb-01-wb-01-buttons/218324/19), along with some on how to integrate natively. | CR2450 |
 | IKEA Tradfri Remote Control | [E1810](https://zigbee.blakadder.com/Ikea_E1810.html)| [Ikea](https://www.ikea.com/ie/en/p/tradfri-remote-control-30443124/)| <img src="https://zigbee.blakadder.com/assets/images/devices/Ikea_E1810.jpg">| 2 | Living Room and Guest room lights, configured using [this Blueprint](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fcommunity.home-assistant.io%2Ft%2Fzha-ikea-five-button-remote-for-lights%2F253804)| CR2032 |
+| IKEA Styrbar Remote Control | [E2001](https://zigbee.blakadder.com/Ikea_E2001.html)| [Ikea](https://www.ikea.com/ie/en/p/styrbar-remote-control-white-60488366/)| <img src="https://zigbee.blakadder.com/assets/images/devices/Ikea_E2001.jpg">| 1 | Switch for ensuite light. | AAA battery x 4 |
 
 
 #### Power plugs/monitoring ####
@@ -44,7 +45,7 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 | Heiman Power Monitoring Plug                             | [HS2SK](https://zigbee.blakadder.com/Heiman_HS2SK.html)     | [AliExpress](https://www.aliexpress.com/item/Heiman-Zigbee-Power-Metering-Plug-EU-UK-US-Wall-socket-Control-Power-On-off-For-Smart/32839165490.html)     | <img src="https://zigbee.blakadder.com/assets/images/devices/Heiman_HS2SK.jpg">    | 2        | Monitor washing machine and tumbledryer, notify me when finished |
 | Hive Plug                                                  | [1613V](https://zigbee.blakadder.com/Hive_1613V.html)     | [Amazon.co.uk](https://www.amazon.co.uk/Hive-ICESMRTPLUG-Active-Smart-Plug/dp/B01N7L53TB/)     | <img src="https://zigbee.blakadder.com/assets/images/devices/Hive_1613V.jpg">      | 1        | Monitor dishwasher, notify me when finished. Way more expensive than Heiman. Oddly Hive's app doesn't make use of the power monitoring feature on the plug, and they don't market the plug as having this feature. |
 | Lidl/SilverCrest Plug                            | [HG06337-SB](https://zigbee.blakadder.com/Lidl_HG06337-BS.html)     |      | <img src="https://zigbee.blakadder.com/assets/images/devices/Lidl_HG06337-BS.jpg"> | 6        | Bedside lamps, heaters, kettle |
-| Lidl/SilverCrest power strip   3 plugs                 | [HG06338](https://zigbee.blakadder.com/Lidl_HG06338.html)     |      | <img src="https://zigbee.blakadder.com/assets/images/devices/Lidl_HG06338.jpg">    | 1        | Used in my study for external monitors, laptop charger, and USB hub. |
+| Lidl/SilverCrest power strip   3 plugs                 | [HG06338](https://zigbee.blakadder.com/Lidl_HG06338.html)     |      | <img src="https://zigbee.blakadder.com/assets/images/devices/Lidl_HG06338.jpg">    | 2        | One in my study for external monitors, laptop charger, and USB hub. Another for Christmas tree lights. |
 
 
 #### Lighting ####
@@ -52,9 +53,9 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 | Model                   | Zigbee Device Compatibility Reference      | Buy     | Image                                                                                        | Quantity | Notes                                                            |
 | ------------------------|------|------|--------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------- |
 |  RGBW B22 Bulb          | [ZAH-BL01-RGBCW](https://zigbee.blakadder.com/eWeLight_ZAH-BL01-RGBCW.html)    | [eWeLight, RGBW B22 Bulb](https://www.aliexpress.com/item/1005002483909414.html)      |        <img src="https://zigbee.blakadder.com/assets/images/devices/eWeLight_ZAH-BL01-RGBCW.jpg">  | 3        | Study, landing, and cat room lights.                                     |
-| Eglo Dimmable Vintage E27 Bulb  | N/A| [Amazon.co.uk](https://www.amazon.co.uk/-/en/gp/product/B09FTBSCGW/ref=ppx_yo_dt_b_asin_title_o00_s00?ie=UTF8&th=1)     | | 2        | Lights kitchen.   |
+| Eglo Dimmable Warm White Vintage styled E27 Bulb  | N/A| [Amazon.co.uk](https://www.amazon.co.uk/-/en/gp/product/B09FTBSCGW/ref=ppx_yo_dt_b_asin_title_o00_s00?ie=UTF8&th=1)     | | 2        | Lights in kitchen.   |
 | ERIA Smart Dimmable Warm White B22 Light Bulb | [Eria Smart Dimmable Warm White B22 Light Bulb](https://connectit.ie/products/smart-dimmable-warm-white-b22-light-bulb-eria-a60-9w) | [AduroSmart_81810](https://zigbee.blakadder.com/AduroSmart_81810.html) | <img src="https://zigbee.blakadder.com/assets/images/devices/AduroSmart_81810.jpg"> | 2 | Main light for guest room, and also for en-suite. |
-| Hive Dimmable B22 Bulb  | [HALIGHTDIMWWB22](https://zigbee.blakadder.com/Hive_HALIGHTDIMWWB22.html)     | [Amazon.co.uk](https://www.amazon.co.uk/Hive-Lights-Dimmable-Bayonet-Smart/dp/B01I3T67EC/)     | <img src="https://zigbee.blakadder.com/assets/images/devices/Hive_HALIGHTDIMWWB22.jpg">      | 5        | Lights in hall, kitchen, landing, laundry room  and cloakroom.   |
+| Hive Dimmable B22 Bulb  | [HALIGHTDIMWWB22](https://zigbee.blakadder.com/Hive_HALIGHTDIMWWB22.html)     | [Amazon.co.uk](https://www.amazon.co.uk/Hive-Lights-Dimmable-Bayonet-Smart/dp/B01I3T67EC/)     | <img src="https://zigbee.blakadder.com/assets/images/devices/Hive_HALIGHTDIMWWB22.jpg">      | 5        | Lights in hall, landing, laundry room  and cloakroom.   |
 
 
 ## Software ##
@@ -71,7 +72,7 @@ Installed via HACS and used to make the Sonoff wireless switch events show as di
 
 
 #### [Hive](https://www.home-assistant.io/integrations/hive/) ####
-Used for controlling the Hive thermostats.
+Used for controlling the Hive thermostats/heating. I can display when the water/heating was last on in Home Assistant, which is not possible in the native Hive app on my phone.
 
 #### [HP Printer](https://github.com/elad-bar/ha-hpprinter) ####
 Ink levels, and also number of pages printed and scanned.
