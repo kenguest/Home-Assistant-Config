@@ -1,7 +1,7 @@
 person.ken_guest:
   friendly_name: Ken
 zone.home:
-  radius: 10
+  radius: 30
 sensor.washing_machine_status:
   id: 746454654564
   icon: mdi:washing-machine
@@ -20,6 +20,7 @@ binary_sensor.aiwendil:
 binary_sensor.lumi_lumi_sensor_magnet_aq2_40eadc01_on_off:
   device_class: door
 binary_sensor.ocuco_laptop:
+  id: 63457899875436
   device_class: connectivity
   icon: hass:laptop
 binary_sensor.aisling_s_chromebook:
@@ -30,6 +31,8 @@ binary_sensor.door_laundry_room_on_off:
   device_class: door
 binary_sensor.chromecast:
   icon: hass:television
+binary_sensor.kitchencam:
+  icon: hass:camera
 binary_sensor.top_platform_occupancy:
   device_class: occupancy
   occupancy_timeout: '5'
