@@ -199,6 +199,14 @@
       target: email/ken.guest@gmail.com
       message: The tumble dryer has finished and is ready to be emptied!
       title: Tumble dryer update
+  - service: notify.mobile_app_kens_phone
+    data:
+      ttl: 0
+      message: The tumble dryer has finished and is ready to be emptied!
+  - type: turn_off
+    device_id: 0c8c3b79d94692008ba3e0fc927a553e
+    entity_id: switch.plugtumble_dryer_on_off
+    domain: switch
   mode: single
 - id: '1610534431581'
   alias: When Ken comes home turn on lights
@@ -214,18 +222,13 @@
     entity_id: light.hall_light
     device_id: 7ab073c9430e868c28fcb943989e68d9
     type: turn_on
-  - domain: light
-    entity_id: light.back_kitchen_light
-    device_id: 5cc2e0c9d816959426be82c9185a2ba8
-    type: turn_on
-  - domain: light
-    entity_id: light.front_kitchen_light
-    device_id: 8cf7d4c4d3cfaa116c0ca88b1f13632b
-    type: turn_on
   - service: notify.notify_via_pushbullet
     data:
       message: Welcome home Ken!
       target: email/ken.guest@gmail.com
+  - service: notify.mobile_app_kens_phone
+    data:
+      message: Welcome home Ken!
   - service: automation.turn_off
     data: {}
     entity_id: automation.turn_on_lights_when_i_come_home
@@ -256,6 +259,9 @@
     data:
       message: Aisling's home!
       target: email/ken.guest@gmail.com
+  - service: notify.mobile_app_kens_phone
+    data:
+      message: Aisling's home!
   mode: single
 - id: '1610630054171'
   alias: Turn on Downstairs heating at 1:15
@@ -365,6 +371,9 @@
       message: The hot water has been on for 30 minutes. Switching off
       target: email/angelsunbeam@gmail.com
       title: Home Assistant
+  - service: notify.mobile_app_kens_phone
+    data:
+      message: The hot water has been on for 30 minutes. Switching off
   - service: input_datetime.set_datetime
     data:
       datetime: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }}'
@@ -605,6 +614,9 @@
       message: Hey, the washing machine has finished and is ready to be emptied
       title: Washing Machine
       target: email/ken.guest@gmail.com
+  - service: notify.mobile_app_kens_phone
+    data:
+      message: Hey, the washing machine has finished and is ready to be emptied
   mode: single
 - id: '1614848795158'
   alias: 'Car kit: when connected enable automation re coming home'
@@ -649,12 +661,16 @@
       message: The egg cooker has finished
       title: Home Assistant
       target: email/ken.guest@gmail.com
-  - service: notify.mobile_app_ken_s_phone
+  - service: notify.mobile_app_kens_phone
     data:
       message: TTS
-      title: Listen up. The egg cooker has finished.
       data:
+        priotity: high
+        tts_text: Listen up. The egg cooker has finished.
         chanel: alarm_stream
+  - service: notify.mobile_app_kens_phone
+    data:
+      message: The egg cooker has finished
   mode: single
 - id: '1616093952307'
   alias: Cloak room door opens
@@ -741,7 +757,7 @@
     device_id: 8824d46f7a512a00d5fdd409de007530
     entity_id: sensor.lumi_lumi_sensor_motion_aq2_illuminance
     domain: sensor
-    below: 30
+    below: 20
   action:
   - domain: light
     entity_id: light.hall_light
@@ -1057,6 +1073,9 @@
       target: email/ken.guest@gmail.com
       message: The dishwasher has finished and is ready to be emptied!
       title: Dishwasher update
+  - service: notify.mobile_app_kens_phone
+    data:
+      message: The dishwasher has finished and is ready to be emptied!
   - service: automation.turn_on
     data: {}
     entity_id: automation.dishwasher_consume_tablet_if_running
@@ -1089,6 +1108,9 @@
       target: email/ken.guest@gmail.com
       message: top landing sensor is offline
       title: Home Assistant
+  - service: notify.mobile_app_kens_phone
+    data:
+      message: top landing sensor is offline
   mode: single
 - id: '1621811372182'
   alias: Bed time
@@ -1276,11 +1298,13 @@
     entity_id: input_select.voice_announcements_status
     state: Enabled
   action:
-  - service: notify.mobile_app_ken_s_phone
+  - service: notify.mobile_app_kens_phone
     data:
       message: TTS
-      title: The dishwasher has finished and is ready to be emptied
-      data: chanel:alarm_stream
+      data:
+        chanel: alarm_stream
+        priotity: high
+        tts_text: The dishwasher has finished and is ready to be emptied
   mode: single
 - id: '1630277358628'
   alias: Reset voice mode
@@ -1305,12 +1329,13 @@
     entity_id: input_select.voice_announcements_status
     state: Enabled
   action:
-  - service: notify.mobile_app_ken_s_phone
+  - service: notify.mobile_app_kens_phone
     data:
       message: TTS
-      title: Water is done for the hot water bottle
       data:
         chanel: alarm_stream
+        priotity: high
+        tts_text: Water is hot enough for the hot water bottle
   mode: single
 - id: '1630361668922'
   alias: 'Bluetooth: no headphones connected'
@@ -1345,13 +1370,14 @@
       option: Disabled
   mode: single
 - id: '1630363079359'
-  alias: 'Bluetooth: Ken''s New headphones connect'
+  alias: 'Bluetooth: Ken''s Odio headphones connect'
   description: ''
   trigger:
   - platform: state
-    entity_id: sensor.kens_phone_bluetooth_connection
+    entity_id:
+    - sensor.kens_phone_bluetooth_connection
     attribute: connected_paired_devices
-    to: '[17:70:12:10:05:B1]'
+    to: '"[17:70:12:10:05:B1 (OneOdio A10)]"'
   condition: []
   action:
   - service: input_select.select_option
@@ -1419,18 +1445,19 @@
     entity_id: input_select.voice_announcements_status
     state: Enabled
   action:
-  - service: notify.mobile_app_ken_s_phone
+  - service: notify.mobile_app_kens_phone
     data:
       message: TTS
-      title: The robovac has started
       data:
         chanel: alarm_stream
+        priotity: high
+        tts_text: The robovack has started
   - service: notify.mobile_app_aisling_s_phone
     data:
       message: TTS
-      title: The robovac has started
       data:
         chanel: alarm_stream
+        tts_text: The robovack has started
   mode: single
 - id: '1633443631366'
   alias: 'Announce: Robovac has finished'
@@ -1441,18 +1468,20 @@
     entity_id: input_select.voice_announcements_status
     state: Enabled
   action:
-  - service: notify.mobile_app_ken_s_phone
+  - service: notify.mobile_app_kens_phone
     data:
       message: TTS
-      title: The robovac has finished
       data:
         chanel: alarm_stream
+        priotity: high
+        tts_text: The robovack has finished
   - service: notify.mobile_app_aisling_s_phone
     data:
       message: TTS
-      title: The robovac has finished
       data:
         chanel: alarm_stream
+        priotity: high
+        tts_text: The robovack has finished
   mode: single
 - id: '1633443767502'
   alias: Detect returned to dock
@@ -1713,15 +1742,16 @@
     data:
       message: 'The hot water has been on for a minute. Did you mean to do this? '
       target: email/angelsunbeam@gmail.com
-  - service: notify.mobile_app_ken_s_phone
-    data:
-      message: TTS
-      title: The hot water has been on for a minute. Did you mean to do this?
-      data:
-        chanel: alarm_stream
   - service: notify.mobile_app_kens_phone
     data:
-      message: 'Test one minute '
+      message: TTS
+      data:
+        chanel: alarm_stream
+        priotity: high
+        tts_text: The hot water has been on for a minute. Did you mean to do this?
+  - service: notify.mobile_app_kens_phone
+    data:
+      message: The hot water has been on for one minute. Did you mean to do this?
   mode: single
 - id: '1658405017694'
   alias: Study light flashed at 13:04
