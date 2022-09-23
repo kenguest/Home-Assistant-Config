@@ -227,6 +227,14 @@ light:
     - light.living_room_light
     - light.study_light_level_on_off
     - light.top_landing_light
+  - platform: group
+    name: All downstairs lights
+    entities:
+    - light.front_kitchen_light
+    - light.back_kitchen_light
+    - light.cloak_room
+    - light.hall_light
+    - light.laundry_room_light
 
       
 shell_command:
