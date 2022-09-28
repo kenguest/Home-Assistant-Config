@@ -1130,10 +1130,12 @@
     device_id: f709209ee1cb644d2574203005b6d40b
     entity_id: light.lightaisling_level_light_color_on_off
     domain: light
+    enabled: false
   - type: turn_on
     device_id: 93d832766c70e08420d68b48a10bb53b
     entity_id: light.lightken_level_light_color_on_off
     domain: light
+    enabled: false
   - type: turn_off
     device_id: 7905e40094c3ea0f6db679b26ad4791e
     entity_id: switch.heater_guest_bedroom
@@ -1770,4 +1772,36 @@
     entity_id: light.study_light_level_on_off
     domain: light
     enabled: true
+  mode: single
+- id: '1664261222949'
+  alias: 'Too humid in ensuite '
+  description: ''
+  trigger:
+  - type: humidity
+    platform: device
+    device_id: f89b3331f8529ce7052d3a7502435e80
+    entity_id: sensor.lumi_lumi_weather_humidity
+    domain: sensor
+    above: 75
+  condition: []
+  action:
+  - service: notify.mobile_app_kens_phone
+    data:
+      message: 'Did someone just have a shower? Open the window. '
+  mode: single
+- id: '1664311759291'
+  alias: 'Humidity ok in ensuite '
+  description: ''
+  trigger:
+  - type: humidity
+    platform: device
+    device_id: f89b3331f8529ce7052d3a7502435e80
+    entity_id: sensor.lumi_lumi_weather_humidity
+    domain: sensor
+    below: 74
+  condition: []
+  action:
+  - service: notify.mobile_app_kens_phone
+    data:
+      message: It isn't as humid in the ensuite, you can close the window now
   mode: single
