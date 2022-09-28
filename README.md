@@ -24,7 +24,7 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 
 ### <a name="zigbee"></a> 🐝 Zigbee ###
 
-#### <a name="zigbee_sensors"></a> Sensors ####
+#### <a name="zigbeesensors"></a> Sensors ####
 | Model                                                        | Zigbee Device Compatibility Reference  | Buy  | Image                                                                              | Quantity | Notes                                                        | Battery Type |
 |--------------------------------------------------------------|------|------|------------------------------------------------------------------------------------|----------|--------------------------------------------------------------|--------|
 | Aqara human body movement and illuminance sensor  |  [RTCGQ11LM](https://zigbee.blakadder.com/Aqara_RTCGQ11LM.html)    | [AliExpress](https://www.aliexpress.com/item/Aqara-Human-Body-Sensor-Smart-Body-Movement-PIR-Motion-Sensor-ZigBee-Wireless-Connection-Aqara-Sensor-For/4001230659983.html)     | ![Aqara Motion](https://www.zigbee2mqtt.io/images/devices/RTCGQ11LM.jpg)           | 6        | Used to detect motion, and occupancy - lights turn on/off accordingly.  | CR2450 |
@@ -32,7 +32,7 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 | Aqara light sensors                               | [GZCGQ11LM](https://zigbee.blakadder.com/Aqara_GZCGQ11LM.html)     | [AliExpress](https://www.aliexpress.com/item/1-10pcs-Xiaomi-Mijia-Smart-Light-Sensor-Zigbee-3-0-Light-Detection-Intelligent-Linkage-Waterproof-Used/1005001627142486.html)     | <img src="https://zigbee.blakadder.com/assets/images/devices/Aqara_GZCGQ11LM.jpg"> | 4        | The PIR sensors only take illuminance readings when motion or occupancy is detected. These give continuous readings, so non-PIR based automations can factor in these readings. | CR2450 |
 | Aqara Temperature, Humidity and Pressure Sensors | [WSDCGQ11LM](https://zigbee.blakadder.com/Aqara_WSDCGQ11LM.html)     | [AliExpress](https://www.aliexpress.com/item/4000713849766.html)     | <img src="https://zigbee.blakadder.com/assets/images/devices/Aqara_WSDCGQ11LM.webp"> | 5        | Mostly informational, but also sends a message suggesting the ensuite window if the humidity is over 75% (after having a shower), and also to turn off relevant convection heaters if rooms have gotten too warm.| CR2032 |
 
-#### <a name="zigbee_switches"></a> Switches ####
+#### <a name="zigbeeswitches"></a> Switches ####
 | Model                                                        | Zigbee Device Compatibility Reference  | Buy  | Image                                                                              | Quantity | Notes                                                        | Battery Type |
 |--------------------------------------------------------------|------|------|------------------------------------------------------------------------------------|----------|--------------------------------------------------------------|----|
 | Sonoff Wireless Switch    | [SNZB-01](https://zigbee.blakadder.com/Sonoff_SNZB-01.html) | [AliExpress](https://www.aliexpress.com/item/1005001726907261.html) | <img src="https://zigbee.blakadder.com/assets/images/devices/Sonoff_SNZB-01.jpg">| 1 | Switch for bedside lamp.  There are three separate types of events: single click, double click, and long click - I have these mapped to on, toggle and off respectively.  [EventSensor](https://github.com/azogue/eventsensor) integration in HACS can be used to make this work under ZHA -  [additional notes on using EventSensor here](https://community.home-assistant.io/t/unable-to-pair-sonoff-zigbee-snzb-01-wb-01-buttons/218324/19), along with some on how to integrate natively. | CR2450 |
@@ -40,7 +40,7 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 | IKEA Styrbar Remote Control | [E2001](https://zigbee.blakadder.com/Ikea_E2001.html)| [Ikea](https://www.ikea.com/ie/en/p/styrbar-remote-control-white-60488366/)| <img src="https://zigbee.blakadder.com/assets/images/devices/Ikea_E2001.jpg">| 1 | Switch for ensuite light. | AAA battery x 4 |
 
 
-#### <a name="zigbee_plugs"></a> Power plugs/monitoring ####
+#### <a name="zigbeeplugs"></a> Power plugs/monitoring ####
 | Model                                                        | Zigbee Device Compatibility Reference      | Buy      | Image                                                                              | Quantity | Notes                                                        |
 | ------------------------------------------------------------ |----- |----- | ---------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------ |
 | Heiman Power Monitoring Plug                             | [HS2SK](https://zigbee.blakadder.com/Heiman_HS2SK.html)     | [AliExpress](https://www.aliexpress.com/item/Heiman-Zigbee-Power-Metering-Plug-EU-UK-US-Wall-socket-Control-Power-On-off-For-Smart/32839165490.html)     | <img src="https://zigbee.blakadder.com/assets/images/devices/Heiman_HS2SK.jpg">    | 2        | Monitor washing machine and tumbledryer, notify me when finished |
@@ -49,7 +49,7 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 | Lidl/SilverCrest power strip   3 plugs                 | [HG06338](https://zigbee.blakadder.com/Lidl_HG06338.html)     |      | <img src="https://zigbee.blakadder.com/assets/images/devices/Lidl_HG06338.jpg">    | 2        | One in my study for external monitors, laptop charger, and USB hub. Another for Christmas tree lights. |
 
 
-#### <a name="zigbee_lighting"></a> Lighting ####
+#### <a name="zigbeelighting"></a> Lighting ####
 
 | Model                   | Zigbee Device Compatibility Reference      | Buy     | Image                                                                                        | Quantity | Notes                                                            |
 | ------------------------|------|------|--------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------- |
@@ -61,7 +61,7 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 
 ## Software ##
 
-### <a name="software_integrations"></a> Integrations ###
+### <a name="softwareintegrations"></a> Integrations ###
 These are some of the integrations that I have set up for either day-to-day or occasional use.
 
 #### [AVM Fritz!Box Tools](https://www.home-assistant.io/integrations/fritz/) ####
