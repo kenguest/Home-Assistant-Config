@@ -381,11 +381,11 @@
       entity_id: input_datetime.hot_water_datetime
   mode: single
 - id: '1612019694641'
-  alias: 'Dishwasher: On at 07:00'
-  description: ''
+  alias: 'Dishwasher: On at 23:00'
+  description: Turn dishwasher on after flat rate kicks in
   trigger:
   - platform: time
-    at: 07:00
+    at: '23:01:00'
   condition: []
   action:
   - type: turn_on
@@ -617,6 +617,13 @@
   - service: notify.mobile_app_kens_phone
     data:
       message: Hey, the washing machine has finished and is ready to be emptied
+  - service: notify.mobile_app_kens_phone
+    data:
+      message: TTS
+      data:
+        chanel: alarm_stream
+        priotity: high
+        tts_text: Hey, the washing machine has finished and is ready to be emptied
   mode: single
 - id: '1614848795158'
   alias: 'Car kit: when connected enable automation re coming home'
@@ -757,7 +764,7 @@
     device_id: 8824d46f7a512a00d5fdd409de007530
     entity_id: sensor.lumi_lumi_sensor_motion_aq2_illuminance
     domain: sensor
-    below: 20
+    below: 25
   action:
   - domain: light
     entity_id: light.hall_light
@@ -826,7 +833,7 @@
     device_id: 29007fde37da4738c0b1e1fa0c8261ec
     entity_id: sensor.kitchen_sensor_illuminance
     domain: sensor
-    below: 30
+    below: 25
   action:
   - type: turn_on
     device_id: 8cf7d4c4d3cfaa116c0ca88b1f13632b
@@ -975,7 +982,7 @@
   action:
   - type: turn_on
     device_id: e9453ffdcd0ebf1d4f8d3207d4244866
-    entity_id: switch.tz3000_vmpbygs5_ts011f_on_off
+    entity_id: switch.laptop_charger
     domain: switch
   - type: turn_on
     device_id: e9453ffdcd0ebf1d4f8d3207d4244866
@@ -1804,4 +1811,32 @@
   - service: notify.mobile_app_kens_phone
     data:
       message: It isn't as humid in the ensuite, you can close the window now
+  mode: single
+- id: '1666397676117'
+  alias: Turn off laptop if not connected for 5 mins
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.work_laptop_wired
+    from: 'on'
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  condition: []
+  action:
+  - type: turn_off
+    device_id: e9453ffdcd0ebf1d4f8d3207d4244866
+    entity_id: switch.laptop_charger
+    domain: switch
+  - type: turn_off
+    device_id: e9453ffdcd0ebf1d4f8d3207d4244866
+    entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_3
+    domain: switch
+  - type: turn_off
+    device_id: e9453ffdcd0ebf1d4f8d3207d4244866
+    entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_2
+    domain: switch
   mode: single
