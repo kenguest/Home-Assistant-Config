@@ -146,21 +146,13 @@ binary_sensor:
 #  - platform: uptimerobot
 #    api_key: !secret uptimerobot_api_key
   - platform: workday
-    country: GB
+    country: IE
     add_holidays:
-      - '2022-01-03'
-      - '2022-01-04'
-      - '2022-01-05'
-      - '2022-01-06'
-      - '2022-02-07'
-      - '2022-02-08'
-      - '2022-02-09'
-      - '2022-02-10'
-      - '2022-02-11'
-      - '2022-03-17'
-      - '2022-06-06'
-      - '2022-07-04'
-      - '2022-07-05'
+      - '2022-10-03'
+      - '2022-10-04'
+      - '2022-10-05'
+      - '2022-10-06'
+      - '2022-10-07'
     remove_holidays:
       - '2022-06-03'
 
@@ -176,6 +168,9 @@ binary_sensor:
   - platform: ping
     name: Work Laptop
     host: 192.168.178.25
+  - platform: ping
+    name: Work Laptop (Wired)
+    host: 192.168.178.39
   - platform: ping
     name: TP-Link Repeater
     host: 192.168.178.26
