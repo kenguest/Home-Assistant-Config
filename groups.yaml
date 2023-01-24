@@ -5,6 +5,21 @@ bedsidelamps:
   - light.lightken_level_light_color_on_off
   - light.lightaisling_level_light_color_on_off
 
+christmaslights:
+  name: Christmas Lights
+  entities:
+  - switch.nativity_light
+  - switch.christmas_tree_lights_switch_4
+  - switch.christmas_tree_lights_switch_2
+  - switch.christmas_tree_lights_switch_3
+
+christmastreelights:
+  name: All Christmas Tree Lights
+  entities:
+  - switch.christmas_tree_lights_switch_4
+  - switch.christmas_tree_lights_switch_2
+  - switch.christmas_tree_lights_switch_3
+
 workcomputer:  
   name: Work
   entities:
