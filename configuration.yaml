@@ -238,8 +238,34 @@ shell_command:
 frontend:
   themes: !include_dir_merge_named themes
 
+climate:
+  - platform: generic_thermostat
+    name: Study
+    heater: switch.heater_study
+    target_sensor: sensor.study_weather_temperature
+
+  - platform: generic_thermostat
+    name: Guest Bedroom
+    heater: switch.guestbedroom_heater
+    target_sensor: sensor.guestbedroom_temperature
+
+  - platform: generic_thermostat
+    name: Master Bedroom
+    heater: switch.heater_master_bedroom
+    target_sensor: sensor.masterbedroom_temperature
+
 group: !include groups.yaml
-  
+
+template:
+  - trigger:
+      platform: time_pattern
+      minutes: "1"
+      seconds: "1"
+  - binary_sensor:
+      name: "Christmas Time"
+      state: >-
+        {{ ((now().month == 1 and now().day <= 6) or ( now().month == 12 ))}} 
+
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
