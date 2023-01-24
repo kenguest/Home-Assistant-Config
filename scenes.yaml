@@ -1,1 +1,34 @@
-[]
+- id: '1668197971501'
+  name: Landing light on
+  entities:
+    light.landing:
+      min_color_temp_kelvin: 2702
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 370
+      effect_list:
+      - colorloop
+      supported_color_modes:
+      - color_temp
+      - xy
+      off_with_transition: false
+      off_brightness:
+      friendly_name: Landing light
+      supported_features: 44
+      color_mode: color_temp
+      brightness: 186
+      color_temp_kelvin: 6451
+      color_temp: 155
+      hs_color:
+      - 44.098
+      - 2.43
+      rgb_color:
+      - 255
+      - 253
+      - 248
+      xy_color:
+      - 0.328
+      - 0.334
+      state: 'on'
+  icon: mdi:ceiling-light
+  metadata: {}
