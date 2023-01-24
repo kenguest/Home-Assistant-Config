@@ -194,11 +194,6 @@
     to: Finished
   condition: []
   action:
-  - service: notify.notify_via_pushbullet
-    data:
-      target: email/ken.guest@gmail.com
-      message: The tumble dryer has finished and is ready to be emptied!
-      title: Tumble dryer update
   - service: notify.mobile_app_kens_phone
     data:
       ttl: 0
@@ -361,16 +356,6 @@
       entity_id: water_heater.hotwater
       operation_mode: 'off'
     entity_id: water_heater.hotwater
-  - service: notify.notify_via_pushbullet
-    data:
-      message: The hot water has been on for 30 minutes. Switching off
-      target: email/ken.guest@gmail.com
-      title: Home Assistant
-  - service: notify.notify_via_pushbullet
-    data:
-      message: The hot water has been on for 30 minutes. Switching off
-      target: email/angelsunbeam@gmail.com
-      title: Home Assistant
   - service: notify.mobile_app_kens_phone
     data:
       message: The hot water has been on for 30 minutes. Switching off
@@ -494,6 +479,10 @@
     device_id: 722b620d26bd7ce8a669d56d9f43ba0a
     entity_id: binary_sensor.lumi_lumi_sensor_magnet_aq2_on_off
     domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 2
   condition:
   - condition: state
     entity_id: sun.sun
@@ -503,6 +492,11 @@
     device_id: b714b30ac81dd9ba9a22d7177bc139e3
     entity_id: light.study_light_level_on_off
     domain: light
+  - service: input_select.select_option
+    data:
+      option: door
+    target:
+      entity_id: input_select.input_select_study_light_actuator
   mode: single
 - id: '1613563604387'
   alias: Living room door opens
@@ -609,11 +603,6 @@
     for: 0:01:00
   condition: []
   action:
-  - service: notify.notify_via_pushbullet
-    data:
-      message: Hey, the washing machine has finished and is ready to be emptied
-      title: Washing Machine
-      target: email/ken.guest@gmail.com
   - service: notify.mobile_app_kens_phone
     data:
       message: Hey, the washing machine has finished and is ready to be emptied
@@ -624,6 +613,23 @@
         chanel: alarm_stream
         priotity: high
         tts_text: Hey, the washing machine has finished and is ready to be emptied
+  - service: media_player.play_media
+    target:
+      entity_id: media_player.office
+    data:
+      media_content_id: media-source://tts/google_translate?message=Hey%2C+the+washing+machine+has+finished+and+is+ready+to+be+emptied
+      media_content_type: provider
+    metadata:
+      title: Hey, the washing machine has finished and is ready to be emptied
+      thumbnail: https://brands.home-assistant.io/_/google_translate/logo.png
+      media_class: app
+      children_media_class:
+      navigateIds:
+      - {}
+      - media_content_type: app
+        media_content_id: media-source://tts
+      - media_content_type: provider
+        media_content_id: media-source://tts/google_translate?message=Hey%2C+the+washing+machine+has+finished+and+is+ready+to+be+emptied
   mode: single
 - id: '1614848795158'
   alias: 'Car kit: when connected enable automation re coming home'
@@ -885,6 +891,10 @@
     device_id: f8835a0621ca201abdb9634e8d71c0a7
     entity_id: binary_sensor.top_platform_ias_zone
     domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
   condition: []
   action:
   - type: turn_off
@@ -896,10 +906,10 @@
   alias: 'Top landing sensor: no motion turns off'
   description: ''
   trigger:
-  - type: not_occupied
+  - type: no_motion
     platform: device
     device_id: fa7bb20084ebf7eae9153e94a69c9fc7
-    entity_id: binary_sensor.top_landing_occupancy
+    entity_id: binary_sensor.top_landing_ias_zone
     domain: binary_sensor
   condition: []
   action:
@@ -1075,25 +1085,16 @@
       entity_id: input_select.dishwasher_status
       state: Clean
   action:
-  - service: notify.notify_via_pushbullet
-    data:
-      target: email/ken.guest@gmail.com
-      message: The dishwasher has finished and is ready to be emptied!
-      title: Dishwasher update
   - service: notify.mobile_app_kens_phone
     data:
       message: The dishwasher has finished and is ready to be emptied!
   - service: automation.turn_on
     data: {}
     entity_id: automation.dishwasher_consume_tablet_if_running
-  - service: notify.notify_via_pushbullet
-    data:
-      target: email/angelsunbeam@gmail.com
-      message: Dishwasher has finished
-      title: Dishwasher
   - service: automation.turn_on
     target:
       entity_id: automation.announce_dishwasher_finished
+    data: {}
   - type: turn_off
     device_id: 8f9eb20202baf76e6cbdbdcf86cae4b8
     entity_id: switch.switchdishwasher_on_off
@@ -1110,11 +1111,6 @@
     subtype: device_offline
   condition: []
   action:
-  - service: notify.notify_via_pushbullet
-    data:
-      target: email/ken.guest@gmail.com
-      message: top landing sensor is offline
-      title: Home Assistant
   - service: notify.mobile_app_kens_phone
     data:
       message: top landing sensor is offline
@@ -1438,12 +1434,13 @@
   description: ''
   trigger:
   - platform: time
-    at: '23:55'
+    at: '23:01:00'
   condition: []
   action:
   - service: climate.turn_off
     target:
       entity_id: climate.upstairs
+    data: {}
   mode: single
 - id: '1632774922435'
   alias: 'Announce: Robovac has started'
@@ -1742,15 +1739,6 @@
     for: 0:01:00
   condition: []
   action:
-  - service: notify.notify_via_pushbullet
-    data:
-      message: 'The hot water has been on for a minute. Did you mean to do this? '
-      target: email/ken.guest@gmail.com
-      title: Home Assistant
-  - service: notify.notify_via_pushbullet
-    data:
-      message: 'The hot water has been on for a minute. Did you mean to do this? '
-      target: email/angelsunbeam@gmail.com
   - service: notify.mobile_app_kens_phone
     data:
       message: TTS
@@ -1768,12 +1756,20 @@
   trigger:
   - platform: time
     at: '13:02:00'
-  condition: []
+  condition:
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: 'on'
   action:
   - device_id: b714b30ac81dd9ba9a22d7177bc139e3
     domain: light
     entity_id: light.study_light_level_on_off
     type: flash
+  - type: turn_off
+    device_id: b714b30ac81dd9ba9a22d7177bc139e3
+    entity_id: light.study_light_level_on_off
+    domain: light
+    enabled: true
   - type: turn_off
     device_id: b714b30ac81dd9ba9a22d7177bc139e3
     entity_id: light.study_light_level_on_off
@@ -1839,4 +1835,366 @@
     device_id: e9453ffdcd0ebf1d4f8d3207d4244866
     entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_2
     domain: switch
+  mode: single
+- id: '1667320063920'
+  alias: Turn on study light if too dark
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.study_illuminance
+    below: 45
+  condition:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: binary_sensor.work_laptop
+      state: 'on'
+    - condition: and
+      conditions:
+      - condition: state
+        entity_id: binary_sensor.work_laptop_wired
+        state: 'on'
+      - condition: not
+        conditions:
+        - condition: state
+          entity_id: input_select.input_select_study_light_actuator
+          state: door
+  action:
+  - type: turn_on
+    device_id: b714b30ac81dd9ba9a22d7177bc139e3
+    entity_id: light.study_light_level_on_off
+    domain: light
+  - service: input_select.select_option
+    data:
+      option: other
+    target:
+      entity_id: input_select.input_select_study_light_actuator
+  mode: single
+- id: '1669051788830'
+  alias: Tell Ken someone is at the door
+  description: When doorbell goes off, and Ken is home...
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.kens_phone_last_notification
+    to:
+    - Click to return to the Doorbell Answer Page
+  condition:
+  - condition: zone
+    entity_id: person.ken_guest
+    zone: zone.home
+  action:
+  - type: turn_on
+    device_id: 7ab073c9430e868c28fcb943989e68d9
+    entity_id: light.hall_light
+    domain: light
+  - service: notify.mobile_app_kens_phone
+    data:
+      message: TTS
+      data:
+        chanel: alarm_stream
+        priotity: high
+        tts_text: There's somebody at the door.
+  mode: single
+- id: '1669239928759'
+  alias: Flash front kitchen light if fridge open too long - 30s
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: 1c9b5deff7163f1652f08394c454bd39
+    entity_id: binary_sensor.door_fridge
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 30
+  condition: []
+  action:
+  - service: scene.create
+    data:
+      scene_id: beforeflash
+      snapshot_entities: light.front_kitchen_light
+  - device_id: 3f95f5b29214187c4df9e8a746b587b0
+    domain: light
+    entity_id: light.front_kitchen_light
+    type: flash
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 2
+      milliseconds: 0
+  - device_id: 3f95f5b29214187c4df9e8a746b587b0
+    domain: light
+    entity_id: light.front_kitchen_light
+    type: flash
+  - service: scene.turn_on
+    data: {}
+    target:
+      entity_id: scene.beforeflash
+  mode: single
+- id: '1669240722284'
+  alias: Freezer door open too long - 30s
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: a43cb826511892354d43d4819007a957
+    entity_id: binary_sensor.door_freezer
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 30
+  condition: []
+  action:
+  - device_id: 3f95f5b29214187c4df9e8a746b587b0
+    domain: light
+    entity_id: light.front_kitchen_light
+    type: flash
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 2
+      milliseconds: 0
+  - device_id: 3f95f5b29214187c4df9e8a746b587b0
+    domain: light
+    entity_id: light.front_kitchen_light
+    type: flash
+  mode: single
+- id: '1670067056107'
+  alias: You have a visitor at the door (Ken)
+  description: When doorbell goes off, and Ken is home...
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.kens_phone_last_notification
+    to:
+    - '[Lothlorien] You have a visitor.'
+  condition:
+  - condition: zone
+    entity_id: person.ken_guest
+    zone: zone.home
+  action:
+  - type: turn_on
+    device_id: 7ab073c9430e868c28fcb943989e68d9
+    entity_id: light.hall_light
+    domain: light
+  - service: notify.mobile_app_kens_phone
+    data:
+      message: TTS
+      data:
+        chanel: alarm_stream
+        priotity: high
+        tts_text: There's somebody at the door.
+  mode: single
+- id: '1670618184363'
+  alias: Main  Bathroom light on
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: 2eaac5822bfb819f9100a655154b56cd
+    entity_id: binary_sensor.mainbathroom_iaszone
+    domain: binary_sensor
+  condition:
+  - type: is_illuminance
+    condition: device
+    device_id: 2eaac5822bfb819f9100a655154b56cd
+    entity_id: sensor.mainbathroom_illuminance
+    domain: sensor
+    below: 30
+  action:
+  - type: turn_on
+    device_id: 5cc2e0c9d816959426be82c9185a2ba8
+    entity_id: light.main_bathroom
+    domain: light
+  mode: single
+- id: '1670618327475'
+  alias: 'Turn off main Bathroom light when not occupied '
+  description: ''
+  trigger:
+  - type: not_occupied
+    platform: device
+    device_id: 2eaac5822bfb819f9100a655154b56cd
+    entity_id: binary_sensor.mainbathroom_occupancy
+    domain: binary_sensor
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 5cc2e0c9d816959426be82c9185a2ba8
+    entity_id: light.main_bathroom
+    domain: light
+  mode: single
+- id: '1670797807938'
+  alias: Front door opens
+  description: 'Turn on Hall light when too dark and front door opens '
+  trigger:
+  - type: opened
+    platform: device
+    device_id: 07f7bfed7f847d4f7b33dd6077a2c9e8
+    entity_id: binary_sensor.front_door
+    domain: binary_sensor
+  condition:
+  - type: is_illuminance
+    condition: device
+    device_id: 38d387756940bbaa22259ac8279bef9c
+    entity_id: sensor.hall_illuminance_seperate
+    domain: sensor
+    below: 9
+  action:
+  - type: turn_on
+    device_id: 7ab073c9430e868c28fcb943989e68d9
+    entity_id: light.hall_light
+    domain: light
+  mode: single
+- id: '1671018025408'
+  alias: Turn off study light if bright enough
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.study_illuminance
+    above: 165
+  condition:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: binary_sensor.work_laptop
+      state: 'on'
+    - condition: or
+      conditions:
+      - condition: state
+        entity_id: binary_sensor.work_laptop_wired
+        state: 'on'
+  action:
+  - type: turn_off
+    device_id: b714b30ac81dd9ba9a22d7177bc139e3
+    entity_id: light.study_light_level_on_off
+    domain: light
+  - service: input_select.select_option
+    data:
+      option: other
+    target:
+      entity_id: input_select.input_select_study_light_actuator
+  mode: single
+- id: '1672691608985'
+  alias: 'Bed time during Christmas '
+  description: Turn off the Christmas tree and nativity lights
+  trigger:
+  - platform: state
+    entity_id: input_select.home_mode_status
+    to: Bed time
+    for: 00:00:02
+  condition:
+  - condition: state
+    entity_id: binary_sensor.christmas_time
+    state: 'on'
+  action:
+  - type: turn_off
+    device_id: c7634706e5355f60ae89b69a32e95938
+    entity_id: switch.christmas_tree_lights_switch_4
+    domain: switch
+  - type: turn_off
+    device_id: 9bd5db4e258fb399874a670f894fedfc
+    entity_id: switch.nativity_light
+    domain: switch
+  - type: turn_off
+    device_id: c7634706e5355f60ae89b69a32e95938
+    entity_id: switch.christmas_tree_lights_switch_2
+    domain: switch
+  - type: turn_off
+    device_id: c7634706e5355f60ae89b69a32e95938
+    entity_id: switch.christmas_tree_lights_switch_3
+    domain: switch
+  mode: single
+- id: '1672782475912'
+  alias: Christmas lights on at 4pm
+  description: ''
+  trigger:
+  - platform: time
+    at: '16:00:00'
+  condition:
+  - condition: state
+    entity_id: binary_sensor.christmas_time
+    state: 'on'
+  action:
+  - type: turn_on
+    device_id: 9bd5db4e258fb399874a670f894fedfc
+    entity_id: switch.nativity_light
+    domain: switch
+  - type: turn_on
+    device_id: c7634706e5355f60ae89b69a32e95938
+    entity_id: switch.christmas_tree_lights_switch_2
+    domain: switch
+  - type: turn_on
+    device_id: c7634706e5355f60ae89b69a32e95938
+    entity_id: switch.christmas_tree_lights_switch_3
+    domain: switch
+  - type: turn_on
+    device_id: c7634706e5355f60ae89b69a32e95938
+    entity_id: switch.christmas_tree_lights_switch_4
+    domain: switch
+  mode: single
+- id: '1673133775025'
+  alias: TV timer finishes
+  description: ''
+  trigger:
+  - platform: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.tv_timer
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 45edff43ad45570ac0e014272b085396
+    entity_id: switch.tv
+    domain: switch
+  mode: single
+- id: '1673303439347'
+  alias: Study climate off
+  description: Turn off climate control in study when occupancy clears
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.study_occupancy
+    from: 'on'
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 10
+  condition: []
+  action:
+  - service: climate.turn_off
+    data: {}
+    target:
+      entity_id: climate.study
+  mode: single
+- id: '1674073261336'
+  alias: Floodlight on for 5 mins when patio door opens at night time
+  description: 'Turn on Garden floodlight for 5 minutes '
+  trigger:
+  - type: opened
+    platform: device
+    device_id: 478dbbf6370d0f5d8b5d63c43534298d
+    entity_id: binary_sensor.patio_door
+    domain: binary_sensor
+  condition:
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
+  action:
+  - type: turn_on
+    device_id: ad5d1fee89697033117094acb0072d4d
+    entity_id: light.garden_floodlight
+    domain: light
+  - delay:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  - type: turn_off
+    device_id: ad5d1fee89697033117094acb0072d4d
+    entity_id: light.garden_floodlight
+    domain: light
   mode: single
