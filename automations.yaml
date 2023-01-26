@@ -196,8 +196,11 @@
   action:
   - service: notify.mobile_app_kens_phone
     data:
-      ttl: 0
       message: The tumble dryer has finished and is ready to be emptied!
+    enabled: true
+  - service: automation.trigger
+    target:
+      entity_id: automation.announce_tumble_dryer_finished
   - type: turn_off
     device_id: 0c8c3b79d94692008ba3e0fc927a553e
     entity_id: switch.plugtumble_dryer_on_off
@@ -606,13 +609,6 @@
   - service: notify.mobile_app_kens_phone
     data:
       message: Hey, the washing machine has finished and is ready to be emptied
-  - service: notify.mobile_app_kens_phone
-    data:
-      message: TTS
-      data:
-        chanel: alarm_stream
-        priotity: high
-        tts_text: Hey, the washing machine has finished and is ready to be emptied
   - service: media_player.play_media
     target:
       entity_id: media_player.office
@@ -1314,6 +1310,23 @@
         chanel: alarm_stream
         priotity: high
         tts_text: The dishwasher has finished and is ready to be emptied
+  mode: single
+- id: '1630275244097'
+  alias: 'Announce: Tumble dryer finished'
+  description: ''
+  trigger: []
+  condition:
+  - condition: state
+    entity_id: input_select.voice_announcements_status
+    state: Enabled
+  action:
+  - service: notify.mobile_app_kens_phone
+    data:
+      message: TTS
+      data:
+        chanel: alarm_stream
+        priotity: high
+        tts_text: Hey, the tumble dryer has finished and is ready to be emptied
   mode: single
 - id: '1630277358628'
   alias: Reset voice mode
