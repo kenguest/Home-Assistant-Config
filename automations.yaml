@@ -1120,9 +1120,13 @@
   description: Turn off everything apart from lights in master bedroom
   trigger:
   - platform: state
-    entity_id: input_select.home_mode_status
+    entity_id:
+    - input_select.home_mode_status
     to: Bed time
-    for: 00:00:02
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
   condition: []
   action:
   - service: light.turn_off
@@ -2171,8 +2175,8 @@
       entity_id: climate.study
   mode: single
 - id: '1674073261336'
-  alias: Floodlight on for 5 mins when patio door opens at night time
-  description: 'Turn on Garden floodlight for 5 minutes '
+  alias: Floodlight on when patio door opens at night time
+  description: ''
   trigger:
   - type: opened
     platform: device
@@ -2188,13 +2192,45 @@
     device_id: ad5d1fee89697033117094acb0072d4d
     entity_id: light.garden_floodlight
     domain: light
-  - delay:
-      hours: 0
-      minutes: 5
-      seconds: 0
-      milliseconds: 0
+  mode: single
+- id: '1674760833235'
+  alias: Patio door closes - floodlight off
+  description: ''
+  trigger:
+  - type: not_opened
+    platform: device
+    device_id: 478dbbf6370d0f5d8b5d63c43534298d
+    entity_id: binary_sensor.patio_door
+    domain: binary_sensor
+  condition:
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
+  action:
   - type: turn_off
     device_id: ad5d1fee89697033117094acb0072d4d
     entity_id: light.garden_floodlight
     domain: light
+  mode: single
+- id: '1674774776841'
+  alias: Pause study speaker when occupied and Ken's phong rings
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.kens_phone_audio_mode
+    to: ringing
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 2
+  condition:
+  - condition: state
+    entity_id: binary_sensor.study_occupancy
+    state: 'on'
+  action:
+  - service: media_player.media_pause
+    data: {}
+    target:
+      entity_id: media_player.office
   mode: single
