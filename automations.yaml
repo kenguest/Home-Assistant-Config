@@ -2064,6 +2064,11 @@
     device_id: 7ab073c9430e868c28fcb943989e68d9
     entity_id: light.hall_light
     domain: light
+  - service: input_select.select_option
+    data:
+      option: Normal
+    target:
+      entity_id: input_select.home_mode_status
   mode: single
 - id: '1671018025408'
   alias: Turn off study light if bright enough
@@ -2246,4 +2251,45 @@
     data: {}
     target:
       entity_id: media_player.office
+  mode: single
+- id: '1674949388037'
+  alias: 'TV: Turn off after 10 mins of nothing being cast to it'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - media_player.tv
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 45edff43ad45570ac0e014272b085396
+    entity_id: switch.tv
+    domain: switch
+  mode: single
+- id: '1675075601504'
+  alias: Resume sonos play in study after phone call
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.kens_phone_audio_mode
+    to: normal
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 2
+  condition:
+  - condition: state
+    entity_id: binary_sensor.study_occupancy
+    state: 'on'
+  action:
+  - service: media_player.media_play
+    data: {}
+    target:
+      device_id: 04709d026c7d06327bb9f6c6ce0bf98d
   mode: single
