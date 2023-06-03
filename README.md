@@ -63,7 +63,7 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 | Eglo Dimmable Warm White Vintage styled E27 Bulb  | [TLSR82xx](https://zigbee.blakadder.com/AwoX_33948.html)  | [Amazon.co.uk](https://www.amazon.co.uk/-/en/gp/product/B09FTBSCGW/ref=ppx_yo_dt_b_asin_title_o00_s00?ie=UTF8&th=1)     | <img  height="150px" width="150px" src="./images/AwoX_33948.webp">  | 2        | Lights in kitchen.   |
 | ERIA Smart Dimmable Warm White B22 Light Bulb | [Eria Smart Dimmable Warm White B22 Light Bulb](https://connectit.ie/products/smart-dimmable-warm-white-b22-light-bulb-eria-a60-9w) | [AduroSmart_81810](https://zigbee.blakadder.com/AduroSmart_81810.html) | <img  height="150px" width="150px" src="./images/ERIAA609WSmartDimmableWarmWhiteB22LightBulb_400x.webp"> | 2 | Main light for guest room, and also for en-suite. |
 | Hive Dimmable B22 Bulb  | [HALIGHTDIMWWB22](https://zigbee.blakadder.com/Hive_HALIGHTDIMWWB22.html)     | [Amazon.co.uk](https://www.amazon.co.uk/Hive-Lights-Dimmable-Bayonet-Smart/dp/B01I3T67EC/)     | <img  height="150px" width="150px" src="./images/Hive_HALIGHTDIMWWB22.webp">      | 5        | Lights in hall, landing, laundry room  and cloakroom.   |
-| Lidl Livarno Home outdoor floodlight | [HG08010](https://www.zigbee2mqtt.io/devices/HG08010.html)     | | <img  height="150px" width="150px" src="./images/HG08010.jpg">      | 1        | Floodlight for back garden|
+| Lidl Livarno Home outdoor floodlight | [HG08010](https://zigbee.blakadder.com/Lidl_HG08010.html)     | | <img  height="150px" width="150px" src="./images/HG08010.jpg">      | 1        | Floodlight for back garden. On when the patio door is opened at night-time, off when it's closed.|
 
 
 ## Software ##
