@@ -114,6 +114,9 @@ sensor:
       tumbledryer_status:
         value_template: '{{states.input_select.tumbledryer_status.state}}'
         friendly_name: 'Tumbledryer Status'
+      kens_alarm:
+        value_template: '{{now().strftime("%a %h %d %H:%M %Z %Y") == (((state_attr("sensor.kens_phone_next_alarm", "Time in Milliseconds") | int / 1000)) | timestamp_custom("%a %h %d %H:%M %Z %Y"))}}'
+        friendly_name: 'Ken''s Alarm'
   - platform: systemmonitor
     resources:
       - type: disk_use_percent
@@ -195,6 +198,9 @@ binary_sensor:
   - platform: ping
     name: KitchenCam
     host: 192.168.178.40
+  - platform: ping
+    name: Sonos (Study)
+    host: 192.168.178.42
 
 # Create a group for referring to the kitchen lights at once
 light:
@@ -243,11 +249,15 @@ climate:
     name: Study
     heater: switch.heater_study
     target_sensor: sensor.study_weather_temperature
+    cold_tolerance: 0
+    hot_tolerance: 0
 
   - platform: generic_thermostat
     name: Guest Bedroom
     heater: switch.guestbedroom_heater
     target_sensor: sensor.guestbedroom_temperature
+    cold_tolerance: 0
+    hot_tolerance: 0.5
 
   - platform: generic_thermostat
     name: Master Bedroom
