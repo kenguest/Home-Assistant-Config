@@ -2109,6 +2109,10 @@
   - condition: state
     entity_id: sun.sun
     state: below_horizon
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
   action:
   - type: turn_on
     device_id: ad5d1fee89697033117094acb0072d4d
@@ -2684,4 +2688,73 @@
       skip_condition: false
     target:
       entity_id: automation.announce_freezer_door_open_for_two_minutes
+  mode: single
+- id: '1686523697673'
+  alias: 'Announce: Fridge door open for two minutes'
+  description: ''
+  trigger: []
+  condition: []
+  action:
+  - service: notify.mobile_app_kens_phone
+    data:
+      message: TTS
+      data:
+        channel: alarm_stream
+        priority: high
+        tts_text: The fridge door has been open for two minutes. Please check everything
+          is ok. Repeat. The fridge door has been open for two minutes.
+  - service: media_player.play_media
+    target:
+      entity_id: media_player.office
+    data:
+      media_content_id: media-source://tts/google_translate?message=The+fridge+door+has+been+open+for+two+minutes.+Please+check+everything+is+ok.+Repeat%3A+The+fridge+door+has+been+open+for+two+minutes.
+      media_content_type: provider
+    metadata:
+      title: 'The fridge door has been open for two minutes. Please check everything
+        is ok. Repeat: The fridge door has been open for two minutes.'
+      thumbnail: https://brands.home-assistant.io/_/google_translate/logo.png
+      media_class: app
+      children_media_class:
+      navigateIds:
+      - {}
+      - media_content_type: app
+        media_content_id: media-source://tts
+      - media_content_type: provider
+        media_content_id: media-source://tts/google_translate?message=The+fridge+door+has+been+open+for+two+minutes.+Please+check+everything+is+ok.+Repeat%3A+The+fridge+door+has+been+open+for+two+minutes.
+  mode: single
+- id: '1686523802904'
+  alias: Fridge door open for two minutes
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: 1c9b5deff7163f1652f08394c454bd39
+    entity_id: binary_sensor.door_fridge
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 2
+      seconds: 0
+  condition: []
+  action:
+  - service: automation.trigger
+    data:
+      skip_condition: false
+    target:
+      entity_id: automation.announce_fridge_door_open_for_two_minutes
+  mode: single
+- id: '1686690807109'
+  alias: Fan timer finished
+  description: Turn off fan
+  trigger:
+  - platform: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.fan_timer
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 45edff43ad45570ac0e014272b085396
+    entity_id: switch.tz3000_vmpbygs5_ts011f_switch
+    domain: switch
   mode: single
