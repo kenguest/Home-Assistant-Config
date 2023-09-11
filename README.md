@@ -104,8 +104,8 @@ e.g. standard work week with Bank Holidays taken into consideration.
 This means that monitors don't get turned on automatically on weekends or any
 other day when I shouldn't need them.
 
-## To do / More ideas##
+## To do / More ideas ##
   * Door sensor on the letterbox. 
   * Add door sensor and lights for the attic.
   * Pause/restart robovac in the kitchen when motion detected. 
-  * 
+  
