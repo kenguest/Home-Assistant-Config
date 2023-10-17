@@ -132,14 +132,26 @@
   - service: notify.mobile_app_kens_phone
     data:
       message: The tumble dryer has finished and is ready to be emptied!
+      data:
+        persistent: true
+        tag: tumbledryer
+        actions:
+        - action: TUMBLE_DRYER_EMPTIED
+          title: Mark tumbledryer emptied.
     enabled: true
   - service: automation.trigger
     target:
       entity_id: automation.announce_tumble_dryer_finished
+    data:
+      skip_condition: true
   - type: turn_off
     device_id: 0c8c3b79d94692008ba3e0fc927a553e
     entity_id: switch.plugtumble_dryer_on_off
     domain: switch
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.tumble_dryer_emptied
   mode: single
 - id: '1610534431581'
   alias: When Ken comes home turn on lights
@@ -266,32 +278,6 @@
       datetime: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }}'
     target:
       entity_id: input_datetime.hot_water_datetime
-  mode: single
-- id: '1612019694641'
-  alias: 'Dishwasher: On at 23:00'
-  description: Turn dishwasher on after flat rate kicks in
-  trigger:
-  - platform: time
-    at: '23:01:00'
-  condition: []
-  action:
-  - type: turn_on
-    device_id: 8f9eb20202baf76e6cbdbdcf86cae4b8
-    entity_id: switch.switchdishwasher_on_off
-    domain: switch
-  mode: single
-- id: '1612019785353'
-  alias: 'Dishwasher: Off at 00:00'
-  description: ''
-  trigger:
-  - platform: time
-    at: 00:00
-  condition: []
-  action:
-  - type: turn_off
-    device_id: 8f9eb20202baf76e6cbdbdcf86cae4b8
-    entity_id: switch.switchdishwasher_on_off
-    domain: switch
   mode: single
 - id: '1612046712949'
   alias: 'Dishwasher: Consume tablet if running'
@@ -996,6 +982,12 @@
   - service: notify.mobile_app_kens_phone
     data:
       message: The dishwasher has finished and is ready to be emptied!
+      data:
+        persistent: true
+        tag: dishwasher
+        actions:
+        - action: DISHWASHER_EMPTIED
+          title: Confirm dishwasher emptied.
   - service: automation.turn_on
     data: {}
     entity_id: automation.dishwasher_consume_tablet_if_running
@@ -1007,6 +999,10 @@
     device_id: 8f9eb20202baf76e6cbdbdcf86cae4b8
     entity_id: switch.switchdishwasher_on_off
     domain: switch
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.dishwasher_emptied
   mode: single
 - id: '1620768476628'
   alias: 'Top landing sensor: Send alert if offline'
@@ -3214,4 +3210,45 @@
     data: {}
     target:
       entity_id: input_boolean.washing_machine_emptied
+  mode: single
+- id: '1697578374544'
+  alias: Notify - tumble dryer emptied
+  description: set the tumble dryer emptied boolean to empty
+  trigger:
+  - platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: TUMBLE_DRYER_EMPTIED
+  condition: []
+  action:
+  - service: notify.mobile_app_kens_phone
+    data:
+      data:
+        tag: tumbledryer
+      message: clear_notification
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.tumble_dryer_emptied
+  mode: single
+- id: '1697578648523'
+  alias: Notify - dishwasher emptied action
+  description: set the dishwasher emptied boolean to empty
+  trigger:
+  - platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: DISHWASHER_EMPTIED
+  condition: []
+  action:
+  - service: notify.mobile_app_kens_phone
+    data:
+      data:
+        tag: dishwasher
+      message: clear_notification
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id:
+      - input_boolean.dishwasher_emptied
   mode: single
