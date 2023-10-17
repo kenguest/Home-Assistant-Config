@@ -7,6 +7,9 @@ usb:
 tts:
   - platform: google_translate
   
+
+birthdays: !include birthdays.yaml
+
 http:
     ssl_certificate: /ssl/fullchain.pem
     ssl_key: /ssl/privkey.pem
@@ -85,8 +88,8 @@ input_text:
 recorder:
   commit_interval: 5
 sensor:
-  - platform: dnsip
-    name: external_ip
+#  - platform: dnsip
+#    name: external_ip
   - platform: integration
     name: dishwasher_energy_spent
     source: sensor.switchdishwasher_smartenergy_metering
@@ -102,10 +105,6 @@ sensor:
     source: sensor.plugwashing_machine_smartenergy_metering
     unit_prefix: k
     round: 2
-  - platform: pushbullet
-    api_key: !secret pushbullet_api_key
-    monitored_conditions:
-      - body
   - platform: template
     sensors:
       washing_machine_status:
@@ -133,11 +132,13 @@ sensor:
     display_options:
       - "time"
       - "date"
-  - platform: command_line
-    name: CPU Temperature
-    command: "cat /sys/class/thermal/thermal_zone0/temp"
-    unit_of_measurement: "°C"
-    value_template: '{{ value | multiply(0.001) }}'
+
+command_line:
+  - binary_sensor:
+      name: CPU Temperature
+      command: "cat /sys/class/thermal/thermal_zone0/temp"
+      value_template: '{{ value | multiply(0.001) }}'
+
 
 notify:
   - name: notify_via_pushbullet
@@ -148,16 +149,16 @@ notify:
 binary_sensor:
 #  - platform: uptimerobot
 #    api_key: !secret uptimerobot_api_key
-  - platform: workday
-    country: IE
-    add_holidays:
-      - '2022-10-03'
-      - '2022-10-04'
-      - '2022-10-05'
-      - '2022-10-06'
-      - '2022-10-07'
-    remove_holidays:
-      - '2022-06-03'
+#  - platform: workday
+#    country: IE
+#    add_holidays:
+#      - '2022-10-03'
+#      - '2022-10-04'
+#      - '2022-10-05'
+#      - '2022-10-06'
+#      - '2022-10-07'
+#    remove_holidays:
+#      - '2022-06-03'
 
   - platform: ping
     name: Chromecast
@@ -173,7 +174,7 @@ binary_sensor:
     host: 192.168.178.25
   - platform: ping
     name: Work Laptop (Wired)
-    host: 192.168.178.39
+    host: 192.168.178.47
   - platform: ping
     name: TP-Link Repeater
     host: 192.168.178.26
@@ -221,7 +222,7 @@ light:
     - light.cats_room
     - light.cloak_room
     - light.front_kitchen_light
-    - light.guest_room
+#    - light.guest_room
     - light.hall_light
     - light.landing
     - light.laundry_room_light
@@ -281,6 +282,17 @@ script: !include scripts.yaml
 scene: !include scenes.yaml
 homeassistant:
   customize: !include customize.yaml
+
+wake_on_lan:
+  - name: TramexKWG
+    mac_address: 08-8F-C3-5A-C8-D7
+    host: 192.168.178.47
+
+switch:
+  - platform: wake_on_lan
+    mac: 08-8F-C3-5A-C8-D7
+    name: "WakeTramexKWG"
+    host: 192.168.178.47
 
 zha:
   zigpy_config:
