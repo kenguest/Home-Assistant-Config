@@ -571,11 +571,6 @@
     data: {}
     target:
       entity_id: automation.egg_boiler
-  - service: notify.notify_via_pushbullet
-    data:
-      message: The egg cooker has finished
-      title: Home Assistant
-      target: email/ken.guest@gmail.com
   - service: notify.mobile_app_kens_phone
     data:
       message: TTS
@@ -1379,6 +1374,10 @@
       entity_id: automation.announce_robovac_has_started
     data:
       skip_condition: true
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.robovac_cleaning
   mode: single
 - id: '1631994672786'
   alias: Turn off downstairs heating at night
@@ -1491,11 +1490,20 @@
     from: returning
   condition: []
   action:
-  - service: automation.trigger
+  - if:
+    - condition: state
+      entity_id: input_boolean.robovac_cleaning
+      state: 'on'
+    then:
+    - service: automation.trigger
+      target:
+        entity_id: automation.announce_robovac_has_finished
+      data:
+        skip_condition: true
+  - service: input_boolean.turn_off
+    data: {}
     target:
-      entity_id: automation.announce_robovac_has_finished
-    data:
-      skip_condition: true
+      entity_id: input_boolean.robovac_cleaning
   mode: single
 - id: '1634844322650'
   alias: Cats light on when sensor detects motion
@@ -2159,8 +2167,8 @@
     domain: binary_sensor
   condition:
   - condition: state
-    entity_id: sun.sun
-    state: below_horizon
+    entity_id: light.garden_floodlight
+    state: 'on'
   action:
   - type: turn_off
     device_id: ad5d1fee89697033117094acb0072d4d
@@ -3371,4 +3379,26 @@
   action:
   - service: presence_simulation.stop
     data: {}
+  mode: single
+- id: '1699639907048'
+  alias: Front door light on when Ken approaches home
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id:
+    - proximity.home_ken
+    below: 200
+  condition:
+  - condition: not
+    conditions:
+    - condition: zone
+      entity_id: person.ken_guest
+      zone: zone.home
+  - condition: sun
+    after: sunset
+  action:
+  - service: light.turn_on
+    data: {}
+    target:
+      entity_id: light.front_door_light
   mode: single

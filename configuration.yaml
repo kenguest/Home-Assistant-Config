@@ -7,6 +7,29 @@ usb:
 tts:
   - platform: google_translate
   
+proximity:
+  home:
+    devices:
+      - device_tracker.aisling_s_phone
+      - device_tracker.ken_s_phone
+    tolerance: 50
+    unit_of_measurement: m  
+  home_aisling:
+    devices:
+      - person.aisling
+    tolerance: 50
+    unit_of_measurement: m
+  home_ken:
+    devices:
+      - person.ken_guest
+    tolerance: 50
+    unit_of_measurement: m
+  hpra:
+    zone: h_p_r_a
+    devices:
+      - person.aisling
+    tolerance: 2
+    unit_of_measurement: m  
 
 birthdays: !include birthdays.yaml
 
