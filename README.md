@@ -76,6 +76,9 @@ These are some of the integrations that I have set up for either day-to-day or o
 #### [AVM Fritz!Box Tools](https://www.home-assistant.io/integrations/fritz/) ####
 Used for presence detection, and for remotely rebooting/reconnecting the Internet connection.
 
+#### [Eufy Robovac](https://github.com/CodeFoodPixels/robovac/) ####
+Integration for scheduling a Eufy Robovac to run twice a day, pausing it when motion detected. The Eufy app only allows for one scheduled run per day.
+
 #### [EventSensor](https://github.com/azogue/eventsensor) ####
 Installed via HACS and used to make the Sonoff wireless switch events show as distinct/eaiser debugged in the Logbook -
 [additional notes on using EventSensor here](https://community.home-assistant.io/t/unable-to-pair-sonoff-zigbee-snzb-01-wb-01-buttons/218324/19), along with some on how to integrate natively. 
