@@ -213,25 +213,6 @@
     entity_id: switch.tz3000_00mk2xzy_ts011f_d04c09fe_on_off
     domain: switch
   mode: single
-- id: '1610960359066'
-  alias: Study light on at 9am on  mondays
-  description: ''
-  trigger:
-  - platform: time
-    at: 09:00
-  condition:
-  - condition: time
-    weekday:
-    - mon
-  - condition: state
-    entity_id: binary_sensor.workday_sensor
-    state: '''on'''
-  action:
-  - type: turn_on
-    device_id: 8cf7d4c4d3cfaa116c0ca88b1f13632b
-    entity_id: 51d68a415ccd72aecae349e858995853
-    domain: light
-  mode: single
 - id: '1611335214798'
   alias: 'Bedroom heater: on  for lunch time if too cold'
   description: ''
@@ -324,27 +305,6 @@
     data: {}
     entity_id: automation.kettle_turn_off_after_4_minutes
   mode: single
-- id: '1612879720405'
-  alias: Hall light on  at 16:10
-  description: ''
-  trigger:
-  - platform: time
-    at: '16:10'
-  condition:
-  - condition: time
-    weekday:
-    - mon
-    - tue
-    - wed
-    - thu
-    - fri
-  action:
-  - type: turn_on
-    device_id: 7ab073c9430e868c28fcb943989e68d9
-    entity_id: light.hall_light
-    domain: light
-    brightness_pct: 100
-  mode: single
 - id: '1613215949927'
   alias: 'System: Reconnect Fritzbox'
   description: ''
@@ -353,9 +313,12 @@
     at: 04:00:00
   condition: []
   action:
-  - service: fritz.reconnect
-    data:
-      device_id: 1cca47285a044462f70e54d933d50ce2
+  - service: button.press
+    metadata: {}
+    data: {}
+    target:
+      entity_id:
+      - button.fritz_box_7530_reconnect_2
   mode: single
 - id: '1613470132446'
   alias: Study door opens
@@ -517,21 +480,12 @@
     then:
     - service: media_player.play_media
       target:
-        entity_id: media_player.office
+        entity_id:
+        - media_player.office
+        - media_player.tramexkwg
       data:
-        media_content_id: media-source://tts/google_translate?message=Hey%2C+the+washing+machine+has+finished+and+is+ready+to+be+emptied
-        media_content_type: provider
-      metadata:
-        title: Hey, the washing machine has finished and is ready to be emptied
-        thumbnail: https://brands.home-assistant.io/_/google_translate/logo.png
-        media_class: app
-        children_media_class:
-        navigateIds:
-        - {}
-        - media_content_type: app
-          media_content_id: media-source://tts
-        - media_content_type: provider
-          media_content_id: media-source://tts/google_translate?message=Hey%2C+the+washing+machine+has+finished+and+is+ready+to+be+emptied
+        media_content_id: http://192.168.178.31:8123/local/recordings/washingMachineFinished.mp3
+        media_content_type: music
   mode: single
 - id: '1614848795158'
   alias: 'Car kit: when connected enable automation re coming home'
@@ -575,26 +529,29 @@
     data:
       message: TTS
       data:
-        priotity: high
+        priority: high
         tts_text: Listen up. The egg cooker has finished.
-        chanel: alarm_stream
+        channel: alarm_stream
   - service: notify.mobile_app_kens_phone
     data:
       message: The egg cooker has finished
   mode: single
 - id: '1616093952307'
-  alias: Cloak room door opens
+  alias: Cloak room door opens and light is off
   description: ''
   trigger:
   - platform: state
     from: 'off'
     to: 'on'
     entity_id: binary_sensor.lumi_lumi_sensor_magnet_aq2_a9c35302_on_off
-  condition: []
-  action:
-  - type: toggle
-    device_id: 56c4719e543e20c7f933d79e3a1a3b87
+  condition:
+  - condition: state
     entity_id: light.cloak_room
+    state: 'off'
+  action:
+  - type: turn_on
+    device_id: 56c4719e543e20c7f933d79e3a1a3b87
+    entity_id: 272c8de48e8d872bac868e852d6d6157
     domain: light
   mode: single
 - id: '1616094003846'
@@ -653,21 +610,17 @@
       entity_id: automation.master_bedroom_door_opens
   mode: single
 - id: '1617219746837'
-  alias: Hall light on when sensor detects motion
+  alias: Hall light on when hall sensor detects motion
   description: ''
   trigger:
-  - platform: device
-    domain: binary_sensor
-    entity_id: binary_sensor.lumi_lumi_sensor_motion_aq2_ias_zone
-    device_id: 8824d46f7a512a00d5fdd409de007530
-    type: motion
+  - platform: state
+    entity_id:
+    - binary_sensor.hall_sensor_motion
+    to: 'on'
   condition:
-  - type: is_illuminance
-    condition: device
-    device_id: 8824d46f7a512a00d5fdd409de007530
-    entity_id: sensor.lumi_lumi_sensor_motion_aq2_illuminance
-    domain: sensor
-    below: 30
+  - condition: numeric_state
+    entity_id: sensor.hall_sensor_illuminance
+    below: 45
   action:
   - domain: light
     entity_id: light.hall_light
@@ -684,17 +637,13 @@
   alias: 'Hall light: Off when no motion'
   description: ''
   trigger:
-  - type: no_motion
-    platform: device
-    device_id: 8824d46f7a512a00d5fdd409de007530
-    entity_id: binary_sensor.lumi_lumi_sensor_motion_aq2_ias_zone
-    domain: binary_sensor
-    for:
-      hours: 0
-      minutes: 5
-      seconds: 0
-      milliseconds: 0
-  condition: []
+  - platform: state
+    entity_id:
+    - binary_sensor.hall_sensor_occupancy
+    to: 'off'
+  condition:
+  - condition: time
+    after: 09:00:00
   action:
   - type: turn_off
     device_id: 7ab073c9430e868c28fcb943989e68d9
@@ -770,7 +719,7 @@
     device_id: dad6ed559cf6187b8db1b104129fe92f
     entity_id: 4967f68fd2ca739e62b3a5a4acc8275e
     domain: light
-    brightness_pct: 75
+    brightness_pct: 100
   - service: input_select.select_option
     target:
       entity_id: input_select.home_mode_status
@@ -804,7 +753,7 @@
   - type: no_motion
     platform: device
     device_id: 22eabfcd41c120a04b2ddbe2f39fadaf
-    entity_id: binary_sensor.top_landing2_ias_zone
+    entity_id: d294e9dcb4d259be4e036ff4b94461dd
     domain: binary_sensor
   condition: []
   action:
@@ -853,15 +802,15 @@
   - type: motion
     platform: device
     device_id: 22eabfcd41c120a04b2ddbe2f39fadaf
-    entity_id: binary_sensor.lumi_lumi_sensor_motion_aq2_iaszone
+    entity_id: d294e9dcb4d259be4e036ff4b94461dd
     domain: binary_sensor
   condition:
   - type: is_illuminance
     condition: device
     device_id: 22eabfcd41c120a04b2ddbe2f39fadaf
-    entity_id: sensor.top_landing2_illuminance
+    entity_id: 965d518397470d2875c87818f3bb221f
     domain: sensor
-    below: 30
+    below: 40
   action:
   - type: turn_on
     device_id: 4cde3872053b4b4e470b84c28985d8f0
@@ -1009,7 +958,7 @@
   alias: 'Top landing sensor: Send alert if offline'
   description: ''
   trigger:
-  - device_id: fa7bb20084ebf7eae9153e94a69c9fc7
+  - device_id: 22eabfcd41c120a04b2ddbe2f39fadaf
     domain: zha
     platform: device
     type: device_offline
@@ -1093,9 +1042,12 @@
     entity_id: binary_sensor.landing_sensor_ias_zone
     domain: binary_sensor
   condition:
-  - condition: state
-    entity_id: sun.sun
-    state: below_horizon
+  - type: is_illuminance
+    condition: device
+    device_id: 5cb929bb135e3cedf31510218bba30d4
+    entity_id: 30b6768366dcac4872de6a0fa5d0e5a3
+    domain: sensor
+    below: 45
   action:
   - type: turn_on
     device_id: dad6ed559cf6187b8db1b104129fe92f
@@ -1214,8 +1166,8 @@
     data:
       message: TTS
       data:
-        chanel: alarm_stream
-        priotity: high
+        channel: alarm_stream
+        priority: high
         tts_text: The dishwasher has finished and is ready to be emptied
   - service: media_player.play_media
     target:
@@ -1240,17 +1192,23 @@
   description: ''
   trigger: []
   condition:
+  - condition: zone
+    entity_id: person.ken_guest
+    zone: zone.home
+  - condition: state
+    entity_id: binary_sensor.tramexkwg_meeting
+    state: 'off'
   - condition: state
     entity_id: input_select.voice_announcements_status
     state: Enabled
   action:
-  - service: notify.mobile_app_kens_phone
-    data:
+  - data:
       message: TTS
       data:
-        chanel: alarm_stream
-        priotity: high
+        channel: alarm_stream
+        priority: high
         tts_text: Hey, the tumble dryer has finished and is ready to be emptied
+    action: notify.mobile_app_kens_phone
   mode: single
 - id: '1630277358628'
   alias: Reset voice mode
@@ -1279,8 +1237,8 @@
     data:
       message: TTS
       data:
-        chanel: alarm_stream
-        priotity: high
+        channel: alarm_stream
+        priority: high
         tts_text: Water is hot enough for the hot water bottle
   - service: media_player.play_media
     target:
@@ -1316,22 +1274,6 @@
     data:
       option: Enabled
   mode: single
-- id: '1630362255152'
-  alias: 'Bluetooth: Ken''s old headphones connect'
-  description: ''
-  trigger:
-  - platform: state
-    entity_id: sensor.kens_phone_bluetooth_connection
-    attribute: connected_paired_devices
-    to: '[20:16:01:08:04:CB]'
-  condition: []
-  action:
-  - service: input_select.select_option
-    target:
-      entity_id: input_select.voice_announcements_status
-    data:
-      option: Disabled
-  mode: single
 - id: '1630363079359'
   alias: 'Bluetooth: Ken''s Odio headphones connect'
   description: ''
@@ -1340,7 +1282,7 @@
     entity_id:
     - sensor.kens_phone_bluetooth_connection
     attribute: connected_paired_devices
-    to: '"[17:70:12:10:05:B1 (OneOdio A10)]"'
+    to: '"04:29:2E:DD:31:5F (Galaxy Watch5 (XSGM)), 88:08:94:01:F2:7B (Hesh ANC)"'
   condition: []
   action:
   - service: input_select.select_option
@@ -1356,13 +1298,12 @@
   - platform: state
     entity_id:
     - vacuum.robovac
-    attribute: status
     to: cleaning
-    from: docked
     for:
       hours: 0
-      minutes: 5
-      seconds: 0
+      minutes: 0
+      seconds: 30
+    from: docked
   condition: []
   action:
   - service: counter.increment
@@ -1374,6 +1315,7 @@
       entity_id: automation.announce_robovac_has_started
     data:
       skip_condition: true
+    enabled: false
   - service: input_boolean.turn_on
     data: {}
     target:
@@ -1420,14 +1362,15 @@
     data:
       message: TTS
       data:
-        chanel: alarm_stream
-        priotity: high
+        channel: alarm_stream
+        priority: high
         tts_text: The robovack has started
   - service: notify.mobile_app_aisling_s_phone
     data:
       message: TTS
       data:
-        chanel: alarm_stream
+        channel: alarm_stream
+        priority: high
         tts_text: The robovack has started
   mode: single
 - id: '1633443631366'
@@ -1443,51 +1386,30 @@
     data:
       message: TTS
       data:
-        chanel: alarm_stream
-        priotity: high
+        channel: alarm_stream
+        priority: high
         tts_text: The robovack has finished
   - service: notify.mobile_app_aisling_s_phone
     data:
       message: TTS
       data:
-        chanel: alarm_stream
-        priotity: high
+        channel: alarm_stream
+        priority: high
         tts_text: The robovack has finished
-  mode: single
-- id: '1633443767502'
-  alias: 'RoboVac: Detect returned to dock'
-  description: ''
-  trigger:
-  - platform: state
-    entity_id: vacuum.robovac
-    attribute: status
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 0
-    to: docked
-    from: returning
-  condition: []
-  action:
-  - service: automation.trigger
-    target:
-      entity_id: automation.announce_robovac_has_finished
-    data:
-      skip_condition: true
   mode: single
 - id: '1633443769746'
   alias: 'RoboVac: Detect returned to dock'
   description: ''
   trigger:
   - platform: state
-    entity_id: vacuum.robovac
-    attribute: status
+    entity_id:
+    - vacuum.robovac
     for:
       hours: 0
       minutes: 0
       seconds: 0
     to: docked
-    from: returning
+    from:
   condition: []
   action:
   - if:
@@ -1500,6 +1422,7 @@
         entity_id: automation.announce_robovac_has_finished
       data:
         skip_condition: true
+    enabled: false
   - service: input_boolean.turn_off
     data: {}
     target:
@@ -1522,17 +1445,17 @@
     domain: sensor
     below: 45
   action:
-  - type: turn_on
-    device_id: 986119009de8da67299f042134dd9567
-    entity_id: light.cats_room
-    domain: light
-    brightness_pct: 100
-  - service: input_select.select_option
-    target:
+  - target:
       entity_id: input_select.home_mode_status
     data:
       option: Normal
     enabled: false
+    action: input_select.select_option
+  - action: light.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.cats_room
   mode: single
 - id: '1634849756725'
   alias: 'Cat sensor: no motion turns off'
@@ -1549,10 +1472,11 @@
       seconds: 0
   condition: []
   action:
-  - type: turn_off
-    device_id: 986119009de8da67299f042134dd9567
-    entity_id: light.cats_room
-    domain: light
+  - action: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.cats_room
   mode: single
 - id: '1637143602410'
   alias: Disable study door automation if phone is charging wirelessly
@@ -1581,70 +1505,6 @@
     target:
       entity_id: automation.new_automation_3
   mode: single
-- id: '1645296094909'
-  alias: Ensuite Button
-  description: ''
-  use_blueprint:
-    path: EPMatt/ikea_e2001_e2002.yaml
-    input:
-      integration: ZHA
-      controller_device: 855489492798e201311ababc334a3b84
-      action_button_up_short:
-      - type: turn_on
-        device_id: 28f29f56f316ec2310d0bf36da2c518f
-        entity_id: 3e5c89b8779c32df0598eeae84ccc7ea
-        domain: light
-      action_button_down_short:
-      - type: turn_off
-        device_id: 28f29f56f316ec2310d0bf36da2c518f
-        entity_id: 3e5c89b8779c32df0598eeae84ccc7ea
-        domain: light
-      helper_last_controller_event: input_text.ensuite_button_helper
-      action_button_up_long:
-      - type: turn_on
-        device_id: 28f29f56f316ec2310d0bf36da2c518f
-        entity_id: 3e5c89b8779c32df0598eeae84ccc7ea
-        domain: light
-      action_button_up_release:
-      - type: turn_on
-        device_id: 28f29f56f316ec2310d0bf36da2c518f
-        entity_id: 3e5c89b8779c32df0598eeae84ccc7ea
-        domain: light
-      action_button_down_long:
-      - type: turn_off
-        device_id: 28f29f56f316ec2310d0bf36da2c518f
-        entity_id: 3e5c89b8779c32df0598eeae84ccc7ea
-        domain: light
-      action_button_down_release:
-      - type: turn_off
-        device_id: 28f29f56f316ec2310d0bf36da2c518f
-        entity_id: 3e5c89b8779c32df0598eeae84ccc7ea
-        domain: light
-      action_button_down_double:
-      - type: turn_off
-        device_id: 28f29f56f316ec2310d0bf36da2c518f
-        entity_id: 3e5c89b8779c32df0598eeae84ccc7ea
-        domain: light
-      action_button_left_short:
-      - device_id: 28f29f56f316ec2310d0bf36da2c518f
-        domain: light
-        entity_id: 3e5c89b8779c32df0598eeae84ccc7ea
-        type: brightness_decrease
-      action_button_left_long:
-      - device_id: 28f29f56f316ec2310d0bf36da2c518f
-        domain: light
-        entity_id: 3e5c89b8779c32df0598eeae84ccc7ea
-        type: brightness_decrease
-      action_button_right_short:
-      - device_id: 28f29f56f316ec2310d0bf36da2c518f
-        domain: light
-        entity_id: 3e5c89b8779c32df0598eeae84ccc7ea
-        type: brightness_increase
-      action_button_right_long:
-      - device_id: 28f29f56f316ec2310d0bf36da2c518f
-        domain: light
-        entity_id: 3e5c89b8779c32df0598eeae84ccc7ea
-        type: brightness_increase
 - id: '1657061102274'
   alias: Home Mode changes to Normal
   description: Reenable kitchen motion automation etc
@@ -1686,7 +1546,7 @@
   - service: switch.turn_off
     data: {}
     target:
-      device_id: eeb1d23bad9cdff3f32437d85f585b3e
+      entity_id: switch.plugwashing_machine_on_off
   mode: single
 - id: '1658342133585'
   alias: Hot water - notify when on
@@ -1704,8 +1564,8 @@
     data:
       message: TTS
       data:
-        chanel: alarm_stream
-        priotity: high
+        channel: alarm_stream
+        priority: high
         tts_text: The hot water has been on for a minute. Did you mean to do this?
   - service: notify.mobile_app_kens_phone
     data:
@@ -1764,8 +1624,8 @@
       message: It isn't as humid in the ensuite, you can close the window now
   mode: single
 - id: '1666397676117'
-  alias: Turn off laptop peripherals if not connected via cable for 5 mins
-  description: ''
+  alias: Turn off laptop peripherals if not connected
+  description: either display unavailable, or unreachable over ethernet or wifi connection
   trigger:
   - platform: state
     entity_id:
@@ -1776,10 +1636,20 @@
       hours: 0
       minutes: 5
       seconds: 0
+    enabled: false
+  - platform: state
+    entity_id:
+    - sensor.tramexkwg_display_display_count
+    to: unavailable
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
   condition:
   - condition: state
-    entity_id: binary_sensor.work_laptop
+    entity_id: binary_sensor.study_motion_iaszone
     state: 'off'
+    enabled: true
   action:
   - type: turn_off
     device_id: e9453ffdcd0ebf1d4f8d3207d4244866
@@ -1817,6 +1687,13 @@
         - condition: state
           entity_id: input_select.input_select_study_light_actuator
           state: door
+  - condition: and
+    conditions:
+    - type: is_occupied
+      condition: device
+      device_id: eccd4be440829370bbd78ad4adfc828f
+      entity_id: c29f63f421873dc7c05eb93b395434d7
+      domain: binary_sensor
   action:
   - type: turn_on
     device_id: 8cf7d4c4d3cfaa116c0ca88b1f13632b
@@ -1831,12 +1708,7 @@
 - id: '1669051788830'
   alias: Tell Ken someone is at the door
   description: When doorbell goes off, and Ken is home...
-  trigger:
-  - platform: state
-    entity_id:
-    - sensor.kens_phone_last_notification
-    to:
-    - Click to return to the Doorbell Answer Page
+  trigger: []
   condition:
   - condition: zone
     entity_id: person.ken_guest
@@ -1846,13 +1718,25 @@
     device_id: 7ab073c9430e868c28fcb943989e68d9
     entity_id: light.hall_light
     domain: light
-  - service: notify.mobile_app_kens_phone
-    data:
+  - data:
       message: TTS
       data:
-        chanel: alarm_stream
-        priotity: high
+        channel: alarm_stream
+        priority: high
         tts_text: There's somebody at the door.
+    action: notify.mobile_app_kens_phone
+  - data:
+      message: 'There''s somebody at the door! '
+    action: notify.mobile_app_kens_phone
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: true
+      media_player_entity_id: media_player.office
+      message: There's somebody at the door
+      options: {}
+    target:
+      entity_id: tts.home_assistant_cloud
   mode: single
 - id: '1669239928759'
   alias: Flash front kitchen light if fridge open too long - 30s
@@ -1923,12 +1807,7 @@
 - id: '1670067056107'
   alias: You have a visitor at the door (Ken)
   description: When doorbell goes off, and Ken is home...
-  trigger:
-  - platform: state
-    entity_id:
-    - sensor.kens_phone_last_notification
-    to:
-    - '[Lothlorien] You have a visitor.'
+  trigger: []
   condition:
   - condition: zone
     entity_id: person.ken_guest
@@ -1942,8 +1821,8 @@
     data:
       message: TTS
       data:
-        chanel: alarm_stream
-        priotity: high
+        channel: alarm_stream
+        priority: high
         tts_text: There's somebody at the door.
   mode: single
 - id: '1670618184363'
@@ -1953,13 +1832,13 @@
   - type: motion
     platform: device
     device_id: 2eaac5822bfb819f9100a655154b56cd
-    entity_id: binary_sensor.mainbathroom_iaszone
+    entity_id: f941059e11dd2a6273fc3ad4d390fe75
     domain: binary_sensor
   condition:
   - type: is_illuminance
     condition: device
     device_id: 2eaac5822bfb819f9100a655154b56cd
-    entity_id: sensor.mainbathroom_illuminance
+    entity_id: 5466bfacdc009db6a558d186a722417d
     domain: sensor
     below: 30
   action:
@@ -2010,6 +1889,13 @@
       option: Normal
     target:
       entity_id: input_select.home_mode_status
+  - service: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id:
+      - light.cats_room
+      - light.top_landing_light
   mode: single
 - id: '1671018025408'
   alias: Turn off study light if bright enough
@@ -2148,7 +2034,7 @@
     state: below_horizon
     for:
       hours: 0
-      minutes: 20
+      minutes: 5
       seconds: 0
   action:
   - type: turn_on
@@ -2176,7 +2062,8 @@
     domain: light
   mode: single
 - id: '1674774776841'
-  alias: Pause study speaker when occupied and Ken's phone rings
+  alias: Pause sonos study speaker when occupied and Ken's phone rings or meeting
+    starts
   description: ''
   trigger:
   - platform: state
@@ -2187,6 +2074,10 @@
       hours: 0
       minutes: 0
       seconds: 2
+  - platform: state
+    entity_id:
+    - binary_sensor.tramexkwg_meeting
+    to: 'on'
   condition:
   - condition: state
     entity_id: binary_sensor.study_occupancy
@@ -2213,8 +2104,8 @@
     - media_player.tv
     to: 'off'
     for:
-      hours: 0
-      minutes: 10
+      hours: 1
+      minutes: 0
       seconds: 0
   condition: []
   action:
@@ -2224,7 +2115,7 @@
     domain: switch
   mode: single
 - id: '1675075601504'
-  alias: Resume sonos play in study after phone call
+  alias: Resume sonos play in study after phone call or meeting
   description: ''
   trigger:
   - platform: state
@@ -2235,6 +2126,10 @@
       hours: 0
       minutes: 0
       seconds: 2
+  - platform: state
+    entity_id:
+    - binary_sensor.tramexkwg_meeting
+    to: 'off'
   condition:
   - condition: state
     entity_id: binary_sensor.study_occupancy
@@ -2363,10 +2258,10 @@
     domain: sensor
     below: 45
   action:
-  - type: turn_on
-    device_id: 28f29f56f316ec2310d0bf36da2c518f
-    entity_id: 3e5c89b8779c32df0598eeae84ccc7ea
-    domain: light
+  - service: light.turn_on
+    target:
+      entity_id: light.ensuite
+    data: {}
   mode: single
 - id: '1677799425618'
   alias: Ken's light on when alarm goes off
@@ -2407,46 +2302,17 @@
     data:
       message: TTS
       data:
-        chanel: alarm_stream
-        priotity: high
+        channel: alarm_stream
+        priority: high
         tts_text: Your bus stop on Dorset Street is coming up
+    enabled: false
   - service: notify.mobile_app_kens_phone
     data:
       message: 'Bus is coming up to Dorset Street '
   mode: single
-- id: '1679985253344'
-  alias: Study occupied - turn on desk 1
-  description: Turn on everything at desk
-  trigger:
-  - platform: state
-    entity_id:
-    - binary_sensor.study_occupancy
-    to: 'on'
-  condition:
-  - condition: state
-    entity_id: binary_sensor.workday_sensor
-    state: 'on'
-  action:
-  - type: turn_on
-    device_id: e9453ffdcd0ebf1d4f8d3207d4244866
-    entity_id: switch.laptop_charger
-    domain: switch
-  - type: turn_on
-    device_id: e9453ffdcd0ebf1d4f8d3207d4244866
-    entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_3
-    domain: switch
-  - type: turn_on
-    device_id: e9453ffdcd0ebf1d4f8d3207d4244866
-    entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_2
-    domain: switch
-  - service: switch.turn_on
-    data: {}
-    target:
-      entity_id: switch.waketramexkwg
-  mode: single
 - id: '1679985274229'
-  alias: Study occupied - turn on desk
-  description: Turn on everything at desk
+  alias: Study occupied - turn on desk and reset speaker volume
+  description: Turn on everything at desk, set sonos to 10% volume
   trigger:
   - platform: state
     entity_id:
@@ -2459,6 +2325,8 @@
   - condition: numeric_state
     entity_id: counter.study_desk_extension_lead_usage
     below: 1
+  - condition: time
+    after: 07:00:00
   action:
   - type: turn_on
     device_id: e9453ffdcd0ebf1d4f8d3207d4244866
@@ -2472,14 +2340,20 @@
     device_id: e9453ffdcd0ebf1d4f8d3207d4244866
     entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_2
     domain: switch
-  - service: switch.turn_on
-    data: {}
+  - data: {}
     target:
       entity_id: switch.waketramexkwg
-  - service: counter.increment
-    data: {}
+    action: switch.turn_on
+  - data: {}
     target:
       entity_id: counter.study_desk_extension_lead_usage
+    action: counter.increment
+  - metadata: {}
+    data:
+      volume_level: 0.1
+    target:
+      entity_id: media_player.office
+    action: media_player.volume_set
   mode: single
 - id: '1680562552406'
   alias: Alert me if living room door opened when both away
@@ -2600,7 +2474,10 @@
     entity_id: person.aisling
     zone: zone.fooo
     event: enter
-  condition: []
+  condition:
+  - condition: state
+    entity_id: sensor.lothlorien_aisling_s_phone_direction_of_travel
+    state: towards
   action:
   - service: notify.mobile_app_kens_phone
     data:
@@ -2609,8 +2486,8 @@
     data:
       message: TTS
       data:
-        chanel: alarm_stream
-        priotity: high
+        channel: alarm_stream
+        priority: high
         tts_text: Aisling is almost at the bus stop
   mode: single
 - id: '1683053983671'
@@ -2626,40 +2503,9 @@
     data:
       message: TTS
       data:
-        chanel: alarm_stream
-        priotity: high
+        channel: alarm_stream
+        priority: high
         tts_text: Aisling is almost at the bus stop
-  mode: single
-- id: '1683623723745'
-  alias: Turn off laptop peripherals if not connected over wifi for 5 mins
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - binary_sensor.work_laptop
-    from: 'on'
-    to: 'off'
-    for:
-      hours: 0
-      minutes: 5
-      seconds: 0
-  condition:
-  - condition: state
-    entity_id: binary_sensor.work_laptop_wired
-    state: 'off'
-  action:
-  - type: turn_off
-    device_id: e9453ffdcd0ebf1d4f8d3207d4244866
-    entity_id: switch.laptop_charger
-    domain: switch
-  - type: turn_off
-    device_id: e9453ffdcd0ebf1d4f8d3207d4244866
-    entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_3
-    domain: switch
-  - type: turn_off
-    device_id: e9453ffdcd0ebf1d4f8d3207d4244866
-    entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_2
-    domain: switch
   mode: single
 - id: '1685613046656'
   alias: 'Announce: Freezer door open for two minutes'
@@ -2784,41 +2630,25 @@
     entity_id: switch.tz3000_vmpbygs5_ts011f_switch
     domain: switch
   mode: single
-- id: '1688853958780'
-  alias: 'Ken''s watch below 20 percent - charge it! '
-  description: ''
-  trigger:
-  - type: battery_level
-    platform: device
-    device_id: 5abaa2e0a2bcacdb05b08fd6335a58db
-    entity_id: 169c96660e1b07bb5e674a7fd750b8a8
-    domain: sensor
-    below: 40
-  condition: []
-  action:
-  - service: notify.mobile_app_kens_phone
-    data:
-      message: CHARGE ME!
-  mode: single
 - id: '1689103934420'
   alias: 'Ken''s phone at less than 20 charge '
   description: ''
   trigger:
   - type: battery_level
     platform: device
-    device_id: d963395860b0618f6fe5d50fee808510
-    entity_id: fe8f976b9f2628c7a62ba31578aca873
+    device_id: fe114b7e26e0d6991f2bf36f636ff679
+    entity_id: edeaf026abf449ed39d80b0dc56f235b
     domain: sensor
-    below: 29
+    below: 20
   condition: []
   action:
-  - service: notify.mobile_app_kens_phone
-    data:
+  - data:
       message: TTS
       data:
-        chanel: alarm_stream
-        priotity: high
+        channel: alarm_stream
+        priority: high
         tts_text: Charge your phone, Ken
+    action: notify.mobile_app_kens_phone
   mode: single
 - id: '1689666979853'
   alias: Guest room extension lead on if workday and occupied
@@ -2912,7 +2742,7 @@
     domain: light
     for:
       hours: 0
-      minutes: 4
+      minutes: 6
       seconds: 0
   condition: []
   action:
@@ -2973,10 +2803,10 @@
   trigger:
   - type: value
     platform: device
-    device_id: d963395860b0618f6fe5d50fee808510
-    entity_id: ce6a8bc263ff1840b91b36e36f3a869f
+    device_id: fe114b7e26e0d6991f2bf36f636ff679
+    entity_id: 044c04f40f4f48384c2663578928f207
     domain: sensor
-    above: 75
+    above: 80
   condition:
   - condition: time
     after: '22:00:00'
@@ -2987,10 +2817,10 @@
     entity_id: person.ken_guest
     state: home
   action:
-  - service: light.turn_off
-    data: {}
+  - data: {}
     target:
       entity_id: light.lightken_level_light_color_on_off
+    action: light.turn_off
   mode: single
 - id: '1693261461690'
   alias: 'Turn off Aisling''s bedside lamp if she''s asleep '
@@ -2999,13 +2829,9 @@
   - type: value
     platform: device
     device_id: 4ec017f2d2987d339789d744e565afc4
-    entity_id: e24585e94802a5c773c409fad67b5e86
+    entity_id: fbbf6be082b119b21205c44e68e48622
     domain: sensor
-    above: 60
-    for:
-      hours: 0
-      minutes: 30
-      seconds: 0
+    above: 90
   condition:
   - condition: time
     after: '22:00:00'
@@ -3039,25 +2865,37 @@
     data: {}
     target:
       entity_id: vacuum.robovac
+  - service: input_boolean.turn_on
+    target:
+      entity_id:
+      - input_boolean.robovac_paused
+    data: {}
   mode: single
 - id: '1693431226038'
   alias: 'Resume robovac when kitchen is not occupied '
   description: ''
   trigger:
-  - type: not_occupied
+  - type: no_motion
     platform: device
     device_id: 29007fde37da4738c0b1e1fa0c8261ec
-    entity_id: ccfb15a8a71a4396547c211e6cc78075
+    entity_id: 1bb6624911cd87e26de21ff4abe292a9
     domain: binary_sensor
   condition:
   - condition: state
     entity_id: vacuum.robovac
     state: idle
+  - condition: state
+    entity_id: input_boolean.robovac_paused
+    state: 'on'
   action:
   - service: vacuum.start
     data: {}
     target:
       entity_id: vacuum.robovac
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.robovac_paused
   mode: single
 - id: '1695498076321'
   alias: Turn on lights up to the cats room when alarm disarmed
@@ -3090,10 +2928,9 @@
     device_id: 4cde3872053b4b4e470b84c28985d8f0
     entity_id: a5e0444961f2beaa1e3d7d0636c2080f
     domain: light
-  - type: turn_on
-    device_id: 986119009de8da67299f042134dd9567
-    entity_id: bc33186cb2ac7088aea2af2a84baddc4
-    domain: light
+  - action: light.turn_on
+    metadata: {}
+    data: {}
   mode: single
 - id: '1695498987317'
   alias: Turn off lights from cats room when alarm is armed
@@ -3119,18 +2956,14 @@
     entity_id: person.ken_guest
     state: not_home
   action:
-  - type: turn_off
-    device_id: 986119009de8da67299f042134dd9567
-    entity_id: bc33186cb2ac7088aea2af2a84baddc4
-    domain: light
-  - type: turn_off
-    device_id: 4cde3872053b4b4e470b84c28985d8f0
-    entity_id: a5e0444961f2beaa1e3d7d0636c2080f
-    domain: light
-  - type: turn_off
-    device_id: dad6ed559cf6187b8db1b104129fe92f
-    entity_id: 4967f68fd2ca739e62b3a5a4acc8275e
-    domain: light
+  - action: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id:
+      - light.cats_room
+      - light.top_landing_light
+      - light.landing
   mode: single
 - id: '1696011934557'
   alias: Turn off lights when alarm is turned on by Ken when away
@@ -3156,18 +2989,14 @@
     entity_id: person.ken_guest
     state: not_home
   action:
-  - type: turn_off
-    device_id: 986119009de8da67299f042134dd9567
-    entity_id: bc33186cb2ac7088aea2af2a84baddc4
-    domain: light
-  - type: turn_off
-    device_id: 4cde3872053b4b4e470b84c28985d8f0
-    entity_id: a5e0444961f2beaa1e3d7d0636c2080f
-    domain: light
-  - type: turn_off
-    device_id: dad6ed559cf6187b8db1b104129fe92f
-    entity_id: 4967f68fd2ca739e62b3a5a4acc8275e
-    domain: light
+  - action: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id:
+      - light.cats_room
+      - light.landing
+      - light.top_landing_light
   mode: single
 - id: '1696927173394'
   alias: Reset daily counters
@@ -3334,7 +3163,7 @@
   condition:
   - condition: sun
     before: sunrise
-    before_offset: '15'
+    before_offset: '20'
   action:
   - service: light.turn_on
     data: {}
@@ -3344,7 +3173,7 @@
 - id: '1698882852291'
   alias: 'Ensuite light off if no motion '
   description: ''
-  trigger:
+  triggers:
   - type: no_motion
     platform: device
     device_id: 0eccc2c72e6440abc90619cf8f1ac2f7
@@ -3352,19 +3181,23 @@
     domain: binary_sensor
     for:
       hours: 0
-      minutes: 2
+      minutes: 4
       seconds: 0
-  condition:
-  - type: is_not_moist
-    condition: device
-    device_id: e5f1c540fe7b70520f0b5b5c058d814e
-    entity_id: 02d85721f07d6a6b4bf445bd72e2f0d5
-    domain: binary_sensor
-  action:
-  - service: light.turn_off
-    data: {}
+  conditions:
+  - condition: not
+    conditions:
+    - type: is_moist
+      condition: device
+      device_id: e5f1c540fe7b70520f0b5b5c058d814e
+      entity_id: 02d85721f07d6a6b4bf445bd72e2f0d5
+      domain: binary_sensor
+      enabled: true
+    enabled: true
+  actions:
+  - data: {}
     target:
-      device_id: 28f29f56f316ec2310d0bf36da2c518f
+      entity_id: light.ensuite
+    action: light.turn_off
   mode: single
 - id: '1699145152606'
   alias: 'Front door opens, cancel presence simulation '
@@ -3381,13 +3214,65 @@
     data: {}
   mode: single
 - id: '1699639907048'
-  alias: Front door light on when Ken approaches home
+  alias: Bedside lamps go on when we come home
   description: ''
   trigger:
   - platform: numeric_state
     entity_id:
-    - proximity.home_ken
+    - sensor.lothlorien_kens_phone_distance
     below: 200
+  condition:
+  - condition: not
+    conditions:
+    - condition: zone
+      entity_id: person.ken_guest
+      zone: zone.home
+  - condition: sun
+    after: sunset
+  - condition: numeric_state
+    entity_id: zone.home
+    above: 1
+  action:
+  - service: light.turn_on
+    data: {}
+    target:
+      entity_id:
+      - light.bedside_lamps
+  mode: single
+- id: '1700034358783'
+  alias: Turn off all lights when we're away from home
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id:
+    - zone.home
+    below: 1
+  condition:
+  - condition: state
+    entity_id: switch.presence_simulation
+    state: 'off'
+  action:
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.all_lights
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.ensuite
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.bedside_lamps
+  mode: single
+- id: '1700181554374'
+  alias: Front door light on when ken comes home after dark
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id:
+    - sensor.lothlorien_3_ken_guest_distance
+    below: 300
   condition:
   - condition: not
     conditions:
@@ -3400,5 +3285,1239 @@
   - service: light.turn_on
     data: {}
     target:
+      entity_id:
+      - light.front_door_light
+  mode: single
+- id: '1701206647376'
+  alias: Porch light on when Aisling comes home after dark
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id:
+    - sensor.lothlorien_aisling_s_phone_distance
+    below: 200
+  condition:
+  - condition: not
+    conditions:
+    - condition: zone
+      entity_id: person.aisling
+      zone: zone.home
+  - condition: sun
+    after: sunset
+  action:
+  - service: light.turn_on
+    data: {}
+    target:
+      entity_id:
+      - light.front_door_light
+  mode: single
+- id: '1704544441733'
+  alias: 'Turn on washing machine when laundry room opens '
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.door_laundry_room_on_off
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: sensor.washing_machine_status
+    state: Clean
+  action:
+  - service: switch.turn_on
+    target:
+      entity_id:
+      - switch.plugwashing_machine_on_off
+    data: {}
+  mode: single
+- id: '1704545256447'
+  alias: 'Turn off washing machine when door closes '
+  description: But only if doing nothing
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.door_laundry_room_on_off
+    to: 'off'
+  condition:
+  - condition: state
+    entity_id: sensor.washing_machine_status
+    attribute: id
+    state: Clean
+  action:
+  - service: switch.turn_off
+    target:
+      entity_id:
+      - switch.plugwashing_machine_on_off
+    data: {}
+  mode: single
+- id: '1706209785675'
+  alias: Cats room light on when movement on landing
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: 5cb929bb135e3cedf31510218bba30d4
+    entity_id: binary_sensor.landing_sensor_ias_zone
+    domain: binary_sensor
+  condition:
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
+  - condition: not
+    conditions:
+    - condition: zone
+      entity_id: person.aisling
+      zone: zone.home
+    - condition: and
+      conditions:
+      - condition: zone
+        entity_id: person.ken_guest
+        zone: zone.home
+  action:
+  - type: turn_on
+    device_id: dad6ed559cf6187b8db1b104129fe92f
+    entity_id: 4967f68fd2ca739e62b3a5a4acc8275e
+    domain: light
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.home_mode_status
+    data:
+      option: Normal
+  - service: light.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.cats_room
+  - service: light.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.top_landing_light
+  mode: single
+- id: '1706209967952'
+  alias: Cats light on triggered by movement in landing
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: f8835a0621ca201abdb9634e8d71c0a7
+    entity_id: binary_sensor.top_platform_ias_zone
+    domain: binary_sensor
+  condition:
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
+  - condition: not
+    conditions:
+    - condition: zone
+      entity_id: person.aisling
+      zone: zone.home
+    - condition: and
+      conditions:
+      - condition: zone
+        entity_id: person.ken_guest
+        zone: zone.home
+  - condition: trigger
+    id: ''
+  action:
+  - type: turn_on
+    device_id: dad6ed559cf6187b8db1b104129fe92f
+    entity_id: 4967f68fd2ca739e62b3a5a4acc8275e
+    domain: light
+    brightness_pct: 100
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.home_mode_status
+    data:
+      option: Normal
+  - service: light.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id:
+      - light.top_landing_light
+      - light.cats_room
+  mode: single
+- id: '1707387055423'
+  alias: Heat study on work day
+  description: Turn on heater if needed
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.study_occupancy
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: 'on'
+  - condition: state
+    entity_id: climate.upstairs
+    state: 'off'
+  action:
+  - service: climate.turn_on
+    data: {}
+    target:
+      entity_id: climate.study
+  - service: climate.set_temperature
+    metadata: {}
+    data:
+      temperature: 19
+    target:
+      entity_id: climate.study
+  mode: single
+- id: '1708030449892'
+  alias: Aisling's meeting has finished
+  description: Say as much on the study speaker
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.aisling_meeting
+    from: 'on'
+    to: 'off'
+  condition: []
+  action:
+  - service: media_player.play_media
+    target:
+      entity_id: media_player.office
+    data:
+      media_content_id: media-source://tts/google_translate?message=Aisling%27s+meeting+has+finished+
+      media_content_type: provider
+    metadata:
+      title: 'Aisling''s meeting has finished '
+      thumbnail: https://brands.home-assistant.io/_/google_translate/logo.png
+      media_class: app
+      children_media_class:
+      navigateIds:
+      - {}
+      - media_content_type: app
+        media_content_id: media-source://tts
+      - media_content_type: provider
+        media_content_id: media-source://tts/google_translate?message=Aisling%27s+meeting+has+finished+
+  mode: single
+- id: '1708030597425'
+  alias: 'Aisling is now in a meeting '
+  description: Say as much on the study speaker
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.aisling_meeting
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - service: tts.google_translate_say
+    metadata: {}
+    data:
+      cache: true
+      entity_id: media_player.office
+      message: Aisling is now in a meeting
+  mode: single
+- id: '1708470196781'
+  alias: Reset night time pills consumed to off after 7 hours
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.night_time_pills_consumed_by_aisling
+    to: 'on'
+    for:
+      hours: 7
+      minutes: 0
+      seconds: 0
+  condition: []
+  action:
+  - service: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.night_time_pills_consumed_by_aisling
+    data: {}
+  mode: single
+- id: '1708470417456'
+  alias: Aisling's morning time pills indicator reset to off after 7 hours
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.morning_time_pills_consumed_by_aisling
+    to: 'on'
+    for:
+      hours: 7
+      minutes: 0
+      seconds: 0
+  condition: []
+  action:
+  - service: input_boolean.turn_off
+    target:
+      entity_id:
+      - input_boolean.morning_time_pills_consumed_by_aisling
+    data: {}
+  mode: single
+- id: '1709113052310'
+  alias: Visitor at doorbell
+  description: Doorbell button has been pressed
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.doorbell_visitor
+    to: 'on'
+  condition: []
+  action:
+  - service: automation.trigger
+    target:
+      entity_id: automation.tell_ken_someone_is_at_the_door
+    data:
+      skip_condition: true
+  - service: automation.trigger
+    data:
+      skip_condition: true
+    target:
+      entity_id: automation.tell_aisling_somebody_is_at_the_door
+  mode: single
+- id: '1709221266402'
+  alias: Identify when the doorbell is working
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.doorbell_person
+    from: unavailable
+  condition: []
+  action:
+  - service: tts.google_translate_say
+    metadata: {}
+    data:
+      cache: true
+      entity_id: media_player.office
+      message: doorbell is working again
+  - service: notify.mobile_app_kens_phone
+    data:
+      message: Reolink doorbell has reconnected
+  mode: single
+- id: '1709321282158'
+  alias: 'Identify when doorbell has disconnected '
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.doorbell_person
+    to: unavailable
+  condition: []
+  action:
+  - service: tts.google_translate_say
+    metadata: {}
+    data:
+      cache: true
+      entity_id: media_player.office
+      message: 'The doorbell has disconnected from the network '
+  - service: notify.mobile_app_kens_phone
+    data:
+      message: 'The doorbell has disconnected from the network. '
+  mode: single
+- id: '1709562518090'
+  alias: Turn off all relevant lights when I'm in the study
+  description: ''
+  trigger:
+  - platform: conversation
+    command: I'm alone in the study
+  condition: []
+  action:
+  - service: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id:
+      - light.all_lights
+  - service: light.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.study_light_level_on_off
+  mode: single
+- id: '1709710114249'
+  alias: Turn off all other lights when in the study
+  description: '... And only one person at home'
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.study_motion_iaszone
+    to: 'on'
+  condition:
+  - condition: numeric_state
+    entity_id: zone.home
+    below: 2
+  action:
+  - metadata: {}
+    data: {}
+    target:
+      entity_id:
+      - light.kitchen_lights
+      - light.hall_light
+      - light.landing
+      - light.main_bathroom
+      - light.ensuite
+      - light.lightken_level_light_color_on_off
+      - light.lightaisling_level_light_color_on_off
+    action: light.turn_off
+  mode: single
+- id: '1711820545178'
+  alias: Person near front door.
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.doorbell_person
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 1
+    to: 'on'
+  condition: []
+  action:
+  - service: camera.snapshot
+    metadata: {}
+    data:
+      filename: /config/www/images/camera-doorbell.jpg
+    target:
+      entity_id: camera.doorbell_fluent
+  - service: notify.mobile_app_kens_phone
+    metadata: {}
+    data:
+      message: 'Ken. There''s somebody near the front door.
+
+        '
+      title: There's someone near the front door.
+      data:
+        clickAction: https://85fjf9mvcjwllzibdzzx4j86n4zot5y4.ui.nabu.casa/local/images/camera-doorbell.jpg
+        color: '#2D0000'
+        timeout: 60
+  - service: notify.mobile_app_aisling_s_phone
+    data:
+      data: {}
+      message: Aisling! There's somebody near the front door.
+      title: There's someone near the front door.
+  mode: single
+- id: '1712259471441'
+  alias: Turn on bedside lamps when door opens and it's dark
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.lumi_lumi_sensor_magnet_aq2_4bd3e401_on_off
+    to: 'on'
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.masterbedroom_illuminance
+    below: 5
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
+  action:
+  - service: light.turn_on
+    metadata: {}
+    data: {}
+    target:
+      area_id: bedroom
+  mode: single
+- id: '1712877760848'
+  alias: Porch light on after dark if person detected
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.doorbell_person
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
+  action:
+  - service: light.turn_on
+    metadata: {}
+    data:
+      brightness_pct: 100
+    target:
       entity_id: light.front_door_light
+  mode: single
+- id: '1713388183112'
+  alias: Low battery level detection & notification for all battery sensors
+  description: ''
+  use_blueprint:
+    path: gmlupatelli/low_battery_notification.yaml
+    input:
+      actions:
+      - action: notify.send_message
+        metadata: {}
+        data:
+          message: '{{sensors}} battery low'
+      time: '10:10:00'
+- id: '1713778858807'
+  alias: Charge laptop
+  description: Turn on laptop charger when battery is considered at v low charge
+  trigger:
+  - platform: numeric_state
+    entity_id:
+    - sensor.tramexkwg_tramexkwg_battery_charge_remaining_percentage
+    below: 25
+  condition: []
+  action:
+  - service: switch.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.laptop_charger
+  mode: single
+- id: '1713778962244'
+  alias: Stop charging laptop
+  description: Turn on laptop charger if battery more than 90%
+  trigger:
+  - platform: numeric_state
+    entity_id:
+    - sensor.tramexkwg_tramexkwg_battery_charge_remaining_percentage
+    above: 90
+  condition: []
+  action:
+  - service: switch.turn_off
+    target:
+      entity_id:
+      - switch.laptop_charger
+    data: {}
+  mode: single
+- id: '1713955864568'
+  alias: Tell Aisling somebody is at the door
+  description: When doorbell goes off, and Aisling is home...
+  trigger: []
+  condition:
+  - condition: zone
+    entity_id: person.aisling
+    zone: zone.home
+  action:
+  - type: turn_on
+    device_id: 7ab073c9430e868c28fcb943989e68d9
+    entity_id: light.hall_light
+    domain: light
+  - service: notify.mobile_app_aisling_s_phone
+    data:
+      data:
+        channel: alarm_stream
+        priority: high
+        tts_text: There's somebody at the door.
+      message: TTS
+  - service: notify.mobile_app_aisling_s_phone
+    data:
+      message: 'Aisling, someone has pressed the doorbell. '
+  mode: single
+- id: '1715160459521'
+  alias: Say when to empty the robovac
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id:
+    - counter.robovac_usage
+    above: 10
+  condition:
+  - condition: state
+    entity_id: vacuum.robovac
+    state: docked
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+  action:
+  - service: notify.mobile_app_kens_phone
+    metadata: {}
+    data:
+      message: You should probably empty the robovac
+  mode: single
+- id: '1715207475642'
+  alias: 'Turn front door light off when no person detected '
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.doorbell_person
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+    to: 'off'
+  condition:
+  - condition: state
+    entity_id: light.front_door_light
+    state: 'on'
+  action:
+  - target:
+      entity_id:
+      - light.front_door_light
+    data: {}
+    action: light.turn_off
+  mode: single
+- id: '1715700578805'
+  alias: Doorbell motion
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.doorbell_motion
+    to: 'on'
+    enabled: true
+  - platform: state
+    entity_id:
+    - binary_sensor.doorbell_person
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: input_boolean.paranoia
+    state: 'on'
+  action:
+  - service: media_player.play_media
+    target:
+      entity_id: media_player.office
+    data:
+      media_content_id: media-source://tts/google_translate?message=Motion+detected+outside
+      media_content_type: provider
+    metadata:
+      title: Motion detected outside
+      thumbnail: https://brands.home-assistant.io/_/google_translate/logo.png
+      media_class: app
+      children_media_class:
+      navigateIds:
+      - {}
+      - media_content_type: app
+        media_content_id: media-source://tts
+      - media_content_type: provider
+        media_content_id: media-source://tts/google_translate?message=Motion+detected+outside
+  - service: notify.mobile_app_kens_phone
+    data:
+      message: TTS
+      data:
+        channel: alarm_stream
+        priority: high
+        tts_text: Motion detected outside
+  mode: single
+- id: '1715797209490'
+  alias: Is Aisling off the phone
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.aisling_s_phone_audio_mode
+    from: in_call
+    to: normal
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+  condition: []
+  action:
+  - service: notify.mobile_app_kens_phone
+    data:
+      message: 'Aisling''s off the phone '
+  mode: single
+- id: '1715944194502'
+  alias: 'Is Aisling on the phone '
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.aisling_s_phone_audio_mode
+    to: in_call
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+  condition: []
+  action:
+  - service: notify.mobile_app_kens_phone
+    data:
+      message: 'Aisling''s on the phone '
+  mode: single
+- id: '1716280540589'
+  alias: Activate robovac at 10am on a work day
+  description: ''
+  trigger:
+  - platform: time
+    at: '10:00:00'
+  condition:
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: 'on'
+  action:
+  - service: vacuum.start
+    target:
+      entity_id: vacuum.robovac
+    data: {}
+  mode: single
+- id: '1716499932240'
+  alias: 'Alert when litter tray needs to be emptied '
+  description: ''
+  trigger:
+  - type: value
+    platform: device
+    device_id: dc09b50ee6b490b17f2f0b4a4911a45f
+    entity_id: 122caa6ae8dc93e0a700358d37dde853
+    domain: sensor
+    above: 90
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+  condition: []
+  action:
+  - data:
+      message: 'Litter Robot waste tray needs to be emptied '
+      data:
+        persistent: true
+        tag: litter_robot_waste
+        actions:
+        - action: LITTER_ROBOT_WASTE_EMPTIED
+          title: Comfirm litter waster drawer emptird
+    action: notify.mobile_app_kens_phone
+  - metadata: {}
+    data: {}
+    target:
+      entity_id: input_boolean.litter_robot_waste_drawer_emptied
+    action: input_boolean.turn_on
+  mode: single
+- id: '1716653676139'
+  alias: Reboot router if disconnected for 5 mins
+  description: ''
+  trigger:
+  - type: not_connected
+    platform: device
+    device_id: d738ba5e00eff938acf38a5b81818c75
+    entity_id: 34238a295cb3e9d90c7dcc6798d1ed6c
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  condition: []
+  action:
+  - action: button.press
+    metadata: {}
+    data: {}
+    target:
+      entity_id: button.fritz_box_7530_reconnect_2
+  - metadata: {}
+    data:
+      message: Router disconnected. Rebooted it
+    action: notify.mobile_app_kens_phone
+  mode: single
+- id: '1717149233508'
+  alias: Turn off presence simulation at sunrise when away
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunrise
+    offset: 0
+  condition:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: person.ken_guest
+      state: not_home
+    - condition: state
+      state: not_home
+      entity_id: person.aisling
+  action:
+  - service: presence_simulation.stop
+    data: {}
+  mode: single
+- id: '1717951292080'
+  alias: 'Litter Robot : more litter '
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id:
+    - sensor.a_l_f_litter_level
+    below: 51
+  condition: []
+  action:
+  - service: notify.mobile_app_kens_phone
+    metadata: {}
+    data:
+      message: ALF Needs More Litter
+  mode: single
+- id: '1718628149308'
+  alias: 'Turn on Kettle for hot water bottle (voice) '
+  description: ''
+  trigger:
+  - platform: conversation
+    command:
+    - Need a Hot water bottle please
+    - I need a Hot water bottle please
+    - Aisling needs a hot water bottle please
+  condition: []
+  action:
+  - service: switch.turn_off
+    target:
+      entity_id:
+      - switch.tz3000_00mk2xzy_ts011f_on_off
+    data: {}
+  - service: automation.turn_on
+    target:
+      entity_id: automation.kettle_turn_off_after_4_minutes
+    data: {}
+  - service: switch.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.tz3000_00mk2xzy_ts011f_on_off
+  - set_conversation_response: 'Turning the kettle on for just a few minutes for a
+      hot water bottle. Feel better soon! '
+  mode: single
+- id: '1719306409027'
+  alias: Reset litter to be emptied if no where near full
+  description: ''
+  trigger:
+  - type: value
+    platform: device
+    device_id: dc09b50ee6b490b17f2f0b4a4911a45f
+    entity_id: 122caa6ae8dc93e0a700358d37dde853
+    domain: sensor
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+    below: 60
+  condition: []
+  action:
+  - metadata: {}
+    data: {}
+    target:
+      entity_id: input_boolean.litter_robot_waste_drawer_emptied
+    action: input_boolean.turn_off
+  mode: single
+- id: '1719935345013'
+  alias: Pause TV
+  description: ''
+  trigger: []
+  condition: []
+  action:
+  - service: media_player.media_play_pause
+    target:
+      entity_id: media_player.tv
+    data: {}
+  mode: single
+- id: '1720029388029'
+  alias: 'Cloakroom door closes - toggle busy flag '
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.lumi_lumi_sensor_magnet_aq2_a9c35302_on_off
+    to: 'off'
+  condition: []
+  action:
+  - service: input_boolean.toggle
+    metadata: {}
+    data: {}
+    target:
+      entity_id: input_boolean.cloakroom_busy
+  mode: single
+- id: '1720029864182'
+  alias: Turn off cloakroom light
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.cloakroom_busy
+    to: 'off'
+  condition: []
+  action:
+  - service: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.cloak_room
+  mode: single
+- id: '1720655133884'
+  alias: 'Litter Robot Waste Emptied - action '
+  description: ''
+  trigger:
+  - platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: LITTER_ROBOT_WASTE_EMPTIED
+  condition: []
+  action:
+  - service: input_boolean.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: input_boolean.litter_robot_waste_drawer_emptied
+  mode: single
+- id: '1721228695738'
+  alias: Paranoia mode on if front door open for more than 5 minutes
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.front_door
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  condition: []
+  action:
+  - service: input_boolean.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: input_boolean.paranoia
+  mode: single
+- id: '1721228770999'
+  alias: Paranoia mode off if front door closed
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.front_door
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 10
+  condition: []
+  action:
+  - service: input_boolean.turn_off
+    target:
+      entity_id:
+      - input_boolean.paranoia
+    data: {}
+  mode: single
+- id: '1721597497936'
+  alias: 'Reset Merlyn''s pill reminder. '
+  description: ''
+  trigger:
+  - platform: time
+    at: 05:59:00
+  condition: []
+  action:
+  - service: input_boolean.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: input_boolean.pill_consumed_by_merlyn
+  mode: single
+- id: '1721604204503'
+  alias: Turn light off in hall after 20 mins if before 9am
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.hall_sensor_motion
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 20
+      seconds: 0
+  condition:
+  - condition: time
+    before: 09:00:00
+  action:
+  - type: turn_off
+    device_id: 7ab073c9430e868c28fcb943989e68d9
+    entity_id: light.hall_light
+    domain: light
+  mode: single
+- id: '1721604258776'
+  alias: Turn light off in hall after 20 mins if before 9am
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.hall_sensor_motion
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 20
+      seconds: 0
+  condition:
+  - condition: time
+    before: 09:00:00
+  action:
+  - type: turn_off
+    device_id: 7ab073c9430e868c28fcb943989e68d9
+    entity_id: light.hall_light
+    domain: light
+  mode: single
+- id: '1722181433356'
+  alias: ALF timing at 45 mins
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.a_l_f_status_code
+    to: cst
+    for:
+      hours: 0
+      minutes: 45
+      seconds: 0
+  condition: []
+  action:
+  - metadata: {}
+    data:
+      message: ALF is stuck at timing for 30 minutes
+    action: notify.mobile_app_kens_phone
+  mode: single
+- id: '1722454673252'
+  alias: Activate robovac at 9pm if tv is on
+  description: ''
+  trigger:
+  - platform: time
+    at: '20:45:00'
+  condition:
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: 'on'
+  - condition: state
+    entity_id: switch.tv
+    state: 'on'
+  action:
+  - service: vacuum.start
+    target:
+      entity_id: vacuum.robovac
+    data: {}
+  mode: single
+- id: '1723235165748'
+  alias: Turn on dishwasher when it is closed
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.door_dishwasher_opening
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+  condition:
+  - condition: state
+    entity_id: switch.switchdishwasher_on_off
+    state: 'off'
+  action:
+  - metadata: {}
+    data: {}
+    target:
+      entity_id: switch.switchdishwasher_on_off
+    action: switch.turn_on
+  mode: single
+- id: '1708297533072'
+  alias: Flight entry notification
+  trigger:
+    platform: event
+    event_type: flightradar24_entry
+  action:
+    service: notify.mobile_app_kens_phone
+    data:
+      content: Flight entry of {{ trigger.event.data.callsign }} to {{ trigger.event.data.airport_destination_city
+        }} [Open FlightRadar](https://www.flightradar24.com/{{ trigger.event.data.callsign
+        }})
+- id: '1724850980131'
+  alias: 'Turn off dishwasher when opened '
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.door_dishwasher_opening
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+  condition:
+  - condition: state
+    entity_id: switch.switchdishwasher_on_off
+    state: 'on'
+  action:
+  - action: switch.turn_off
+    target:
+      entity_id:
+      - switch.switchdishwasher_on_off
+    data: {}
+  mode: single
+- id: '1724946156606'
+  alias: Turn on tumbledryer when its door is closed
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.tumble_dryer_door_opening
+    to: 'off'
+  condition: []
+  action:
+  - action: switch.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.plugtumble_dryer_on_off
+  mode: single
+- id: '1725191129371'
+  alias: 'Turn on washing machine when closed '
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.washing_machine_door_opening
+    to: 'off'
+  condition: []
+  action:
+  - action: switch.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.plugwashing_machine_on_off
+  mode: single
+- id: '1725305408083'
+  alias: Hall light on when leaving cloakroom if dark
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.lumi_lumi_sensor_magnet_aq2_a9c35302_on_off
+    to: 'on'
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.hall_sensor_illuminance
+    below: 40
+  action:
+  - action: light.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.hall_light
+  mode: single
+- id: '1725465469967'
+  alias: Inform when Aisling close to Blanch Village
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id:
+    - sensor.blanchardstown_village_bus_stop_aisling_distance
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+    below: 5500
+  condition:
+  - condition: state
+    entity_id: sensor.blanchardstown_village_bus_stop_aisling_direction_of_travel
+    state: towards
+  - condition: state
+    entity_id: input_boolean.collect_aisling_from_blanch_village
+    state: 'on'
+  action:
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: true
+      media_player_entity_id: media_player.office
+      message: Aisling is getting close to Blanchardstown Village. Fly you fool!
+    enabled: false
+  - data:
+      message: TTS
+      data:
+        channel: alarm_stream
+        priority: high
+        tts_text: Aisling's getting close to Blanch Village.
+    action: notify.mobile_app_kens_phone
+  mode: single
+- id: '1725565921298'
+  alias: Cloakroom busy flag to timeout after 30 mins
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.cloakroom_busy
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 30
+      seconds: 0
+  condition: []
+  action:
+  - action: input_boolean.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: input_boolean.cloakroom_busy
+  mode: single
+- id: '1726822944274'
+  alias: Play Supernatural Soundtrack on Study speaker
+  description: ''
+  trigger:
+  - platform: conversation
+    command:
+    - Play the Supernatural soundtrack on the study speaker
+    - Play the Supernatural soundtrack
+    - Play Supernatural soundtrack
+  condition: []
+  action:
+  - action: media_player.play_media
+    target:
+      entity_id:
+      - media_player.office
+    data:
+      media_content_id: https://open.spotify.com/playlist/7EG93rnpCyxpcKQ6fazFa8
+      media_content_type: playlist
+  mode: single
+- id: '1726843267781'
+  alias: Play ACDC on the study speaker
+  description: ''
+  trigger:
+  - platform: conversation
+    command:
+    - Play ACDC on the study speaker
+    - Play ACDC
+    - Play ACDC please
+  condition: []
+  action:
+  - action: media_player.play_media
+    target:
+      entity_id:
+      - media_player.office
+    data:
+      media_content_id: https://open.spotify.com/playlist/37i9dQZF1DZ06evO49hLQA
+      media_content_type: playlist
+  mode: single
+- id: '1727035490180'
+  alias: Turn on litter robot panel lockout if off for 30 mins
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - switch.a_l_f_panel_lockout
+    from: 'off'
+    for:
+      hours: 0
+      minutes: 30
+      seconds: 0
+  condition: []
+  action:
+  - action: switch.turn_on
+    target:
+      entity_id:
+      - switch.a_l_f_panel_lockout
+    data: {}
+  mode: single
+- id: '1728903876416'
+  alias: Turn off washing machine when opened
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.washing_machine_door_opening
+    to: 'on'
+  conditions: []
+  actions:
+  - action: switch.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.plugwashing_machine_on_off
   mode: single

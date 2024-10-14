@@ -2,34 +2,12 @@
 # Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
 usb:
+history:
+powercalc:
 
 # Text to speech
 tts:
   - platform: google_translate
-  
-proximity:
-  home:
-    devices:
-      - device_tracker.aisling_s_phone
-      - device_tracker.ken_s_phone
-    tolerance: 50
-    unit_of_measurement: m  
-  home_aisling:
-    devices:
-      - person.aisling
-    tolerance: 50
-    unit_of_measurement: m
-  home_ken:
-    devices:
-      - person.ken_guest
-    tolerance: 50
-    unit_of_measurement: m
-  hpra:
-    zone: h_p_r_a
-    devices:
-      - person.aisling
-    tolerance: 2
-    unit_of_measurement: m  
 
 birthdays: !include birthdays.yaml
 
@@ -40,26 +18,9 @@ http:
 logger:
   default: info
   logs:
+    custom_components.robovac.vacuum: debug
+    custom_components.robovac.tuyalocalapi: debug
     homeassistant.core: debug
-    homeassistant.components.zha: debug
-    bellows.zigbee.application: debug
-    bellows.ezsp: debug
-    zigpy: debug
-    zigpy_deconz.zigbee.application: debug
-    zigpy_deconz.api: debug
-    zigpy_xbee.zigbee.application: debug
-    zigpy_xbee.api: debug
-    zigpy_zigate: debug
-    zigpy_znp: debug
-    zhaquirks: debug
-
-eufy_vacuum:
-  devices:
-  - name: Robovac
-    address: 192.168.178.32
-    access_token: !secret robovac_token
-    id: !secret robovac_id
-    type: T2118
 
 counter:
   robovac_usage:
@@ -109,23 +70,40 @@ input_text:
 recorder:
   commit_interval: 5
 sensor:
-#  - platform: dnsip
-#    name: external_ip
+  - platform: history_stats
+    name: Ken Meeting Duration
+    entity_id: binary_sensor.TRAMEXKWG_meeting 
+    state: "on"
+    type: time
+    start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+    end: "{{ now() }}"
+    unique_id: history_ken_meeting_duration
+  - platform: history_stats
+    name: Aisling Meeting Duration
+    entity_id: input_boolean.aisling_meeting
+    state: "on"
+    type: time
+    start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+    end: "{{ now() }}"
+    unique_id: history_aisling_meeting_duration
   - platform: integration
     name: dishwasher_energy_spent
     source: sensor.switchdishwasher_smartenergy_metering
     unit_prefix: k
     round: 2
+    unique_id: dishwasher_energy_spent
   - platform: integration
     name: tumble_dryer_energy_spent
     source: sensor.plugtumble_dryer_smartenergy_metering
     unit_prefix: k
     round: 2
+    unique_id: tumble_dryer_energy_spent
   - platform: integration
     name: washing_machine_energy_spent
     source: sensor.plugwashing_machine_smartenergy_metering
     unit_prefix: k
     round: 2
+    unique_id: washing_machine_energy_spent
   - platform: template
     sensors:
       washing_machine_status:
@@ -137,18 +115,6 @@ sensor:
       kens_alarm:
         value_template: '{{now().strftime("%a %h %d %H:%M %Z %Y") == (((state_attr("sensor.kens_phone_next_alarm", "Time in Milliseconds") | int / 1000)) | timestamp_custom("%a %h %d %H:%M %Z %Y"))}}'
         friendly_name: 'Ken''s Alarm'
-  - platform: systemmonitor
-    resources:
-      - type: disk_use_percent
-      - type: disk_use
-      - type: disk_free
-      - type: memory_use_percent
-      - type: processor_use
-      - type: processor_temperature
-      - type: last_boot
-      - type: load_1m
-      - type: load_5m
-      - type: load_15m
   - platform: time_date
     display_options:
       - "time"
@@ -181,48 +147,6 @@ binary_sensor:
 #    remove_holidays:
 #      - '2022-06-03'
 
-  - platform: ping
-    name: Chromecast
-    host: 192.168.178.20
-  - platform: ping
-    name: Radagast
-    host: 192.168.178.23
-  - platform: ping
-    name: Aisling's Chromebook
-    host: 192.168.178.24
-  - platform: ping
-    name: Work Laptop
-    host: 192.168.178.25
-  - platform: ping
-    name: Work Laptop (Wired)
-    host: 192.168.178.47
-  - platform: ping
-    name: TP-Link Repeater
-    host: 192.168.178.26
-  - platform: ping
-    name: Printer
-    host: 192.168.178.28
-  - platform: ping
-    name: Doorbell
-    host: 192.168.178.29
-  - platform: ping
-    name: robovac
-    host: 192.168.178.32
-  - platform: ping
-    name: Aisling's work laptop
-    host: 192.168.178.33
-  - platform: ping
-    name: AJAXHub
-    host: 192.168.178.34
-  - platform: ping
-    name: Aiwendil
-    host: 192.168.178.35
-  - platform: ping
-    name: KitchenCam
-    host: 192.168.178.40
-  - platform: ping
-    name: Sonos (Study)
-    host: 192.168.178.42
 
 # Create a group for referring to the kitchen lights at once
 light:
@@ -243,7 +167,6 @@ light:
     - light.cats_room
     - light.cloak_room
     - light.front_kitchen_light
-#    - light.guest_room
     - light.hall_light
     - light.landing
     - light.laundry_room_light
@@ -296,7 +219,7 @@ template:
   - binary_sensor:
       name: "Christmas Time"
       state: >-
-        {{ ((now().month == 1 and now().day <= 6) or ( now().month == 12 ))}} 
+        {{ ((now().month == 12) or (now().month == 1 and now().day <= 6)) }} 
 
 automation: !include automations.yaml
 script: !include scripts.yaml
