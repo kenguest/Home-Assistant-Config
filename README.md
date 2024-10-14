@@ -19,7 +19,7 @@ Phil Hawthorne's excellent [Making ‘dumb’ Dishwashers and Washing Machines S
 ### Wifi ###
 | Model | Buy | Image | Notes |
 |------|----| ------ |-------- |
-| Video Doorbell 2K HD with Intercom | [AliExpress](https://www.aliexpress.com/item/4001286888185.html) | <img width="180px" height="164px" src="./images/doorbell.webp"> | Doorbell, powered via existing doorbell wiring (12/24v), no subscription required. Configure Onvif access through it's own app, and then access on port 8000 through Home Assistant. This got damaged and while it is still usable, I will be replacing it with a [Reolink doorbell](https://reolink.com/ie/product/reolink-video-doorbell-wifi/) which has better support in Home Assistant. |
+| Video Doorbell 2K HD with Intercom | [Reolink doorbell](https://reolink.com/ie/product/reolink-video-doorbell-wifi/) || Reolink wifi doorbell. Integrates perfectly with Home Assistant, with free motion and person detection, allowing for automations to occur when motion, person, or bell-press is detected. Although this is only marketed as "wifi", it does also connect via ethernet, which is how I have mine connected. Powered via existing doorbell wiring. |
 
 
 ### <a name="zigbee"></a> 🐝 Zigbee ###
