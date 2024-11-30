@@ -181,16 +181,16 @@
 - id: '1610648558807'
   alias: When we are away turn off the heaters
   description: ''
-  trigger:
-  - platform: zone
-    entity_id: person.aisling
+  triggers:
+  - entity_id: person.aisling
     zone: zone.home
     event: leave
-  - platform: zone
-    entity_id: person.ken_guest
+    trigger: zone
+  - entity_id: person.ken_guest
     zone: zone.home
     event: leave
-  condition:
+    trigger: zone
+  conditions:
   - condition: and
     conditions:
     - condition: state
@@ -199,7 +199,7 @@
     - condition: state
       state: not_home
       entity_id: person.aisling
-  action:
+  actions:
   - type: turn_off
     device_id: 9bd5db4e258fb399874a670f894fedfc
     entity_id: switch.heater_master_bedroom
@@ -212,6 +212,11 @@
     device_id: 7905e40094c3ea0f6db679b26ad4791e
     entity_id: switch.tz3000_00mk2xzy_ts011f_d04c09fe_on_off
     domain: switch
+  - action: climate.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: climate.master_bedroom
   mode: single
 - id: '1611335214798'
   alias: 'Bedroom heater: on  for lunch time if too cold'
@@ -281,29 +286,29 @@
 - id: '1612697537130'
   alias: Kettle - on for hot water bottle
   description: ''
-  trigger:
-  - platform: device
-    type: turned_on
+  triggers:
+  - type: turned_on
     device_id: b846ad89f41bd9f920420f54ebbb49c6
     entity_id: switch.tz3000_00mk2xzy_ts011f_on_off
     domain: switch
     for:
       hours: 0
       minutes: 3
-      seconds: 0
-  condition: []
-  action:
+      seconds: 30
+    trigger: device
+  conditions: []
+  actions:
   - type: turn_off
     device_id: b846ad89f41bd9f920420f54ebbb49c6
     entity_id: switch.tz3000_00mk2xzy_ts011f_on_off
     domain: switch
-  - service: automation.trigger
-    target:
+  - target:
       entity_id: automation.announce_hot_water_bottle_ready
     data: {}
-  - service: automation.turn_off
-    data: {}
+    action: automation.trigger
+  - data: {}
     entity_id: automation.kettle_turn_off_after_4_minutes
+    action: automation.turn_off
   mode: single
 - id: '1613215949927'
   alias: 'System: Reconnect Fritzbox'
@@ -2002,9 +2007,8 @@
 - id: '1673303439347'
   alias: Study climate off
   description: Turn off climate control in study when occupancy clears
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - binary_sensor.study_occupancy
     from: 'on'
     to: 'off'
@@ -2012,12 +2016,15 @@
       hours: 0
       minutes: 0
       seconds: 10
-  condition: []
-  action:
-  - service: climate.turn_off
-    data: {}
+    trigger: state
+  conditions:
+  - condition: time
+    before: '18:00:00'
+  actions:
+  - data: {}
     target:
       entity_id: climate.study
+    action: climate.turn_off
   mode: single
 - id: '1674073261336'
   alias: Floodlight on when patio door opens at night time
@@ -2065,50 +2072,54 @@
   alias: Pause sonos study speaker when occupied and Ken's phone rings or meeting
     starts
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - sensor.kens_phone_audio_mode
     to: ringing
     for:
       hours: 0
       minutes: 0
       seconds: 2
-  - platform: state
-    entity_id:
+    trigger: state
+  - entity_id:
     - binary_sensor.tramexkwg_meeting
     to: 'on'
-  condition:
+    trigger: state
+  - trigger: state
+    entity_id:
+    - input_boolean.ken_in_meeting
+    to: 'on'
+  conditions:
   - condition: state
     entity_id: binary_sensor.study_occupancy
     state: 'on'
   - condition: state
     entity_id: media_player.office
     state: playing
-  action:
-  - service: media_player.media_pause
-    data: {}
+  actions:
+  - data: {}
     target:
       entity_id: media_player.office
-  - service: input_boolean.turn_on
-    data: {}
+    action: media_player.media_pause
+  - data: {}
     target:
       entity_id: input_boolean.ken_s_phone_paused_study_speaker
+    action: input_boolean.turn_on
   mode: single
 - id: '1674949388037'
-  alias: 'TV: Turn off after 10 mins of nothing being cast to it'
+  alias: 'TV: Turn off after 1 hour of nothing being cast to it'
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - media_player.tv
     to: 'off'
     for:
       hours: 1
       minutes: 0
       seconds: 0
-  condition: []
-  action:
+    trigger: state
+  conditions: []
+  actions:
   - type: turn_off
     device_id: 45edff43ad45570ac0e014272b085396
     entity_id: switch.tv
@@ -2117,35 +2128,39 @@
 - id: '1675075601504'
   alias: Resume sonos play in study after phone call or meeting
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - sensor.kens_phone_audio_mode
     to: normal
     for:
       hours: 0
       minutes: 0
       seconds: 2
-  - platform: state
-    entity_id:
+    trigger: state
+  - entity_id:
     - binary_sensor.tramexkwg_meeting
     to: 'off'
-  condition:
+    trigger: state
+  - trigger: state
+    entity_id:
+    - input_boolean.ken_in_meeting
+    to: 'off'
+  conditions:
   - condition: state
     entity_id: binary_sensor.study_occupancy
     state: 'on'
   - condition: state
     entity_id: input_boolean.ken_s_phone_paused_study_speaker
     state: 'on'
-  action:
-  - service: media_player.media_play
-    data: {}
+  actions:
+  - data: {}
     target:
       device_id: 04709d026c7d06327bb9f6c6ce0bf98d
-  - service: input_boolean.turn_off
-    data: {}
+    action: media_player.media_play
+  - data: {}
     target:
       entity_id: input_boolean.ken_s_phone_paused_study_speaker
+    action: input_boolean.turn_off
   mode: single
 - id: '1676397603461'
   alias: 'Guest Bedroom light on if dark and occupied '
@@ -3635,16 +3650,24 @@
 - id: '1709710114249'
   alias: Turn off all other lights when in the study
   description: '... And only one person at home'
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - binary_sensor.study_motion_iaszone
     to: 'on'
-  condition:
+    trigger: state
+  conditions:
   - condition: numeric_state
     entity_id: zone.home
     below: 2
-  action:
+  - condition: zone
+    entity_id: person.ken_guest
+    zone: zone.home
+  - condition: not
+    conditions:
+    - condition: zone
+      entity_id: person.aisling
+      zone: zone.home
+  actions:
   - metadata: {}
     data: {}
     target:
@@ -3656,6 +3679,7 @@
       - light.ensuite
       - light.lightken_level_light_color_on_off
       - light.lightaisling_level_light_color_on_off
+      - light.top_landing_light
     action: light.turn_off
   mode: single
 - id: '1711820545178'
@@ -4044,30 +4068,30 @@
 - id: '1718628149308'
   alias: 'Turn on Kettle for hot water bottle (voice) '
   description: ''
-  trigger:
-  - platform: conversation
-    command:
+  triggers:
+  - command:
     - Need a Hot water bottle please
     - I need a Hot water bottle please
     - Aisling needs a hot water bottle please
-  condition: []
-  action:
-  - service: switch.turn_off
-    target:
+    trigger: conversation
+  conditions: []
+  actions:
+  - target:
       entity_id:
       - switch.tz3000_00mk2xzy_ts011f_on_off
     data: {}
-  - service: automation.turn_on
-    target:
+    action: switch.turn_off
+  - target:
       entity_id: automation.kettle_turn_off_after_4_minutes
     data: {}
-  - service: switch.turn_on
-    metadata: {}
+    action: automation.turn_on
+  - metadata: {}
     data: {}
     target:
       entity_id: switch.tz3000_00mk2xzy_ts011f_on_off
-  - set_conversation_response: 'Turning the kettle on for just a few minutes for a
-      hot water bottle. Feel better soon! '
+    action: switch.turn_on
+  - set_conversation_response: Turning the kettle on for just a few minutes for a
+      hot water bottle.
   mode: single
 - id: '1719306409027'
   alias: Reset litter to be emptied if no where near full
@@ -4520,4 +4544,119 @@
     data: {}
     target:
       entity_id: switch.plugwashing_machine_on_off
+  mode: single
+- id: '1729599157246'
+  alias: Turn off ALF panel lockout when in cats room
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.cats_occupancy
+    to: 'on'
+  conditions: []
+  actions:
+  - action: switch.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.a_l_f_panel_lockout
+  mode: single
+- id: '1729627791896'
+  alias: Top Landing light on when study door opens
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.lumi_lumi_sensor_magnet_aq2_on_off
+    to: 'on'
+  conditions:
+  - condition: numeric_state
+    entity_id: sensor.top_platform_illuminance
+    below: 30
+  actions:
+  - action: light.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.top_landing_light
+  mode: single
+- id: '1731499339709'
+  alias: 'Bathroom: Leak detected'
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.bathroom_water_detector_iaszone
+    from: 'off'
+    to: 'on'
+  conditions: []
+  actions:
+  - data:
+      message: TTS
+      data:
+        channel: alarm_stream
+        priority: high
+        tts_text: Leak detector in main bathroom is wet. Leak detector in main bathroom
+          is wet.
+    action: notify.mobile_app_kens_phone
+  mode: single
+- id: '1731675022203'
+  alias: Turn off Aisling's electric blanket if on for two hour
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - switch.electric_blanket_aisling_switch
+    to: 'on'
+    for:
+      hours: 2
+      minutes: 0
+      seconds: 0
+  conditions: []
+  actions:
+  - action: switch.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.electric_blanket_aisling_switch
+  mode: single
+- id: '1732126287087'
+  alias: 'Turn off top Landing light '
+  description: ''
+  triggers:
+  - type: no_motion
+    device_id: 5cb929bb135e3cedf31510218bba30d4
+    entity_id: binary_sensor.landing_sensor_ias_zone
+    domain: binary_sensor
+    trigger: device
+  conditions:
+  - condition: state
+    entity_id: light.top_landing_light
+    state: 'on'
+  actions:
+  - action: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.top_landing_light
+  mode: single
+- id: '1732126308149'
+  alias: 'Turn off top Landing light '
+  description: ''
+  triggers:
+  - type: no_motion
+    device_id: 5cb929bb135e3cedf31510218bba30d4
+    entity_id: binary_sensor.landing_sensor_ias_zone
+    domain: binary_sensor
+    trigger: device
+  conditions:
+  - condition: state
+    entity_id: light.top_landing_light
+    state: 'on'
+  actions:
+  - action: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.top_landing_light
   mode: single
