@@ -294,7 +294,7 @@
     for:
       hours: 0
       minutes: 3
-      seconds: 30
+      seconds: 0
     trigger: device
   conditions: []
   actions:
@@ -732,11 +732,10 @@
       option: Normal
   mode: single
 - id: '1617661278552'
-  alias: 'Top Platform sensor: no motion turns off'
+  alias: 'Top Platform sensor: no motion turns off landing light'
   description: When motion is no longer detected, turn off the top landing light
-  trigger:
+  triggers:
   - type: no_motion
-    platform: device
     device_id: f8835a0621ca201abdb9634e8d71c0a7
     entity_id: binary_sensor.top_platform_ias_zone
     domain: binary_sensor
@@ -744,8 +743,9 @@
       hours: 0
       minutes: 5
       seconds: 0
-  condition: []
-  action:
+    trigger: device
+  conditions: []
+  actions:
   - type: turn_off
     device_id: dad6ed559cf6187b8db1b104129fe92f
     entity_id: 4967f68fd2ca739e62b3a5a4acc8275e
@@ -1713,25 +1713,26 @@
 - id: '1669051788830'
   alias: Tell Ken someone is at the door
   description: When doorbell goes off, and Ken is home...
-  trigger: []
-  condition:
+  triggers: []
+  conditions:
   - condition: zone
     entity_id: person.ken_guest
     zone: zone.home
-  action:
+  actions:
   - type: turn_on
     device_id: 7ab073c9430e868c28fcb943989e68d9
     entity_id: light.hall_light
     domain: light
+  - data:
+      message: There's somebody at the door ( {{ now().timestamp() | timestamp_custom('%a
+        %d-%m-%Y %-I:%M %p') }})
+    action: notify.mobile_app_kens_phone
   - data:
       message: TTS
       data:
         channel: alarm_stream
         priority: high
         tts_text: There's somebody at the door.
-    action: notify.mobile_app_kens_phone
-  - data:
-      message: 'There''s somebody at the door! '
     action: notify.mobile_app_kens_phone
   - action: tts.speak
     metadata: {}
@@ -2281,27 +2282,27 @@
 - id: '1677799425618'
   alias: Ken's light on when alarm goes off
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - sensor.kens_alarm
     to: 'True'
-  condition:
+    trigger: state
+  conditions:
   - condition: state
     entity_id: person.ken_guest
     state: home
   - condition: numeric_state
     entity_id: counter.ken_daily_alarm_count
     below: 1
-  action:
+  actions:
   - type: turn_on
     device_id: 93d832766c70e08420d68b48a10bb53b
     entity_id: light.lightken_level_light_color_on_off
     domain: light
-  - service: counter.increment
-    data: {}
+  - data: {}
     target:
       entity_id: counter.ken_daily_alarm_count
+    action: counter.increment
   mode: single
 - id: '1679434121411'
   alias: 'Announce: Tell Aisling bus stop is coming up'
@@ -3680,6 +3681,7 @@
       - light.lightken_level_light_color_on_off
       - light.lightaisling_level_light_color_on_off
       - light.top_landing_light
+      - light.cats_room
     action: light.turn_off
   mode: single
 - id: '1711820545178'
@@ -3961,18 +3963,18 @@
 - id: '1716280540589'
   alias: Activate robovac at 10am on a work day
   description: ''
-  trigger:
-  - platform: time
-    at: '10:00:00'
-  condition:
+  triggers:
+  - at: '11:00:00'
+    trigger: time
+  conditions:
   - condition: state
     entity_id: binary_sensor.workday_sensor
     state: 'on'
-  action:
-  - service: vacuum.start
-    target:
+  actions:
+  - target:
       entity_id: vacuum.robovac
     data: {}
+    action: vacuum.start
   mode: single
 - id: '1716499932240'
   alias: 'Alert when litter tray needs to be emptied '
@@ -4116,15 +4118,22 @@
     action: input_boolean.turn_off
   mode: single
 - id: '1719935345013'
-  alias: Pause TV
+  alias: Pause TV when doorbell rung
   description: ''
-  trigger: []
-  condition: []
-  action:
-  - service: media_player.media_play_pause
-    target:
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.doorbell_visitor
+    to: 'on'
+  conditions:
+  - condition: state
+    entity_id: media_player.tv
+    state: playing
+  actions:
+  - target:
       entity_id: media_player.tv
     data: {}
+    action: media_player.media_play_pause
   mode: single
 - id: '1720029388029'
   alias: 'Cloakroom door closes - toggle busy flag '
@@ -4143,20 +4152,20 @@
       entity_id: input_boolean.cloakroom_busy
   mode: single
 - id: '1720029864182'
-  alias: Turn off cloakroom light
+  alias: Auto turn off cloakroom light
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - input_boolean.cloakroom_busy
     to: 'off'
-  condition: []
-  action:
-  - service: light.turn_off
-    metadata: {}
+    trigger: state
+  conditions: []
+  actions:
+  - metadata: {}
     data: {}
     target:
       entity_id: light.cloak_room
+    action: light.turn_off
   mode: single
 - id: '1720655133884'
   alias: 'Litter Robot Waste Emptied - action '
@@ -4572,7 +4581,7 @@
   conditions:
   - condition: numeric_state
     entity_id: sensor.top_platform_illuminance
-    below: 30
+    below: 25
   actions:
   - action: light.turn_on
     metadata: {}
@@ -4659,4 +4668,103 @@
     data: {}
     target:
       entity_id: light.top_landing_light
+  mode: single
+- id: '1732987744754'
+  alias: Turn off upstairs heating if room is too hot
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.masterbedroom_temperature
+    above: 19
+  conditions: []
+  actions:
+  - action: climate.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: climate.upstairs
+  mode: single
+- id: '1733596262371'
+  alias: Turn on Christmas tree
+  description: ''
+  triggers:
+  - trigger: conversation
+    command:
+    - Light the beacons
+  conditions: []
+  actions:
+  - set_conversation_response: Gondor calls for aid
+  mode: single
+- id: '1733597203894'
+  alias: The beacons are lit
+  description: ''
+  triggers:
+  - trigger: conversation
+    command: The beacons are lit
+  conditions: []
+  actions:
+  - set_conversation_response: Gondor calls for aid. And Rohan shall answer. Muster
+      the rohirrim
+  - action: switch.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.christmas_tree_lights_switch_2
+  mode: single
+- id: '1733616374692'
+  alias: 'Start timer to switch off Aisling''s electric blanket '
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - switch.electric_blanket_aisling_switch
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 1
+  conditions: []
+  actions:
+  - action: timer.start
+    metadata: {}
+    data: {}
+    target:
+      entity_id: timer.electric_blanket_timer_aisling
+  mode: single
+- id: '1733616699128'
+  alias: 'Turn off Aisling''s electric blanket when timer finishes '
+  description: ''
+  triggers:
+  - event_type: timer.finished
+    event_data:
+      entity_id: timer.electric_blanket_timer_aisling
+    trigger: event
+  conditions:
+  - condition: state
+    entity_id: switch.electric_blanket_aisling_switch
+    state: 'on'
+  actions:
+  - action: switch.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.electric_blanket_aisling_switch
+  mode: single
+- id: '1733843204135'
+  alias: New Email From Aisling
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.imap_ken_guest_gmail_com_messages
+    above: 0
+  conditions: []
+  actions:
+  - action: tts.cloud_say
+    metadata: {}
+    data:
+      cache: false
+      message: You have new email from Aisling
+      entity_id: media_player.office
   mode: single
