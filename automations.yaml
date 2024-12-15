@@ -1724,8 +1724,7 @@
     entity_id: light.hall_light
     domain: light
   - data:
-      message: There's somebody at the door ( {{ now().timestamp() | timestamp_custom('%a
-        %d-%m-%Y %-I:%M %p') }})
+      message: There's somebody at the door ( {{ now().timestamp() | timestamp_custom('%a %d-%m-%Y %-I:%M %p') }})
     action: notify.mobile_app_kens_phone
   - data:
       message: TTS
@@ -2392,7 +2391,7 @@
   action:
   - service: notify.mobile_app_kens_phone
     data:
-      message: Living room door opened
+      message: Living room door opened ({{ now().timestamp() | timestamp_custom('%a %d-%m-%Y %-I:%M %p') }} )
   mode: single
 - id: '1680562692631'
   alias: Alert if bedroom door opened and both away
@@ -2415,7 +2414,7 @@
   action:
   - service: notify.mobile_app_kens_phone
     data:
-      message: Bedroom door opened
+      message: Bedroom door opened ({{ now().timestamp() | timestamp_custom('%a %d-%m-%Y %-I:%M %p') }} )
   mode: single
 - id: '1680562861571'
   alias: Alert if study door opened and away
@@ -2440,7 +2439,7 @@
   action:
   - service: notify.mobile_app_kens_phone
     data:
-      message: Study door opened
+      message: Study door opened ({{ now().timestamp() | timestamp_custom('%a %d-%m-%Y %-I:%M %p') }} )
   mode: single
 - id: '1680562891003'
   alias: Alert if guest bedroom door opened and away
@@ -2465,7 +2464,7 @@
   action:
   - service: notify.mobile_app_kens_phone
     data:
-      message: Guest bedroom door opened
+      message: Guest bedroom door opened ({{ now().timestamp() | timestamp_custom('%a %d-%m-%Y %-I:%M %p') }} )
   mode: single
 - id: '1682522488675'
   alias: When Kettle Timer Finishes
