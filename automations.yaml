@@ -156,27 +156,23 @@
 - id: '1610534431581'
   alias: When Ken comes home turn on lights
   description: ''
-  trigger:
-  - platform: zone
-    entity_id: person.ken_guest
+  triggers:
+  - entity_id: person.ken_guest
     zone: zone.home
     event: enter
-  condition: []
-  action:
+    trigger: zone
+  conditions: []
+  actions:
   - domain: light
     entity_id: light.hall_light
     device_id: 7ab073c9430e868c28fcb943989e68d9
     type: turn_on
-  - service: notify.notify_via_pushbullet
-    data:
+  - data:
       message: Welcome home Ken!
-      target: email/ken.guest@gmail.com
-  - service: notify.mobile_app_kens_phone
-    data:
-      message: Welcome home Ken!
-  - service: automation.turn_off
-    data: {}
+    action: notify.mobile_app_kens_phone
+  - data: {}
     entity_id: automation.turn_on_lights_when_i_come_home
+    action: automation.turn_off
   mode: single
 - id: '1610648558807'
   alias: When we are away turn off the heaters
@@ -641,15 +637,19 @@
 - id: '1617221340992'
   alias: 'Hall light: Off when no motion'
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - binary_sensor.hall_sensor_occupancy
+  triggers:
+  - entity_id:
+    - binary_sensor.hall_sensor_motion
     to: 'off'
-  condition:
+    trigger: state
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  conditions:
   - condition: time
     after: 09:00:00
-  action:
+  actions:
   - type: turn_off
     device_id: 7ab073c9430e868c28fcb943989e68d9
     entity_id: light.hall_light
@@ -845,11 +845,11 @@
     domain: switch
   - type: turn_on
     device_id: e9453ffdcd0ebf1d4f8d3207d4244866
-    entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_3
+    entity_id: switch.phone_charger
     domain: switch
   - type: turn_on
     device_id: e9453ffdcd0ebf1d4f8d3207d4244866
-    entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_2
+    entity_id: switch.external_monitors
     domain: switch
   mode: single
 - id: '1618232556073'
@@ -998,11 +998,11 @@
     domain: switch
   - type: turn_off
     device_id: e9453ffdcd0ebf1d4f8d3207d4244866
-    entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_3
+    entity_id: switch.phone_charger
     domain: switch
   - type: turn_off
     device_id: e9453ffdcd0ebf1d4f8d3207d4244866
-    entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_2
+    entity_id: switch.external_monitors
     domain: switch
   - service: input_select.select_option
     target:
@@ -1662,11 +1662,11 @@
     domain: switch
   - type: turn_off
     device_id: e9453ffdcd0ebf1d4f8d3207d4244866
-    entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_3
+    entity_id: switch.phone_charger
     domain: switch
   - type: turn_off
     device_id: e9453ffdcd0ebf1d4f8d3207d4244866
-    entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_2
+    entity_id: switch.external_monitors
     domain: switch
   mode: single
 - id: '1667320063920'
@@ -1724,7 +1724,8 @@
     entity_id: light.hall_light
     domain: light
   - data:
-      message: There's somebody at the door ( {{ now().timestamp() | timestamp_custom('%a %d-%m-%Y %-I:%M %p') }})
+      message: There's somebody at the door ( {{ now().timestamp() | timestamp_custom('%a
+        %d-%m-%Y %-I:%M %p') }})
     action: notify.mobile_app_kens_phone
   - data:
       message: TTS
@@ -2259,24 +2260,24 @@
 - id: '1677777185547'
   alias: Ensuite light on if motion and it's dark
   description: ''
-  trigger:
+  triggers:
   - type: motion
-    platform: device
     device_id: 0eccc2c72e6440abc90619cf8f1ac2f7
     entity_id: 2f298d4f89eb847a8c395cee1667e85a
     domain: binary_sensor
-  condition:
+    trigger: device
+  conditions:
   - type: is_illuminance
     condition: device
     device_id: 0eccc2c72e6440abc90619cf8f1ac2f7
     entity_id: 36ce3a5d7f5e4987789de24cd82ce670
     domain: sensor
-    below: 45
-  action:
-  - service: light.turn_on
-    target:
+    below: 50
+  actions:
+  - target:
       entity_id: light.ensuite
     data: {}
+    action: light.turn_on
   mode: single
 - id: '1677799425618'
   alias: Ken's light on when alarm goes off
@@ -2349,11 +2350,11 @@
     domain: switch
   - type: turn_on
     device_id: e9453ffdcd0ebf1d4f8d3207d4244866
-    entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_3
+    entity_id: switch.phone_charger
     domain: switch
   - type: turn_on
     device_id: e9453ffdcd0ebf1d4f8d3207d4244866
-    entity_id: switch.tz3000_vmpbygs5_ts011f_ab5c4ffe_on_off_2
+    entity_id: switch.external_monitors
     domain: switch
   - data: {}
     target:
@@ -2391,7 +2392,8 @@
   action:
   - service: notify.mobile_app_kens_phone
     data:
-      message: Living room door opened ({{ now().timestamp() | timestamp_custom('%a %d-%m-%Y %-I:%M %p') }} )
+      message: Living room door opened ({{ now().timestamp() | timestamp_custom('%a
+        %d-%m-%Y %-I:%M %p') }} )
   mode: single
 - id: '1680562692631'
   alias: Alert if bedroom door opened and both away
@@ -2414,7 +2416,8 @@
   action:
   - service: notify.mobile_app_kens_phone
     data:
-      message: Bedroom door opened ({{ now().timestamp() | timestamp_custom('%a %d-%m-%Y %-I:%M %p') }} )
+      message: Bedroom door opened ({{ now().timestamp() | timestamp_custom('%a %d-%m-%Y
+        %-I:%M %p') }} )
   mode: single
 - id: '1680562861571'
   alias: Alert if study door opened and away
@@ -2439,7 +2442,8 @@
   action:
   - service: notify.mobile_app_kens_phone
     data:
-      message: Study door opened ({{ now().timestamp() | timestamp_custom('%a %d-%m-%Y %-I:%M %p') }} )
+      message: Study door opened ({{ now().timestamp() | timestamp_custom('%a %d-%m-%Y
+        %-I:%M %p') }} )
   mode: single
 - id: '1680562891003'
   alias: Alert if guest bedroom door opened and away
@@ -2464,7 +2468,8 @@
   action:
   - service: notify.mobile_app_kens_phone
     data:
-      message: Guest bedroom door opened ({{ now().timestamp() | timestamp_custom('%a %d-%m-%Y %-I:%M %p') }} )
+      message: Guest bedroom door opened ({{ now().timestamp() | timestamp_custom('%a
+        %d-%m-%Y %-I:%M %p') }} )
   mode: single
 - id: '1682522488675'
   alias: When Kettle Timer Finishes
@@ -2484,26 +2489,26 @@
 - id: '1683052934278'
   alias: Aisling is almost home
   description: ''
-  trigger:
-  - platform: zone
-    entity_id: person.aisling
+  triggers:
+  - entity_id: person.aisling
     zone: zone.fooo
     event: enter
-  condition:
+    trigger: zone
+  conditions:
   - condition: state
-    entity_id: sensor.lothlorien_aisling_s_phone_direction_of_travel
     state: towards
-  action:
-  - service: notify.mobile_app_kens_phone
-    data:
+    entity_id: sensor.lothlorien_aisling_direction_of_travel
+  actions:
+  - data:
       message: 'Aisling is almost home. Pop up to the bus stop? '
-  - service: notify.mobile_app_kens_phone
-    data:
+    action: notify.mobile_app_kens_phone
+  - data:
       message: TTS
       data:
         channel: alarm_stream
         priority: high
         tts_text: Aisling is almost at the bus stop
+    action: notify.mobile_app_kens_phone
   mode: single
 - id: '1683053983671'
   alias: 'Announce: Aisling almost home'
@@ -2642,7 +2647,7 @@
   action:
   - type: turn_off
     device_id: 45edff43ad45570ac0e014272b085396
-    entity_id: switch.tz3000_vmpbygs5_ts011f_switch
+    entity_id: switch.laptop_charger
     domain: switch
   mode: single
 - id: '1689103934420'
@@ -3190,14 +3195,14 @@
   description: ''
   triggers:
   - type: no_motion
-    platform: device
     device_id: 0eccc2c72e6440abc90619cf8f1ac2f7
     entity_id: 2f298d4f89eb847a8c395cee1667e85a
     domain: binary_sensor
     for:
       hours: 0
-      minutes: 4
+      minutes: 5
       seconds: 0
+    trigger: device
   conditions:
   - condition: not
     conditions:
@@ -3231,12 +3236,12 @@
 - id: '1699639907048'
   alias: Bedside lamps go on when we come home
   description: ''
-  trigger:
-  - platform: numeric_state
-    entity_id:
-    - sensor.lothlorien_kens_phone_distance
+  triggers:
+  - entity_id:
+    - sensor.lothlorien_ken_guest_distance
     below: 200
-  condition:
+    trigger: numeric_state
+  conditions:
   - condition: not
     conditions:
     - condition: zone
@@ -3247,12 +3252,12 @@
   - condition: numeric_state
     entity_id: zone.home
     above: 1
-  action:
-  - service: light.turn_on
-    data: {}
+  actions:
+  - data: {}
     target:
       entity_id:
       - light.bedside_lamps
+    action: light.turn_on
   mode: single
 - id: '1700034358783'
   alias: Turn off all lights when we're away from home
@@ -3283,12 +3288,12 @@
 - id: '1700181554374'
   alias: Front door light on when ken comes home after dark
   description: ''
-  trigger:
-  - platform: numeric_state
-    entity_id:
-    - sensor.lothlorien_3_ken_guest_distance
+  triggers:
+  - entity_id:
+    - sensor.lothlorien_ken_guest_distance
     below: 300
-  condition:
+    trigger: numeric_state
+  conditions:
   - condition: not
     conditions:
     - condition: zone
@@ -3296,22 +3301,22 @@
       zone: zone.home
   - condition: sun
     after: sunset
-  action:
-  - service: light.turn_on
-    data: {}
+  actions:
+  - data: {}
     target:
       entity_id:
       - light.front_door_light
+    action: light.turn_on
   mode: single
 - id: '1701206647376'
   alias: Porch light on when Aisling comes home after dark
   description: ''
-  trigger:
-  - platform: numeric_state
-    entity_id:
-    - sensor.lothlorien_aisling_s_phone_distance
+  triggers:
+  - entity_id:
+    - sensor.lothlorien_aisling_distance
     below: 200
-  condition:
+    trigger: numeric_state
+  conditions:
   - condition: not
     conditions:
     - condition: zone
@@ -3319,12 +3324,12 @@
       zone: zone.home
   - condition: sun
     after: sunset
-  action:
-  - service: light.turn_on
-    data: {}
+  actions:
+  - data: {}
     target:
       entity_id:
       - light.front_door_light
+    action: light.turn_on
   mode: single
 - id: '1704544441733'
   alias: 'Turn on washing machine when laundry room opens '
@@ -3456,29 +3461,32 @@
 - id: '1707387055423'
   alias: Heat study on work day
   description: Turn on heater if needed
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - binary_sensor.study_occupancy
     to: 'on'
-  condition:
+    trigger: state
+  conditions:
   - condition: state
     entity_id: binary_sensor.workday_sensor
     state: 'on'
   - condition: state
+    entity_id: binary_sensor.work_hours
+    state: 'on'
+  - condition: state
     entity_id: climate.upstairs
     state: 'off'
-  action:
-  - service: climate.turn_on
-    data: {}
+  actions:
+  - data: {}
     target:
       entity_id: climate.study
-  - service: climate.set_temperature
-    metadata: {}
+    action: climate.turn_on
+  - metadata: {}
     data:
-      temperature: 19
+      temperature: 20
     target:
       entity_id: climate.study
+    action: climate.set_temperature
   mode: single
 - id: '1708030449892'
   alias: Aisling's meeting has finished
@@ -3745,26 +3753,30 @@
 - id: '1712877760848'
   alias: Porch light on after dark if person detected
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - binary_sensor.doorbell_person
     for:
       hours: 0
       minutes: 0
       seconds: 0
     to: 'on'
-  condition:
+    trigger: state
+  - trigger: state
+    entity_id:
+    - binary_sensor.doorbell_vehicle
+    to: 'on'
+  conditions:
   - condition: state
     entity_id: sun.sun
     state: below_horizon
-  action:
-  - service: light.turn_on
-    metadata: {}
+  actions:
+  - metadata: {}
     data:
       brightness_pct: 100
     target:
       entity_id: light.front_door_light
+    action: light.turn_on
   mode: single
 - id: '1713388183112'
   alias: Low battery level detection & notification for all battery sensors
@@ -3837,12 +3849,12 @@
 - id: '1715160459521'
   alias: Say when to empty the robovac
   description: ''
-  trigger:
-  - platform: numeric_state
-    entity_id:
+  triggers:
+  - entity_id:
     - counter.robovac_usage
     above: 10
-  condition:
+    trigger: numeric_state
+  conditions:
   - condition: state
     entity_id: vacuum.robovac
     state: docked
@@ -3850,29 +3862,38 @@
       hours: 0
       minutes: 10
       seconds: 0
-  action:
-  - service: notify.mobile_app_kens_phone
-    metadata: {}
+    enabled: false
+  actions:
+  - metadata: {}
     data:
       message: You should probably empty the robovac
+    action: notify.mobile_app_kens_phone
   mode: single
 - id: '1715207475642'
-  alias: 'Turn front door light off when no person detected '
+  alias: 'Porch light off when no person detected '
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - binary_sensor.doorbell_person
     for:
       hours: 0
-      minutes: 1
+      minutes: 2
       seconds: 0
     to: 'off'
-  condition:
+    trigger: state
+  - trigger: state
+    entity_id:
+    - binary_sensor.doorbell_vehicle
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 2
+      seconds: 0
+  conditions:
   - condition: state
     entity_id: light.front_door_light
     state: 'on'
-  action:
+  actions:
   - target:
       entity_id:
       - light.front_door_light
@@ -3960,10 +3981,10 @@
       message: 'Aisling''s on the phone '
   mode: single
 - id: '1716280540589'
-  alias: Activate robovac at 10am on a work day
+  alias: Activate robovac at 11:15 on a work day
   description: ''
   triggers:
-  - at: '11:00:00'
+  - at: '11:15:00'
     trigger: time
   conditions:
   - condition: state
@@ -3978,9 +3999,8 @@
 - id: '1716499932240'
   alias: 'Alert when litter tray needs to be emptied '
   description: ''
-  trigger:
+  triggers:
   - type: value
-    platform: device
     device_id: dc09b50ee6b490b17f2f0b4a4911a45f
     entity_id: 122caa6ae8dc93e0a700358d37dde853
     domain: sensor
@@ -3989,8 +4009,14 @@
       hours: 0
       minutes: 0
       seconds: 0
-  condition: []
-  action:
+    trigger: device
+    enabled: false
+  - trigger: state
+    entity_id:
+    - sensor.a_l_f_status_code
+    to: dfs
+  conditions: []
+  actions:
   - data:
       message: 'Litter Robot waste tray needs to be emptied '
       data:
@@ -4074,6 +4100,8 @@
     - Need a Hot water bottle please
     - I need a Hot water bottle please
     - Aisling needs a hot water bottle please
+    - 'Make me a hot water bottle '
+    - 'I need a Hot water bottle '
     trigger: conversation
   conditions: []
   actions:
@@ -4657,6 +4685,10 @@
     entity_id: binary_sensor.landing_sensor_ias_zone
     domain: binary_sensor
     trigger: device
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
   conditions:
   - condition: state
     entity_id: light.top_landing_light
@@ -4709,7 +4741,10 @@
     metadata: {}
     data: {}
     target:
-      entity_id: switch.christmas_tree_lights_switch_2
+      entity_id:
+      - switch.christmas_tree_lights_switch_2
+      - switch.christmas_tree_lights_switch_3
+      - switch.christmas_tree_lights_switch_4
   mode: single
 - id: '1733616374692'
   alias: 'Start timer to switch off Aisling''s electric blanket '
@@ -4766,4 +4801,175 @@
       cache: false
       message: You have new email from Aisling
       entity_id: media_player.office
+  mode: single
+- id: '1734703803613'
+  alias: Reset volume on Aisling's phone
+  description: Reset all streams to max volume
+  triggers:
+  - at: 01:00:00
+    trigger: time
+    enabled: false
+  conditions: []
+  actions:
+  - data:
+      message: command_volume_level
+      data:
+        media_stream: music_stream
+        command: 20
+    action: notify.mobile_app_aisling_s_phone
+  - data:
+      message: command_volume_level
+      data:
+        media_stream: notification_stream
+        command: 20
+    action: notify.mobile_app_aisling_s_phone
+  - data:
+      message: command_volume_level
+      data:
+        media_stream: system_stream
+        command: 20
+    action: notify.mobile_app_aisling_s_phone
+  - data:
+      message: command_volume_level
+      data:
+        media_stream: alarm_stream
+        command: 20
+    action: notify.mobile_app_aisling_s_phone
+  mode: single
+- id: '1735734639647'
+  alias: Turn off dishwasher if clean
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - switch.switchdishwasher_on_off
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 2
+      seconds: 0
+  conditions:
+  - condition: state
+    entity_id: input_select.dishwasher_status
+    state: Clean
+  actions:
+  - action: switch.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.switchdishwasher_on_off
+  mode: single
+- id: '1736763028653'
+  alias: Start Hot Water timer when turned on
+  description: Start timer to turn it off
+  triggers:
+  - entity_id: water_heater.hotwater
+    attribute: operation_mode
+    from: 'off'
+    to: 'on'
+    for: 0:01:00
+    trigger: state
+  conditions: []
+  actions:
+  - action: timer.start
+    metadata: {}
+    data: {}
+    target:
+      entity_id: timer.hot_water
+  mode: single
+- id: '1736763257770'
+  alias: Hot Water Timer expires
+  description: Turn off the Hive water heater after 30 mins use
+  triggers:
+  - entity_id: water_heater.hotwater
+    attribute: operation_mode
+    from: 'off'
+    to: 'on'
+    for: 0:30:00
+    trigger: state
+    enabled: false
+  - event_type: timer.finished
+    event_data:
+      entity_id: timer.hot_water
+    trigger: event
+  conditions: []
+  actions:
+  - data:
+      entity_id: water_heater.hotwater
+      operation_mode: 'off'
+    entity_id: water_heater.hotwater
+    action: water_heater.set_operation_mode
+  - data:
+      message: The hot water has been on for 30 minutes. Switching off
+    action: notify.mobile_app_kens_phone
+  - data:
+      datetime: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }}'
+    target:
+      entity_id: input_datetime.hot_water_datetime
+    action: input_datetime.set_datetime
+  mode: single
+- id: '1736894976142'
+  alias: Mute volume on Aisling's phone
+  description: Reset all streams to min volume
+  triggers:
+  - at: 01:00:00
+    trigger: time
+    enabled: false
+  conditions: []
+  actions:
+  - data:
+      message: command_volume_level
+      data:
+        media_stream: music_stream
+        command: 1
+    action: notify.mobile_app_aisling_s_phone
+  - data:
+      message: command_volume_level
+      data:
+        media_stream: notification_stream
+        command: 1
+    action: notify.mobile_app_aisling_s_phone
+  - data:
+      message: command_volume_level
+      data:
+        media_stream: system_stream
+        command: 1
+    action: notify.mobile_app_aisling_s_phone
+  - data:
+      message: command_volume_level
+      data:
+        media_stream: alarm_stream
+        command: 20
+    action: notify.mobile_app_aisling_s_phone
+  mode: single
+- id: '1737325863235'
+  alias: Turn heater on when leaving PV
+  description: ''
+  triggers:
+  - trigger: zone
+    entity_id: person.ken_guest
+    zone: zone.pine_valley
+    event: leave
+  conditions:
+  - condition: numeric_state
+    entity_id: sensor.masterbedroom_temperature
+    below: 16
+  - condition: numeric_state
+    entity_id: zone.home
+    attribute: persons
+    below: 1
+  actions:
+  - action: climate.set_temperature
+    metadata: {}
+    data:
+      temperature: 19
+  - action: climate.turn_on
+    target:
+      entity_id: climate.master_bedroom
+    data: {}
+  - action: switch.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.electric_blanket_aisling_switch
   mode: single
