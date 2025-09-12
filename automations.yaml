@@ -5862,3 +5862,17 @@
     target:
       entity_id: switch.litter_robot_switch
   mode: single
+- id: '1757706142073'
+  alias: 'voice: when was the hot water on'
+  description: ''
+  triggers:
+  - trigger: conversation
+    command:
+    - when was the water on [last]
+  conditions: []
+  actions:
+  - set_conversation_response: "The hot water was last turned on on {{\nas_timestamp(strptime(\nstates.input_datetime.hot_water_datetime.state,
+      '%Y-%m-%d  %H:%M:%S' \n) - timedelta(minutes=30) ) |  timestamp_custom('%d %B
+      at %H:%M')  }}\nIt was turned off at {{\nas_timestamp(states.input_datetime.hot_water_datetime.state
+      )|\n  timestamp_custom('%H:%M') }}"
+  mode: single
