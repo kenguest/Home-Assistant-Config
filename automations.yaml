@@ -5284,10 +5284,10 @@
   triggers:
   - trigger: conversation
     command:
-    - when did I start work  [today]
+    - when did I start work  [today][at]
     - when did I start working [today]
-    - what time did I start [work][working] [today]
-    - when did I start [work] [today]
+    - '[at] what time did I start [work][working] [today][at]'
+    - when did I start [work] [today][at]
   conditions: []
   actions:
   - set_conversation_response: "you started work at {{ as_timestamp(states.input_datetime.study_entered_datetime.state)|\n
@@ -5875,4 +5875,47 @@
       '%Y-%m-%d  %H:%M:%S' \n) - timedelta(minutes=30) ) |  timestamp_custom('%d %B
       at %H:%M')  }}\nIt was turned off at {{\nas_timestamp(states.input_datetime.hot_water_datetime.state
       )|\n  timestamp_custom('%H:%M') }}"
+  mode: single
+- id: '1758533452444'
+  alias: 'Voice: Remind when calendar event is going to happen'
+  description: ''
+  triggers:
+  - trigger: calendar
+    entity_id: calendar.ken_guest_gmail_com
+    event: start
+    offset: -0:5:0
+  - trigger: calendar
+    entity_id: calendar.ken_tramexmeters_com
+    event: start
+    offset: -0:5:0
+  conditions:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: binary_sensor.workday_sensor
+      state: 'on'
+    - condition: state
+      entity_id: binary_sensor.work_hours
+      state: 'on'
+    - condition: state
+      entity_id: input_boolean.holiday_mode
+      state: 'off'
+  actions:
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: true
+      media_player_entity_id: media_player.office
+      message: "{{ trigger.calendar_event.summary }} at\n            {{ as_timestamp(trigger.calendar_event.start)
+        | timestamp_custom('%H:%M')  }}"
+    target:
+      entity_id: tts.home_assistant_cloud
+  - data:
+      message: TTS
+      data:
+        channel: alarm_stream
+        priority: high
+        tts_text: '{{ trigger.calendar_event.summary }} at            {{ as_timestamp(trigger.calendar_event.start)
+          | timestamp_custom(''%H:%M'')  }}'
+    action: notify.mobile_app_kens_phone
   mode: single
